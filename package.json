@@ -1,0 +1,26 @@
+{
+  "name": "clinic-appointment",
+  "version": "1.0.0",
+  "description": "A clinic appointment system where patient can book the appointment",
+  "homepage": "https://github.com/diwasatreya/Clinic-Appointment#readme",
+  "bugs": {
+    "url": "https://github.com/diwasatreya/Clinic-Appointment/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diwasatreya/Clinic-Appointment.git"
+  },
+  "license": "MIT",
+  "author": "diwasatreya",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2"
+  }
+}
