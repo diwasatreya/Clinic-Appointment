@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import { hashPassword } from '../utils/util.js';
 
 const getUserByEmail = async (email) => {
     try {
@@ -10,15 +11,17 @@ const getUserByEmail = async (email) => {
     }
 };
 
+
 const signupUser = async (form) => {
     const { firstName, lastName, email, role, password } = form;
+    const hashedPassword = await hashPassword(password);
     try {
         const user = new User(({
             firstName,
             lastName,
             email,
             role,
-            password
+            password: hashedPassword
         }));
         await user.save();
         return user;

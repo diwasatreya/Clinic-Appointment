@@ -1,4 +1,5 @@
 import { getUserByEmail, signupUser } from "../services/auth.services.js";
+import { generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
     return res.render('userAuth/login.ejs');
@@ -13,12 +14,23 @@ const postLoginPage = async (req, res) => {
 
     const user = await getUserByEmail(form.email);
 
-    if(!user) {
-        console.log("User Doesnt exists");
+    if (!user) {
+        console.log("User Doesn\'t exists");
         return res.redirect('/auth/login');
     };
 
-    return res.redirect('/auth/login');
+    const verifyPassword = await verifyHash(user.password, form.password);
+
+    if (!verifyPassword) {
+        console.log("Invalid Password!");
+        return res.redirect('/auth/login');
+    }
+
+    const accessToken = generateJWT({ id: user._id.toString() });
+
+    res.cookie("accessToken", accessToken);
+
+    return res.redirect('/');
 }
 
 const postSignupPage = async (req, res) => {
@@ -43,7 +55,7 @@ const postSignupPage = async (req, res) => {
         return res.redirect('/auth/signup');
     }
 
-    return res.redirect('/auth/signup');
+    return res.redirect('/auth/login');
 }
 
 export {
