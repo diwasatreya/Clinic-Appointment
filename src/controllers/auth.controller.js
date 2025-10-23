@@ -8,8 +8,16 @@ const getSignupPage = (req, res) => {
     return res.render('userAuth/signup.ejs');
 }
 
-const postLoginPage = (req, res) => {
-    console.log(req.body);
+const postLoginPage = async (req, res) => {
+    const form = req.body;
+
+    const user = await getUserByEmail(form.email);
+
+    if(!user) {
+        console.log("User Doesnt exists");
+        return res.redirect('/auth/login');
+    };
+
     return res.redirect('/auth/login');
 }
 
@@ -30,8 +38,10 @@ const postSignupPage = async (req, res) => {
 
     const newUser = await signupUser(form);
 
-    console.log(newUser);
-
+    if (!newUser) {
+        console.log('Failed to signup user!');
+        return res.redirect('/auth/signup');
+    }
 
     return res.redirect('/auth/signup');
 }
