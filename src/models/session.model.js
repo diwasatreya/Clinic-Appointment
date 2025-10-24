@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const sessionSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     userAgent: { type: String, required: true },
-    valid: { type: Boolean, default: false, required: false }
+    valid: { type: Boolean, default: true, required: false }
 }, {
     timestamps: true
 });
