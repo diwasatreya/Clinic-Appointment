@@ -34,7 +34,7 @@ const postLoginPage = async (req, res) => {
 
     const session = await createSession(sessionInfo);
 
-    const accessToken = generateJWT({ id: user._id.toString() }, ACCESS_TOKEN_EXPIRE);
+    const accessToken = generateJWT({ id: user._id.toString(), sid: session._id.toString() }, ACCESS_TOKEN_EXPIRE);
     const refreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
 
     res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE) });
