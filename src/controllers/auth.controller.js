@@ -1,5 +1,6 @@
-import { getUserByEmail, signupUser } from "../services/auth.services.js";
-import { generateJWT, verifyHash } from "../utils/util.js";
+import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from "../config/constant.js";
+import { createSession, getUserByEmail, signupUser } from "../services/auth.services.js";
+import { convertTime, generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
     return res.render('userAuth/login.ejs');
@@ -26,9 +27,18 @@ const postLoginPage = async (req, res) => {
         return res.redirect('/auth/login');
     }
 
-    const accessToken = generateJWT({ id: user._id.toString() });
+    const sessionInfo = {
+        userId: user._id.toString(),
+        userAgent: req.headers['user-agent']
+    }
 
-    res.cookie("accessToken", accessToken);
+    const session = await createSession(sessionInfo);
+
+    const accessToken = generateJWT({ id: user._id.toString() }, ACCESS_TOKEN_EXPIRE);
+    const refreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
+
+    res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE) });
+    res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE) });
 
     return res.redirect('/');
 }
