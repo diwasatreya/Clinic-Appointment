@@ -68,9 +68,17 @@ const postSignupPage = async (req, res) => {
     return res.redirect('/auth/login');
 }
 
+const postLogout = (req, res) => {
+    req.user = null;
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.redirect("/");
+}
+
 export {
     getLoginPage,
     getSignupPage,
     postLoginPage,
-    postSignupPage
+    postSignupPage,
+    postLogout
 }
