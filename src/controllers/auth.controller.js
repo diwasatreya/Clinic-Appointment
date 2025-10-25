@@ -3,10 +3,12 @@ import { createSession, getUserByEmail, signupUser } from "../services/auth.serv
 import { convertTime, generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
+    if (req.user) return res.redirect("/");
     return res.render('userAuth/login.ejs');
 }
 
 const getSignupPage = (req, res) => {
+    if (req.user) return res.redirect("/");
     return res.render('userAuth/signup.ejs');
 }
 
