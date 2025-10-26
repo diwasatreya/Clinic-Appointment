@@ -14,19 +14,19 @@ const useAuth = async (req, res, next) => {
 
     if (!accessToken) {
 
-        const { newAccessToken, newRefreshToken, userId } = await generateNewToken(refreshToken);
+        const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
 
         const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
 
         res.cookie("accessToken", newAccessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", newRefreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
 
-        req.user = userId;
+        req.user = newUser;
         return next();
     }
 
     const decodeAccessToken = verifyJWT(accessToken);
-    req.user = decodeAccessToken.id;
+    req.user = decodeAccessToken;
     return next();
 }
 

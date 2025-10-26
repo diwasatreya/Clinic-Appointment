@@ -58,16 +58,16 @@ const generateNewToken = async (token) => {
         const user = await User.findById(session.userId);
         if (!user) throw new Error("No User Found!");
 
-        const userId = user._id.toString();
+        const newUser = { id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString() };
 
-        const newAccessToken = generateJWT({ id: userId }, ACCESS_TOKEN_EXPIRE);
+        const newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
         const newRefreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
 
 
         return {
             newAccessToken,
             newRefreshToken,
-            userId
+            newUser
         }
 
     } catch (error) {

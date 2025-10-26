@@ -36,7 +36,7 @@ const postLoginPage = async (req, res) => {
 
     const session = await createSession(sessionInfo);
 
-    const accessToken = generateJWT({ id: user._id.toString(), sid: session._id.toString() }, ACCESS_TOKEN_EXPIRE);
+    const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString() }, ACCESS_TOKEN_EXPIRE);
     const refreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
 
     const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
