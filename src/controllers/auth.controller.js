@@ -39,8 +39,10 @@ const postLoginPage = async (req, res) => {
     const accessToken = generateJWT({ id: user._id.toString(), sid: session._id.toString() }, ACCESS_TOKEN_EXPIRE);
     const refreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
 
-    res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE) });
-    res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE) });
+    const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
+
+    res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
+    res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
 
     return res.redirect('/');
 }
