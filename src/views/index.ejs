@@ -1,12 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ClinicFinder - Find & Book Appointments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        .clinic-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .clinic-list::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 3px;
+        }
+
+        .clinic-list::-webkit-scrollbar-track {
+            background-color: #f3f4f6;
+        }
+    </style>
 </head>
-<body>
-    Hello, <%= user.username %>
-    <a href="/auth/logout">Logout</a>
+
+<body class="bg-gray-50 font-sans min-h-screen">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-blue-600">ClinicFinder</h1>
+            <nav class="space-x-4 flex items-center">
+                <% if(user) { %>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium"><%= user.username %></a>
+                    <a href="/auth/logout"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Logout</a>
+                    <% } else { %>
+                        <a href="/auth/login" class="text-gray-600 hover:text-blue-600 font-medium">Login</a>
+                        <a href="/auth/signup"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Signup</a>
+                        <% } %>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-3">Your Health, Simplified.</h2>
+            <p class="text-xl text-gray-500">Find top-rated clinics and book your appointment instantly.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-4xl mx-auto mb-10">
+            <div class="flex shadow-xl rounded-xl overflow-hidden bg-white border border-gray-200">
+                <input type="text" placeholder="Search by Clinic Name, Speciality, or Location..."
+                    class="w-full p-4 text-gray-700 focus:ring-blue-500 focus:border-blue-500 border-none outline-none">
+                <button
+                    class="bg-blue-600 text-white px-6 md:px-8 hover:bg-blue-700 transition duration-150 flex items-center justify-center">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Clinic List Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 clinic-list">
+
+            <% clinics.forEach((clinic)=> { %>
+                <% let color=colors[Math.floor(Math.random()*colors.length)] %>
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 bg-<%= color %>-100 rounded-full flex items-center justify-center text-<%= color %>-600 text-xl font-bold">
+                                <%= clinic.clinicName[0] %>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 ml-4">
+                                <%= clinic.clinicName %>
+                            </h3>
+                        </div>
+                        <p class="text-gray-500 mb-4 text-sm">Primary Care, Cardiology, and Pediatrics. Open 7 days a
+                            week.
+                        </p>
+                        <div class="flex justify-between items-center text-sm mb-4">
+                            <span class="text-green-600 font-medium">Accepting New Patients</span>
+                        </div>
+                        <form action="/appoint" method="get">
+                            <input type="text" name="id" value="<%= clinic._id.toString() %>" hidden>
+                            <button type="submit"
+                                class="block w-full text-center bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-150">
+                                Book Appointment
+                                </a>
+                        </form>
+
+                    </div>
+
+                    <% }) %>
+
+
+                        <!-- Additional filler cards -->
+                        <!-- <div
+                        class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Pediatric Care Center</h3>
+                        <p class="text-gray-500 mb-4 text-sm">Specialized care for infants, children, and adolescents.
+                        </p>
+                        <a href="appointment-book.html"
+                            class="block w-full text-center bg-green-500 text-white py-3 rounded-lg font-semibold">Book
+                            Appointment</a>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Emergency Walk-in Clinic</h3>
+                        <p class="text-gray-500 mb-4 text-sm">No appointment needed for minor emergencies and urgent
+                            care.</p>
+                        <a href="appointment-book.html"
+                            class="block w-full text-center bg-green-500 text-white py-3 rounded-lg font-semibold">Book
+                            Appointment</a>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Physical Therapy & Rehab</h3>
+                        <p class="text-gray-500 mb-4 text-sm">Dedicated facility for physical rehabilitation and sports
+                            medicine.</p>
+                        <a href="appointment-book.html"
+                            class="block w-full text-center bg-green-500 text-white py-3 rounded-lg font-semibold">Book
+                            Appointment</a>
+                    </div> -->
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <!-- <footer class="mt-12 py-6 bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2024 ClinicFinder. All rights reserved.</p>
+        </div>
+    </footer> -->
+
 </body>
+
 </html>

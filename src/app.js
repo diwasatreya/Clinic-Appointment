@@ -1,6 +1,7 @@
 import express from 'express';
 import userRoute from './routes/user.routes.js';
 import authRoute from './routes/auth.routes.js';
+import appointmentRoute from './routes/appointment.routes.js';
 import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import useAuth from './middlewares/auth.middleware.js';
@@ -16,4 +17,5 @@ app.use(cookieParser());
 app.use(useAuth);
 app.use("/", userRoute);
 app.use("/auth", authRoute);
+app.use("/", appointmentRoute);
 export default app;
