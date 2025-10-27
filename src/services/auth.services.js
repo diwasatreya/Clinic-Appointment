@@ -3,9 +3,9 @@ import { generateJWT, hashPassword, verifyJWT } from '../utils/util.js';
 import Session from '../models/session.model.js';
 import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from '../config/constant.js';
 
-const getUserByEmail = async (email) => {
+const getUserByNumber = async (number) => {
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ number });
         return user;
     } catch (error) {
         console.error(error);
@@ -15,14 +15,13 @@ const getUserByEmail = async (email) => {
 
 
 const signupUser = async (form) => {
-    const { firstName, lastName, email, role, password } = form;
+    const { firstName, lastName, number, password } = form;
     const hashedPassword = await hashPassword(password);
     try {
         const user = new User(({
             firstName,
             lastName,
-            email,
-            role,
+            number,
             password: hashedPassword
         }));
         await user.save();
@@ -77,7 +76,7 @@ const generateNewToken = async (token) => {
 }
 
 export {
-    getUserByEmail,
+    getUserByNumber,
     signupUser,
     createSession,
     generateNewToken

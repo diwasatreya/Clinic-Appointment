@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from "../config/constant.js";
-import { createSession, getUserByEmail, signupUser } from "../services/auth.services.js";
+import { createSession, getUserByNumber, signupUser } from "../services/auth.services.js";
 import { convertTime, generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
@@ -15,7 +15,7 @@ const getSignupPage = (req, res) => {
 const postLoginPage = async (req, res) => {
     const form = req.body;
 
-    const user = await getUserByEmail(form.email);
+    const user = await getUserByNumber(form.number);
 
     if (!user) {
         console.log("User Doesn\'t exists");
@@ -49,8 +49,8 @@ const postLoginPage = async (req, res) => {
 
 const postSignupPage = async (req, res) => {
     const form = req.body;
-
-    const user = await getUserByEmail(form.email);
+    console.log(form);
+    const user = await getUserByNumber(form.number);
 
     if (user) {
         console.log('User already exists!');
