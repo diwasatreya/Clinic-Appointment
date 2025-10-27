@@ -81,8 +81,6 @@ const postSignupPage = async (req, res) => {
 
     if (form.accType == "userAcc") {
 
-        console.log(form);
-
         const phoneNumber = parseInt(form.phone);
 
         if (!phoneNumber) {

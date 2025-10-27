@@ -14,7 +14,7 @@ const postAppointment = async (req, res) => {
 
     const appointment = await createAppointment(form, req.user);
 
-    return res.redirect('/');
+    return res.redirect('/my-appoint');
 }
 
 const showMyAppointments = async (req, res) => {

@@ -31,9 +31,11 @@
             <h1 class="text-3xl font-extrabold text-blue-600">ClinicFinder</h1>
             <nav class="space-x-4 flex items-center">
                 <% if(user) { %>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium"><%= user.username %></a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">
+                        <%= user.username %>
+                    </a>
                     <a href="/auth/logout"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Logout</a>
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Logout</a>
                     <% } else { %>
                         <a href="/auth/login" class="text-gray-600 hover:text-blue-600 font-medium">Login</a>
                         <a href="/auth/signup"

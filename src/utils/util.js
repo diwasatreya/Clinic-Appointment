@@ -55,7 +55,7 @@ function convertTime(time) {
     const unit = match[2].toLowerCase();
 
     return value * units[unit];
-} ''
+};
 
 export {
     hashPassword,
