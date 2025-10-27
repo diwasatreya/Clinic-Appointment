@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Unified Appointment Portal</title>
+    <!-- Tailwind CSS CDN and Professional Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1D4ED8', // Primary: Blue-700 (Trust)
+                        'primary-hover': '#1E40AF', // Blue-800
+                        'accent-green': '#059669', // Accent: Emerald-600 (Success/Complete)
+                        'text-dark': '#1F2937', // Gray-800
+                        'background-light': '#F9FAFB', // Gray-50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Ensures the content is vertically centered */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background-image: linear-gradient(to bottom right, #F9FAFB, #E5E7EB);
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Focus styles for inputs */
+        .form-input-focus:focus {
+            --tw-ring-color: #059669; /* accent-green */
+            border-color: #059669; /* accent-green */
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+    </style>
+</head>
+
+<body class="font-sans text-text-dark">
+
+    <main>
+        <div class="w-full max-w-xl bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-8 border-accent-green transform transition duration-500 ease-in-out">
+            <div class="text-center mb-8">
+                <a href="/" class="text-3xl font-extrabold text-accent-green tracking-tight">
+                    SERVICE BOOKER
+                </a>
+                <h2 class="mt-4 text-2xl font-bold text-text-dark">
+                    Choose Your Registration Type
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Already registered?
+                    <a href="/auth/login" class="font-medium text-primary-blue hover:text-primary-hover">
+                        Log in here
+                    </a>
+                </p>
+            </div>
+
+            <!-- Role Toggle Switch -->
+            <div class="flex p-1 mb-8 bg-gray-100 rounded-xl shadow-inner max-w-md mx-auto">
+                <button id="patient-btn"
+                    class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 bg-accent-green text-white shadow-md">
+                    Patient Signup
+                </button>
+                <button id="clinic-btn"
+                    class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 text-gray-600 hover:text-text-dark">
+                    Clinic Registration
+                </button>
+            </div>
+
+
+            <!-- Patient Signup Form -->
+                <%- include('../particles/userForm') %>
+
+            <!-- Clinic Registration Form -->
+                <%- include('../particles/clinicForm') %>
+        </div>
+    </main>
+
+    <!-- Simple Footer -->
+    <footer class="text-center text-xs text-gray-500 py-4 w-full">
+        © 2025 Clinic Appointment System.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const patientBtn = document.getElementById('patient-btn');
+            const clinicBtn = document.getElementById('clinic-btn');
+            const patientForm = document.getElementById('patient-form-container');
+            const clinicForm = document.getElementById('clinic-form-container');
+
+            // Function to handle the role switch
+            const switchRole = (role) => {
+                if (role === 'patient') {
+                    // Update button styles
+                    patientBtn.classList.add('bg-accent-green', 'text-white', 'shadow-md');
+                    patientBtn.classList.remove('text-gray-600', 'hover:text-text-dark');
+                    
+                    clinicBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-md');
+                    clinicBtn.classList.add('text-gray-600', 'hover:text-text-dark');
+                    
+                    // Show patient form, hide clinic form
+                    patientForm.classList.remove('hidden');
+                    clinicForm.classList.add('hidden');
+                } else {
+                    // Update button styles
+                    clinicBtn.classList.add('bg-accent-green', 'text-white', 'shadow-md');
+                    clinicBtn.classList.remove('text-gray-600', 'hover:text-text-dark');
+                    
+                    patientBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-md');
+                    patientBtn.classList.add('text-gray-600', 'hover:text-text-dark');
+
+                    // Show clinic form, hide patient form
+                    clinicForm.classList.remove('hidden');
+                    patientForm.classList.add('hidden');
+                }
+            };
+
+            // Event listeners for role buttons
+            patientBtn.addEventListener('click', () => switchRole('patient'));
+            clinicBtn.addEventListener('click', () => switchRole('clinic'));
+
+            // Initial state: ensure patient form is visible by default
+            switchRole('patient'); 
+        });
+    </script>
+</body>
+
+</html>

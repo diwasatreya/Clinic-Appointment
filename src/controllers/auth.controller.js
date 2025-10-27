@@ -1,75 +1,150 @@
 import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from "../config/constant.js";
-import { createSession, getUserByNumber, signupUser } from "../services/auth.services.js";
+import { createNewClinic, createSession, getClinicByNumber, getUserByNumber, signupUser } from "../services/auth.services.js";
 import { convertTime, generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
     if (req.user) return res.redirect("/");
-    return res.render('userAuth/login.ejs');
+    return res.render('Auth/login.ejs');
 }
 
 const getSignupPage = (req, res) => {
     if (req.user) return res.redirect("/");
-    return res.render('userAuth/signup.ejs');
+    return res.render('auth/signup.ejs');
 }
+
 
 const postLoginPage = async (req, res) => {
     const form = req.body;
+    const phoneNumber = parseInt(form.phone);
 
-    const user = await getUserByNumber(form.number);
-
-    if (!user) {
-        console.log("User Doesn\'t exists");
-        return res.redirect('/auth/login');
-    };
-
-    const verifyPassword = await verifyHash(user.password, form.password);
-
-    if (!verifyPassword) {
-        console.log("Invalid Password!");
+    if (!phoneNumber) {
+        console.log("Invalid Number!");
         return res.redirect('/auth/login');
     }
+    const user = await getUserByNumber(phoneNumber);
+    const clinic = await getClinicByNumber(phoneNumber);
 
-    const sessionInfo = {
-        userId: user._id.toString(),
-        userAgent: req.headers['user-agent']
+    if (user) {
+        const verifyPassword = await verifyHash(user.password, form.password);
+
+        if (!verifyPassword) {
+            console.log("Invalid Password!");
+            return res.redirect('/auth/login');
+        }
+
+        const sessionInfo = {
+            userId: user._id.toString(),
+            userAgent: req.headers['user-agent']
+        }
+
+        const session = await createSession(sessionInfo);
+
+        const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), role: "user" }, ACCESS_TOKEN_EXPIRE);
+        const refreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
+
+        const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
+
+        res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
+        res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
+    } else if (clinic) {
+        const verifyPassword = await verifyHash(clinic.password, form.password);
+
+        if (!verifyPassword) {
+            console.log("Invalid Password!");
+            return res.redirect('/auth/login');
+        }
+
+        const sessionInfo = {
+            userId: clinic._id.toString(),
+            userAgent: req.headers['user-agent']
+        }
+
+        const session = await createSession(sessionInfo);
+
+        const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), role: "clinic" }, ACCESS_TOKEN_EXPIRE);
+        const refreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
+
+        const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
+
+        res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
+        res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
+    } else {
+        console.log("User/Clinic Doesn\'t exists");
+        return res.redirect('/auth/login');
     }
-
-    const session = await createSession(sessionInfo);
-
-    const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString() }, ACCESS_TOKEN_EXPIRE);
-    const refreshToken = generateJWT({ sid: session._id.toString() }, REFRESH_TOKEN_EXPIRE);
-
-    const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
-
-    res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
-    res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
 
     return res.redirect('/');
 }
 
 const postSignupPage = async (req, res) => {
     const form = req.body;
-    console.log(form);
-    const user = await getUserByNumber(form.number);
 
-    if (user) {
-        console.log('User already exists!');
-        return res.redirect('/auth/signup');
+    if (form.accType == "userAcc") {
+
+        console.log(form);
+
+        const phoneNumber = parseInt(form.phone);
+
+        if (!phoneNumber) {
+            console.log("Invalid Phone Number Given!")
+            return res.redirect('/auth/signup');
+        }
+
+        const user = await getUserByNumber(form.phone);
+
+        if (user) {
+            console.log('User already exists!');
+            return res.redirect('/auth/signup');
+        }
+
+        if (form.password != form.confirmPassword) {
+            console.log('Password Doesn\'t Match!');
+            return res.redirect('/auth/signup');
+        }
+
+        const newUser = await signupUser(form);
+
+        if (!newUser) {
+            console.log('Failed to signup user!');
+            return res.redirect('/auth/signup');
+        }
+
+        return res.redirect('/auth/login');
+
+    } else {
+        console.log(form);
+
+        const phoneNumber = parseInt(form.phone);
+
+        if (!phoneNumber) {
+            console.log("Invalid Phone Number Given!")
+            return res.redirect('/auth/signup');
+        }
+
+        const clinic = await getClinicByNumber(form.phone);
+
+        if (clinic) {
+            console.log('Clinic already exists!');
+            return res.redirect('/auth/signup');
+        }
+
+        if (form.password != form.confirmPassword) {
+            console.log('Password Doesn\'t Match!');
+            return res.redirect('/auth/signup');
+        }
+
+        const newClinic = await createNewClinic(form);
+
+        if (!newClinic) {
+            console.log('Failed to signup user!');
+            return res.redirect('/auth/signup');
+        }
+
+        return res.redirect('/auth/login');
+
     }
 
-    if (form.password != form.confirmPassword) {
-        console.log('Password Doesn\'t Match!');
-        return res.redirect('/auth/signup');
-    }
 
-    const newUser = await signupUser(form);
-
-    if (!newUser) {
-        console.log('Failed to signup user!');
-        return res.redirect('/auth/signup');
-    }
-
-    return res.redirect('/auth/login');
 }
 
 const postLogout = (req, res) => {
@@ -84,5 +159,5 @@ export {
     getSignupPage,
     postLoginPage,
     postSignupPage,
-    postLogout
+    postLogout,
 }
