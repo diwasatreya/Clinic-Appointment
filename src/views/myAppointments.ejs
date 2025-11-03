@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClinicFinder - Find & Book Appointments</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <script src="./js/tailwind.js"></script>
     <style>
         /* Custom scrollbar for better aesthetics */
         .clinic-list::-webkit-scrollbar {
@@ -42,71 +42,54 @@
 <body class="bg-gray-50 font-sans min-h-screen">
 
     <!-- Header & Navigation -->
-    <header class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 class="text-3xl font-extrabold text-blue-600">ClinicFinder</h1>
-            <nav class="space-x-4 flex items-center">
-                <% if(user) { %>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">
-                        <%= user.username %>
-                    </a>
-                    <a href="/auth/logout"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Logout</a>
-                    <% } else { %>
-                        <a href="/auth/login" class="text-gray-600 hover:text-blue-600 font-medium">Login</a>
-                        <a href="/auth/signup"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Signup</a>
-                        <% } %>
-            </nav>
-        </div>
-    </header>
+    <%- include('./particles/header') %>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Manage Your Health Visits</h2>
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Manage Your Health Visits</h2>
 
-        <!-- UPCOMING APPOINTMENTS SECTION -->
-        <section class="mb-10">
-            <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Upcoming Appointments (<%=
-                    myAppoints.length %>)</h3>
-            <div class="space-y-5">
+            <!-- UPCOMING APPOINTMENTS SECTION -->
+            <section class="mb-10">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Upcoming Appointments (<%=
+                        myAppoints.length %>)</h3>
+                <div class="space-y-5">
 
-                <% if(myAppoints.length==0) { %>
-                    <h2>NOT FOUND</h2>
+                    <% if(myAppoints.length==0) { %>
+                        <h2>NOT FOUND</h2>
 
-                    <% } else { %>
+                        <% } else { %>
 
-                        <% myAppoints.forEach((appoint)=> { %>
-                            <!-- Appointment Card 1: Confirmed -->
-                            <div
-                                class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-600 flex flex-col md:flex-row justify-between items-start md:items-center transition hover:shadow-xl duration-300">
-                                <div>
-                                    <p class="text-xl font-bold text-gray-800">
-                                        <%= appoint.appointmentDate %> at <%= appoint.appointmentTime %>
-                                    </p>
-                                    <p class="text-md text-gray-600">
-                                        <%= appoint.doctor %> - <span class="font-medium text-blue-700">
-                                                <%= appoint.checkupType %>
-                                            </span>
-                                    </p>
-                                    <p class="text-sm text-gray-500 mt-1">Clinic: <%= appoint.clinic.clinicName %>
-                                    </p>
-                                    <span
-                                        class="px-3 py-1 mt-2 inline-flex text-xs leading-5 font-semibold rounded-full status-confirmed">Confirmed</span>
+                            <% myAppoints.forEach((appoint)=> { %>
+                                <!-- Appointment Card 1: Confirmed -->
+                                <div
+                                    class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-600 flex flex-col md:flex-row justify-between items-start md:items-center transition hover:shadow-xl duration-300">
+                                    <div>
+                                        <p class="text-xl font-bold text-gray-800">
+                                            <%= appoint.appointmentDate %> at <%= appoint.appointmentTime %>
+                                        </p>
+                                        <p class="text-md text-gray-600">
+                                            <%= appoint.doctor %> - <span class="font-medium text-blue-700">
+                                                    <%= appoint.checkupType %>
+                                                </span>
+                                        </p>
+                                        <p class="text-sm text-gray-500 mt-1">Clinic: <%= appoint.clinic.clinicName %>
+                                        </p>
+                                        <span
+                                            class="px-3 py-1 mt-2 inline-flex text-xs leading-5 font-semibold rounded-full status-confirmed">Confirmed</span>
+                                    </div>
+                                    <div class="mt-4 md:mt-0 flex space-x-3">
+                                        <button
+                                            class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition duration-150 shadow-md">
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="mt-4 md:mt-0 flex space-x-3">
-                                    <button
-                                        class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition duration-150 shadow-md">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                            <% }) } %>
+                                <% }) } %>
 
-        </section>
+            </section>
 
-        <!-- PAST APPOINTMENTS SECTION -->
-        <!-- <section>
+            <!-- PAST APPOINTMENTS SECTION -->
+            <!-- <section>
             <h3 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Past Appointments</h3>
             <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-6">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -168,10 +151,10 @@
             </div>
         </section> -->
 
-    </main>
+        </main>
 
-    <!-- Footer -->
-    <!-- <footer class="mt-12 py-6 bg-gray-800 text-white">
+        <!-- Footer -->
+        <!-- <footer class="mt-12 py-6 bg-gray-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2024 ClinicFinder. All rights reserved.</p>
         </div>

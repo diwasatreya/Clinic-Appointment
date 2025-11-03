@@ -1,17 +1,17 @@
 import Appointment from '../models/appointment.model.js';
 
 const createAppointment = async (form, user) => {
-    const { clinicID, checkupType, doctor_id, appointment_date, appointment_time, reason } = form;
+    const { clinicID, checkup_type, selected_doctor, appointment_date, time_slot, reason } = form;
 
 
     try {
         const appoint = new Appointment({
             userId: user.id,
             clinicID,
-            checkupType,
-            doctorId: doctor_id,
+            checkupType: checkup_type,
+            doctorId: selected_doctor,
             appointmentDate: appointment_date,
-            appointmentTime: appointment_time,
+            appointmentTime: time_slot,
             reason,
         });
 

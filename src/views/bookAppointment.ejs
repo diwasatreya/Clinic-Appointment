@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | FindaCare</title>
+    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="./js/tailwind.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        .doctor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Custom style to make the selected item visually pop */
+        .selected-item {
+            border-color: #4ade80;
+            /* accent-green */
+            background-color: #ecfdf5;
+            /* green-50 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <%- include('./particles/header') %>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu"
+            class="fixed inset-0 bg-white z-20 transform -translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-heart-pulse text-2xl text-accent-green mr-2"></i>
+                    <span class="text-2xl font-extrabold text-gray-800">FindaCare</span>
+                </div>
+                <button id="mobile-menu-close-button"
+                    class="text-gray-600 text-2xl p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <nav class="flex flex-col space-y-3 text-lg text-gray-700 font-medium mb-8">
+                <a href="/" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
+                    <i class="fa-solid fa-home mr-3 w-5"></i> Home
+                </a>
+                <a href="/about" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
+                    <i class="fa-solid fa-info-circle mr-3 w-5"></i> About Us
+                </a>
+                <a href="/appointments"
+                    class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
+                    <i class="fa-solid fa-calendar-alt mr-3 w-5"></i> My Appointments
+                </a>
+                <a href="/contact" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
+                    <i class="fa-solid fa-envelope mr-3 w-5"></i> Contact Us
+                </a>
+            </nav>
+
+            <div class="pt-4 border-t space-y-4">
+                <% if(typeof user !=='undefined' && user) { %>
+                    <a href="/profile"
+                        class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
+                        <i class="fa-solid fa-user-circle mr-1"></i>
+                        Profile (<%= user.username %>)
+                    </a>
+                    <a href="/auth/logout"
+                        class="block text-center bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-150 shadow-md">
+                        <i class="fa-solid fa-sign-out-alt mr-1"></i>
+                        Logout
+                    </a>
+                    <% } else { %>
+                        <a href="/auth/login"
+                            class="block text-center bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">
+                            <i class="fa-solid fa-sign-in-alt mr-1"></i>
+                            Login
+                        </a>
+                        <a href="/auth/signup"
+                            class="block text-center bg-accent-green text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-150 shadow-md">
+                            <i class="fa-solid fa-user-plus mr-1"></i>
+                            Sign Up
+                        </a>
+                        <% } %>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold text-gray-800 mb-3">Book Your Appointment</h2>
+                <p class="text-xl text-gray-500">Select your preferred checkup type, doctor, and time slot.</p>
+            </div>
+
+            <!-- Clinic Info Section -->
+            <section class="bg-white p-8 rounded-xl shadow-lg mb-12 border border-gray-200">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <!-- Left: Clinic Name and Description -->
+                    <div class="flex items-start space-x-4">
+                        <div class="bg-green-100 p-4 rounded-full">
+                            <i class="fa-solid fa-hospital text-3xl text-accent-green"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">
+                                <%= clinic.clinicName %>
+                            </h2>
+                            <p class="text-gray-600 mt-1 max-w-lg">
+                                <%= clinic.description || "No description available" %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Location -->
+                    <div class="flex items-center space-x-3 text-gray-700 mt-4 md:mt-0">
+                        <i class="fa-solid fa-location-dot text-accent-green text-xl"></i>
+                        <div>
+                            <p class="font-semibold">
+                                <%= clinic.address || "No description available" %>
+                            </p>
+                            <a href="https://www.google.com/maps/search/?api=1&query=<%= clinic.address.trim() %>"
+                                target="_blank" class="text-sm text-accent-green hover:underline">
+                                View on Google Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div
+                    class="border-t border-gray-200 mt-6 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-600 text-sm">
+
+                    <!-- Column 1 -->
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-user-doctor text-accent-green text-lg mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-800">Doctors</p>
+                            <p>Cardiology, General Medicine, Pediatrics, Orthopedics</p>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-clock text-accent-green text-lg mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-800">Opening Hours</p>
+                            <p>Mon – Fri: 9 AM – 6 PM<br>Sat: 9 AM – 1 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-phone text-accent-green text-lg mt-1"></i>
+                        <div>
+                            <p class="font-semibold text-gray-800">Contact</p>
+                            <p>
+                                <%= clinic.phone || "0000000000" %><br>
+                                    <%= clinic.email %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <form action="/appoint" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <input type="text" name="clinicID" value="<%= clinic._id %>" hidden>
+                <div class="lg:col-span-2 space-y-10">
+
+                    <!-- Step 1: Checkup Type -->
+                    <section class="bg-white p-6 rounded-xl shadow-lg">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
+                            1. Choose Checkup Type
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+
+                            <label for="type-initial"
+                                class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200 selected-item">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-lg text-indigo-800">Initial Consultation</p>
+                                        <p class="text-sm text-gray-600">45 Minutes - For new or complex issues.</p>
+                                    </div>
+                                    <input type="radio" id="type-initial" name="checkup_type" value="initial" checked
+                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
+                                </div>
+                            </label>
+
+                            <label for="type-followup"
+                                class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-lg text-gray-800">Follow-up Visit</p>
+                                        <p class="text-sm text-gray-600">15 Minutes - Review results or minor issues.
+                                        </p>
+                                    </div>
+                                    <input type="radio" id="type-followup" name="checkup_type" value="followup"
+                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
+                                </div>
+                            </label>
+
+                        </div>
+                    </section>
+
+                    <!-- Step 2: Doctor Selection -->
+                    <section class="bg-white p-6 rounded-xl shadow-lg">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
+                            2. Choose Your Doctor
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <label for="doctor-smith"
+                                class="doctor-card p-5 border-2 rounded-lg transition duration-300 ease-in-out cursor-pointer selected-item">
+                                <div class="flex items-center space-x-4">
+                                    <img src="" alt="Dr. Smith"
+                                        class="w-16 h-16 rounded-full object-cover border-2 border-indigo-400">
+                                    <div>
+                                        <p class="text-lg font-bold text-indigo-800">Dr. Amelia Smith, MD</p>
+                                        <p class="text-sm text-gray-600">Cardiology Specialist</p>
+                                    </div>
+                                    <input type="radio" id="doctor-smith" name="selected_doctor" value="Smith" checked
+                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
+                                </div>
+                                <p class="text-sm mt-3 text-gray-700">Specializes in preventative heart health and
+                                    diagnostics.</p>
+                            </label>
+
+
+                            <label for="doctor-jones"
+                                class="doctor-card p-5 border-2 border-gray-200 rounded-lg transition duration-300 ease-in-out cursor-pointer hover:bg-gray-50">
+                                <div class="flex items-center space-x-4">
+                                    <img src="" alt="Dr. Jones"
+                                        class="w-16 h-16 rounded-full object-cover border-2 border-gray-300">
+                                    <div>
+                                        <p class="text-lg font-bold text-gray-800">Dr. Ben Jones, DO</p>
+                                        <p class="text-sm text-gray-600">General Practice</p>
+                                    </div>
+                                    <input type="radio" id="doctor-jones" name="selected_doctor" value="Jones"
+                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
+                                </div>
+                                <p class="text-sm mt-3 text-gray-700">Trusted primary care physician for comprehensive
+                                    family health.</p>
+                            </label>
+
+                        </div>
+                    </section>
+
+                    <!-- Step 3: Date & Time -->
+                    <section class="bg-white p-6 rounded-xl shadow-lg">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
+                            3. Select Date & Time
+                        </h2>
+
+                        <div class="mb-6">
+                            <label for="appointment_date" class="block text-sm font-medium text-gray-700 mb-2">Select
+                                Date</label>
+                            <input type="date" id="appointment_date" name="appointment_date" value="2025-11-20"
+                                class="p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-base w-full">
+                        </div>
+
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Available Time Slots</label>
+                        <div class="flex flex-wrap gap-3">
+                            <input type="radio" id="time-900" name="time_slot" value="9:00 AM" class="hidden" checked>
+                            <label for="time-900"
+                                class="px-4 py-2 border border-green-400 bg-green-50 text-green-800 rounded-lg font-medium hover:bg-green-100 cursor-pointer">9:00
+                                AM</label>
+
+                            <input type="radio" id="time-1030" name="time_slot" value="10:30 AM" class="hidden">
+                            <label for="time-1030"
+                                class="px-4 py-2 border border-green-400 bg-green-50 text-green-800 rounded-lg font-medium hover:bg-green-100 cursor-pointer">10:30
+                                AM</label>
+
+                            <button
+                                class="px-4 py-2 border border-gray-300 bg-gray-100 text-gray-500 rounded-lg font-medium opacity-70 cursor-not-allowed"
+                                disabled>11:00 AM (Booked)</button>
+
+                            <input type="radio" id="time-1300" name="time_slot" value="1:00 PM" class="hidden">
+                            <label for="time-1300"
+                                class="px-4 py-2 border border-green-400 bg-green-50 text-green-800 rounded-lg font-medium hover:bg-green-100 cursor-pointer">1:00
+                                PM</label>
+
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Sidebar: Patient Details -->
+                <aside class="lg:col-span-1">
+                    <div class="lg:sticky lg:top-8 bg-white p-6 rounded-xl shadow-2xl border-t-4 border-accent-green">
+
+                        <h3 class="text-xl font-bold text-accent-green mb-4">4. Patient Details & Reason</h3>
+                        <hr class="mb-4">
+
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Full Name (Required)" name="full_name" required
+                                class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"
+                                value="<%= user.username %>">
+                            <input type="text" placeholder="Phone Number (Required)" name="phone" required
+                                class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"
+                                value="<%= user.phone %>">
+
+                            <div>
+                                <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason for
+                                    Visit
+                                    (Optional)</label>
+                                <textarea id="reason" name="reason"
+                                    placeholder="Briefly describe your concern or symptoms." rows="3"
+                                    class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="file_upload" class="block text-sm font-medium text-gray-700 mb-1">Upload
+                                    Records/Referrals (Optional)</label>
+                                <input type="file" id="file_upload" name="file_upload"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-green/20 file:text-accent-green hover:file:bg-accent-green/30" />
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h3 class="text-xl font-bold text-accent-green mb-4">Summary</h3>
+                        <div class="space-y-2 text-gray-700 text-sm">
+                            <p><strong>Checkup Type:</strong> Initial Consultation</p>
+                            <p><strong>Doctor:</strong> Dr. Amelia Smith</p>
+                            <p><strong>Date & Time:</strong> Nov 20th, 10:30 AM</p>
+                            <p class="pt-2 border-t mt-3 flex justify-between font-semibold text-base text-gray-900">
+                                <span>Total Fee:</span>
+                                <span id="summary-price">Rs. 10</span>
+                            </p>
+                        </div>
+
+                        <button type="submit"
+                            class="mt-6 w-full bg-accent-green text-white text-lg font-bold py-3 rounded-lg hover:bg-green-600 transition shadow-lg">
+                            Confirm Appointment
+                        </button>
+
+                    </div>
+                </aside>
+            </form>
+
+        </main>
+
+        <!-- Footer -->
+        <%- include('./particles/footer') %>
+
+
+
+            <script src="./js/script.js"></script>
+
+</body>
+
+</html>

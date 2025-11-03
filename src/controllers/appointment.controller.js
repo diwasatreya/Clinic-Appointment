@@ -6,7 +6,15 @@ const showAppointment = async (req, res) => {
     if (req.user.role == "clinic") return res.redirect('/');
     const clinicId = req.query.id;
     if (!clinicId) return res.redirect('/');
-    return res.render('appointment.ejs', { user: req.user, clinicId });
+    const clinic = await getClinicById(clinicId);
+    const clinicInfo = {
+        _id: clinic._id.toString(),
+        clinicName: clinic.clinicName,
+        phone: clinic.phone,
+        address: clinic.address,
+        email: clinic.email
+    }
+    return res.render('bookAppointment.ejs', { user: req.user, clinic: clinicInfo });
 }
 
 const postAppointment = async (req, res) => {

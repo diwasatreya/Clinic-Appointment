@@ -8,6 +8,11 @@ const showHomePage = async (req, res) => {
     res.render('index.ejs', { user: req.user, clinics, colors });
 }
 
+const showTest = async (req, res) => {
+    res.render('test.ejs');
+}
+
 export {
     showHomePage,
+    showTest
 }
