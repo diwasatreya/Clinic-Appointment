@@ -4,6 +4,6 @@ import { showAppointment, postAppointment, showMyAppointments } from "../control
 const router = Router();
 
 router.route("/appoint").get(showAppointment).post(postAppointment);
-router.route("/my-appoint").get(showMyAppointments);
+router.route("/appointments").get(showMyAppointments);
 
 export default router;

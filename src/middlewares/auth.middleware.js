@@ -16,7 +16,7 @@ const useAuth = async (req, res, next) => {
 
         const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
 
-        const baseCookieConfig = { httpOnly: true, sameSite: 'strict', secure: true };
+        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
 
         res.cookie("accessToken", newAccessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", newRefreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });

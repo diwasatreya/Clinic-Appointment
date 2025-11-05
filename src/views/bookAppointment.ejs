@@ -35,62 +35,7 @@
     <!-- Header -->
     <%- include('./particles/header') %>
 
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu"
-            class="fixed inset-0 bg-white z-20 transform -translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <div class="flex items-center">
-                    <i class="fa-solid fa-heart-pulse text-2xl text-accent-green mr-2"></i>
-                    <span class="text-2xl font-extrabold text-gray-800">FindaCare</span>
-                </div>
-                <button id="mobile-menu-close-button"
-                    class="text-gray-600 text-2xl p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
 
-            <nav class="flex flex-col space-y-3 text-lg text-gray-700 font-medium mb-8">
-                <a href="/" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-                    <i class="fa-solid fa-home mr-3 w-5"></i> Home
-                </a>
-                <a href="/about" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-                    <i class="fa-solid fa-info-circle mr-3 w-5"></i> About Us
-                </a>
-                <a href="/appointments"
-                    class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-                    <i class="fa-solid fa-calendar-alt mr-3 w-5"></i> My Appointments
-                </a>
-                <a href="/contact" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-                    <i class="fa-solid fa-envelope mr-3 w-5"></i> Contact Us
-                </a>
-            </nav>
-
-            <div class="pt-4 border-t space-y-4">
-                <% if(typeof user !=='undefined' && user) { %>
-                    <a href="/profile"
-                        class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
-                        <i class="fa-solid fa-user-circle mr-1"></i>
-                        Profile (<%= user.username %>)
-                    </a>
-                    <a href="/auth/logout"
-                        class="block text-center bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-150 shadow-md">
-                        <i class="fa-solid fa-sign-out-alt mr-1"></i>
-                        Logout
-                    </a>
-                    <% } else { %>
-                        <a href="/auth/login"
-                            class="block text-center bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">
-                            <i class="fa-solid fa-sign-in-alt mr-1"></i>
-                            Login
-                        </a>
-                        <a href="/auth/signup"
-                            class="block text-center bg-accent-green text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-150 shadow-md">
-                            <i class="fa-solid fa-user-plus mr-1"></i>
-                            Sign Up
-                        </a>
-                        <% } %>
-            </div>
-        </div>
 
         <!-- Main Content -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
@@ -189,7 +134,8 @@
                                         <p class="font-semibold text-lg text-indigo-800">Initial Consultation</p>
                                         <p class="text-sm text-gray-600">45 Minutes - For new or complex issues.</p>
                                     </div>
-                                    <input type="radio" id="type-initial" name="checkup_type" value="initial" checked
+                                    <input type="radio" id="type-initial" name="checkup_type"
+                                        value="Initial Consultation" checked
                                         class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
                                 </div>
                             </label>
@@ -202,7 +148,7 @@
                                         <p class="text-sm text-gray-600">15 Minutes - Review results or minor issues.
                                         </p>
                                     </div>
-                                    <input type="radio" id="type-followup" name="checkup_type" value="followup"
+                                    <input type="radio" id="type-followup" name="checkup_type" value="Follow-up Visit"
                                         class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
                                 </div>
                             </label>
@@ -329,9 +275,9 @@
 
                         <h3 class="text-xl font-bold text-accent-green mb-4">Summary</h3>
                         <div class="space-y-2 text-gray-700 text-sm">
-                            <p><strong>Checkup Type:</strong> Initial Consultation</p>
-                            <p><strong>Doctor:</strong> Dr. Amelia Smith</p>
-                            <p><strong>Date & Time:</strong> Nov 20th, 10:30 AM</p>
+                            <p><strong>Checkup Type:</strong id="liveCheckup"> Initial Consultation</p>
+                            <p><strong>Doctor:</strong id="liveDoctor"> Dr. Amelia Smith</p>
+                            <p><strong>Date & Time:</strong id="liveDate"> Nov 20th, 10:30 AM</p>
                             <p class="pt-2 border-t mt-3 flex justify-between font-semibold text-base text-gray-900">
                                 <span>Total Fee:</span>
                                 <span id="summary-price">Rs. 10</span>
@@ -352,7 +298,22 @@
         <!-- Footer -->
         <%- include('./particles/footer') %>
 
+            <script>
+                const form = document.getElementsByTagName('form');
+                const checkupValue = document.getElementById('liveCheckup');
+                const doctorValue = document.getElementById('liveDoctor');
+                const dateValue = document.getElementById('liveDate');
 
+                const userCheckup = document.getElementsByName('checkup_type');
+                const userDoctor = document.getElementsByName('selected_doctor');
+                const userDate = document.getElementsByName('appointment_date');
+                
+                userCheckup.addEventListener("input", (e) => {
+                    console.log(userCheckup.values);
+                    checkupValue.innerText = userCheckup.values
+                })
+
+            </script>
 
             <script src="./js/script.js"></script>
 

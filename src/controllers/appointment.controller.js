@@ -1,4 +1,5 @@
-import { createAppointment, getAllAppointments } from "../services/appointment.services.js";
+import app from "../app.js";
+import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints } from "../services/appointment.services.js";
 import { getClinicById } from "../services/clinics.services.js";
 
 const showAppointment = async (req, res) => {
@@ -22,7 +23,7 @@ const postAppointment = async (req, res) => {
 
     const appointment = await createAppointment(form, req.user);
 
-    return res.redirect('/my-appoint');
+    return res.redirect('/appointments');
 }
 
 const showMyAppointments = async (req, res) => {
@@ -37,15 +38,27 @@ const showMyAppointments = async (req, res) => {
         const clinic = await getClinicById(appoint.clinicID);
 
         myAppoints.push({
+            _id: appoint._id.toString(),
+            checkupType: appoint.checkupType,
+            doctor: appoint.doctorId,
             appointmentDate: appoint.appointmentDate,
             appointmentTime: appoint.appointmentTime,
-            doctor: appoint.doctorId,
-            checkupType: appoint.checkupType,
+            time: appoint.appointmentDate + " " + appoint.appointmentTime,
+            reason: appoint.reason || "No Reason",
+            ui: getFormattedDateInfo(appoint.appointmentDate + " " + appoint.appointmentTime),
+            completed: appoint.completed,
+            status: appoint.status,
             clinic: clinic
         });
     }
 
-    return res.render('myAppointments.ejs', { user: req.user, myAppoints });
+    const completedAppoints = myAppoints.filter((apoint) => apoint.completed == true);
+
+    const notCompleted = myAppoints.filter((apoint) => apoint.completed == false)
+
+    const upComingAppoints = getUpCommingAppoints(notCompleted, "time");
+
+    return res.render('myAppointments.ejs', { user: req.user, completedAppoints, upComingAppoints });
 }
 
 
