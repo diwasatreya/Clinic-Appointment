@@ -1,5 +1,4 @@
-import app from "../app.js";
-import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints } from "../services/appointment.services.js";
+import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints, deleteAppoint } from "../services/appointment.services.js";
 import { getClinicById } from "../services/clinics.services.js";
 
 const showAppointment = async (req, res) => {
@@ -62,8 +61,23 @@ const showMyAppointments = async (req, res) => {
 }
 
 
+const postDelete = async (req, res) => {
+    try {
+        const { appointId } = req.body;
+        if (!appointId) return;
+        await deleteAppoint(appointId);
+
+        return res.redirect('/appointments');
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
 export {
     showAppointment,
     postAppointment,
-    showMyAppointments
+    showMyAppointments,
+    postDelete
 }

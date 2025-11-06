@@ -69,12 +69,13 @@
 
                 <div class="mt-5 flex justify-end">
                   <form action="/appoint/delete" method="post">
-                    <input type="text" value="<%= appoint._id %>" disabled hidden>
-                  </form>
+                    <input type="text" value="<%= appoint._id %>" name="appointId" hidden>
+                  
                   <button type="submit"
                     class="cancel-btn px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition shadow">
                     Cancel Appointment
                   </button>
+                  </form>
                 </div>
               </div>
 
@@ -84,7 +85,7 @@
                 <section id="past-visits" class="space-y-6">
                   <h2 class="text-2xl font-bold text-gray-800 flex items-center">
                     <i class="fa-solid fa-clock-rotate-left text-gray-600 mr-2"></i>
-                    Past Visits (<%= completedAppoints.length %>)
+                    Past History (<%= completedAppoints.length %>)
                   </h2>
 
                   <div class="relative">
@@ -118,7 +119,7 @@
               </div>
               <div class="flex flex-wrap gap-2 items-center">
                 <span
-                  class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Completed</span>
+                  class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium <%- (appoint.status == 'Completed') ? 'bg-gray-100 text-gray-700' : 'bg-red-100 text-red-700' %>"><%= appoint.status %></span>
                 <button
                   class="view-summary-btn px-3 py-1.5 text-sm font-medium text-accent-green bg-accent-light rounded-lg hover:bg-accent-light/70 transition">
                   View Visit Summary

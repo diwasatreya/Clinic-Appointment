@@ -8,6 +8,7 @@ const getLoginPage = (req, res) => {
 }
 
 const getSignupPage = (req, res) => {
+    
     if (req.user) return res.redirect("/");
     return res.render('auth/signup.ejs');
 }

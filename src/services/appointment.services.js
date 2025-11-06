@@ -88,13 +88,26 @@ function getFormattedDateInfo(dateStr) {
     if (!date) return null;
 
     const day = date.getDate();
-    const monthName = date.toLocaleString("en-US", { month: "short" }); 
-    const weekday = date.toLocaleString("en-US", { weekday: "long" }); 
+    const monthName = date.toLocaleString("en-US", { month: "short" });
+    const weekday = date.toLocaleString("en-US", { weekday: "long" });
 
     return {
         formattedDate: `${day} ${monthName}`,
         dayName: weekday,
     };
+}
+
+const deleteAppoint = async (id) => {
+    try {
+        const appoint = await Appointment.findById(id);
+        if (!appoint) return;
+        appoint.status = "Canceled";
+        appoint.completed = true;
+        await appoint.save();
+        return appoint;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 
@@ -103,5 +116,6 @@ export {
     getAllAppointments,
     parseDateTime,
     getUpCommingAppoints,
-    getFormattedDateInfo
+    getFormattedDateInfo,
+    deleteAppoint
 }
