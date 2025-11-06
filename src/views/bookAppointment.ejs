@@ -70,7 +70,7 @@
                             <p class="font-semibold">
                                 <%= clinic.address || "No description available" %>
                             </p>
-                            <a href="https://www.google.com/maps/search/?api=1&query=<%= clinic.address.trim() %>"
+                            <a href="https://www.google.com/maps/search/?api=1&query=<%= clinic.address.trim().replace(',', '') %>"
                                 target="_blank" class="text-sm text-accent-green hover:underline">
                                 View on Google Maps
                             </a>
@@ -167,8 +167,7 @@
                             <label for="doctor-smith"
                                 class="doctor-card p-5 border-2 rounded-lg transition duration-300 ease-in-out cursor-pointer selected-item">
                                 <div class="flex items-center space-x-4">
-                                    <img src="" alt="Dr. Smith"
-                                        class="w-16 h-16 rounded-full object-cover border-2 border-indigo-400">
+                                    
                                     <div>
                                         <p class="text-lg font-bold text-indigo-800">Dr. Amelia Smith, MD</p>
                                         <p class="text-sm text-gray-600">Cardiology Specialist</p>
@@ -184,8 +183,6 @@
                             <label for="doctor-jones"
                                 class="doctor-card p-5 border-2 border-gray-200 rounded-lg transition duration-300 ease-in-out cursor-pointer hover:bg-gray-50">
                                 <div class="flex items-center space-x-4">
-                                    <img src="" alt="Dr. Jones"
-                                        class="w-16 h-16 rounded-full object-cover border-2 border-gray-300">
                                     <div>
                                         <p class="text-lg font-bold text-gray-800">Dr. Ben Jones, DO</p>
                                         <p class="text-sm text-gray-600">General Practice</p>
