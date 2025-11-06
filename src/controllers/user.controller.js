@@ -1,11 +1,18 @@
-import { getAllClinics } from "../services/clinics.services.js";
+import { getAllClinics, filterClinics } from "../services/clinics.services.js";
 
 const showHomePage = async (req, res) => {
-    // if (!req.user) return res.redirect('/auth/login');
-    const colors = ["red", "blue", "purple"];
 
-    const clinics = await getAllClinics();
-    res.render('index.ejs', { user: req.user, clinics, colors });
+    const { search } = req.query;
+
+    let clinics;
+
+    if (search && search.length != 0) {
+        clinics = await filterClinics(search);
+    } else {
+        clinics = await getAllClinics();
+    }
+
+    return res.render('index.ejs', { user: req.user, clinics });
 }
 
 const showTest = async (req, res) => {

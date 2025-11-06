@@ -104,7 +104,7 @@
                   <% completedAppoints.forEach((appoint, index)=> { %>
                     <div
                       class="visit-card bg-white shadow rounded-lg p-5 border border-gray-200 hover:shadow-md transition duration-200"
-                      data-doctor="Dr. Emily Roth" data-reason="Routine Check-up">
+                      data-doctor="Dr. <%= appoint.doctor %>" data-reason="<%= appoint.reason %>">
                       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div class="flex items-center gap-4">
                           <div class="text-center bg-gray-100 p-3 rounded-md">
@@ -136,7 +136,7 @@
     
     
     <script>
-      document.addEventListener(' DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('past-visit-search');
 
         // Search Filter
@@ -151,21 +151,6 @@
           });
         }
 
-        // Cancel Button
-        document.querySelectorAll('.cancel-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to cancel this appointment?')) {
-              alert('Appointment has been canceled (placeholder).');
-            }
-          });
-        });
-
-        // View Summary
-        document.querySelectorAll('.view-summary-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            alert('Navigating to detailed summary (placeholder).');
-          });
-        });
       });
     </script>
     <script src="./js/script.js"></script>

@@ -17,7 +17,22 @@ const getClinicById = async (id) => {
     }
 }
 
+const filterClinics = async (str) => {
+    try {
+        const clinics = await Clinics.find();
+        const searchValue = str.toLowerCase();
+
+        const filteredClinics = clinics.filter((clinic) => { return clinic.clinicName.toLowerCase().includes(searchValue) || clinic.address.toLowerCase().includes(searchValue) });
+
+        return filteredClinics;
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export {
     getAllClinics,
-    getClinicById
+    getClinicById,
+    filterClinics
 }
