@@ -8,6 +8,7 @@ const showAppointment = async (req, res) => {
     const clinicId = req.query.id;
     if (!clinicId) return res.redirect('/');
     const clinic = await getClinicById(clinicId);
+    if (!clinic) return res.redirect('/');
     const clinicInfo = {
         _id: clinic._id.toString(),
         clinicName: clinic.clinicName,
