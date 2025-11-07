@@ -29,10 +29,34 @@ const filterClinics = async (str) => {
     } catch (error) {
         console.error(error);
     }
+};
+
+const updateDataClinic = async (info, form) => {
+    try {
+        const clinic = await Clinics.findById(info.id);
+        if (!clinic) return;
+
+        clinic.description = form.description;
+        clinic.address = form.address;
+        clinic.opening = form.opening;
+        const tags = form.speciality.split(', ').slice(0, 5);
+        clinic.speciality = [];
+        tags.forEach(tag => {
+            clinic.speciality.push(tag);
+        });
+
+        await clinic.save();
+
+        return clinic;
+
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export {
     getAllClinics,
     getClinicById,
-    filterClinics
+    filterClinics,
+    updateDataClinic
 }

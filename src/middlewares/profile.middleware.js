@@ -8,8 +8,14 @@ const userProfile = async (req, res, next) => {
         if (typeof req.user == "undefined" || !req.user) {
             return next();
         }
-        const user = await getUserByNumber(req.user.phone);
-        const clinic = await getClinicById(req.user.id);
+
+        let user;
+        let clinic;
+        if (req.user.role == "user") {
+            user = await getUserByNumber(req.user.phone);
+        } else {
+            clinic = await getClinicById(req.user.id);
+        }
 
         if (user && req.url == `/${user._id.toString()}`) {
             res.render('userProfile.ejs', { user: req.user, dataUser: user });
@@ -17,7 +23,11 @@ const userProfile = async (req, res, next) => {
         }
 
         if (clinic && req.url == `/${clinic._id.toString()}`) {
-            res.render('clinicDashboard/profile.ejs', { user: req.user, dataClinic: clinic });
+            let tags = ''
+            clinic.speciality.forEach(tag => {
+                tags += tag + ', ';
+            });
+            res.render('clinicDashboard/profile.ejs', { user: req.user, dataClinic: clinic, tags });
             return next();
         }
 
@@ -26,6 +36,7 @@ const userProfile = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
+        return next(err);
     }
 
 }
