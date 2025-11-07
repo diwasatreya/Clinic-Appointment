@@ -32,11 +32,11 @@
         <!-- Appointment 1 -->
         <% upComingAppoints.forEach((appoint)=> { %>
           <div
-            class="bg-white shadow-lg rounded-xl p-5 border-l-4 border-accent-green transition hover:shadow-xl duration-300">
+            class="bg-white shadow-lg rounded-xl p-5 border-l-4 <%- (appoint.status == 'Pending') ? 'border-warning' : 'border-accent-green' %> transition hover:shadow-xl duration-300">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div class="flex items-center gap-4">
-                <div class="text-center bg-accent-light p-3 rounded-lg">
-                  <p class="text-xl font-bold text-accent-green">
+                <div class="text-center <%- (appoint.status == 'Pending') ? 'bg-yellow-50 text-warning' : 'bg-accent-light text-accent-green' %> p-3 rounded-lg">
+                  <p class="text-xl font-bold ">
                     <%= appoint.ui.formattedDate.split(' ')[0] %></p>
                 <p class="text-xs text-gray-500 uppercase"><%= appoint.ui.formattedDate.split(' ')[1] %></p>
               </div>

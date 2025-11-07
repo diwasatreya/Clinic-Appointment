@@ -60,12 +60,12 @@ const generateNewToken = async (token) => {
         let newRefreshToken;
         if (decodedRefreshToken.role == "user") {
             const user = await User.findById(session.userId);
-            newUser = { id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), role: "user" };
+            newUser = { id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), phone: user.phone, role: "user" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
         } else {
             const clinic = await Clinic.findById(session.userId);
-            newUser = { id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), role: "clinic" };
+            newUser = { id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: user.phone, role: "clinic" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
         }

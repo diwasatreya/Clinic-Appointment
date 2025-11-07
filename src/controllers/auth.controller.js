@@ -40,7 +40,7 @@ const postLoginPage = async (req, res) => {
 
         const session = await createSession(sessionInfo);
 
-        const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), role: "user" }, ACCESS_TOKEN_EXPIRE);
+        const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), phone: user.phone, role: "user" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
 
         const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
@@ -62,7 +62,7 @@ const postLoginPage = async (req, res) => {
 
         const session = await createSession(sessionInfo);
 
-        const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), role: "clinic" }, ACCESS_TOKEN_EXPIRE);
+        const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: user.phone, role: "clinic" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
 
         const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
