@@ -24,7 +24,7 @@
             <!-- Desktop Auth Links (Hidden on mobile) -->
             <div class="hidden md:flex items-center space-x-4">
                 <% if(typeof user !=='undefined' && user) { %>
-                    <a href="/profile"
+                    <a href="/<%= user.id %>"
                         class="hover:text-accent-green font-medium transition duration-150 hidden lg:inline-block">
                         <i class="fa-solid fa-user-circle mr-1"></i>
                         <%= user.username %>

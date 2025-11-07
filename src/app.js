@@ -5,6 +5,7 @@ import appointmentRoute from './routes/appointment.routes.js';
 import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import useAuth from './middlewares/auth.middleware.js';
+import userProfile from './middlewares/profile.middleware.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 
 app.use(useAuth);
+app.use(userProfile);
 app.use("/", userRoute);
 app.use("/auth", authRoute);
 app.use("/", appointmentRoute);

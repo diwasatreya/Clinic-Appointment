@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from "../config/constant.js";
-import { createNewClinic, createSession, getClinicByNumber, getUserByNumber, signupUser } from "../services/auth.services.js";
+import { createNewClinic, createSession, generateNewToken, getClinicByNumber, getUserByNumber, signupUser, updateUserData } from "../services/auth.services.js";
 import { convertTime, generateJWT, verifyHash } from "../utils/util.js";
 
 const getLoginPage = (req, res) => {
@@ -8,7 +8,7 @@ const getLoginPage = (req, res) => {
 }
 
 const getSignupPage = (req, res) => {
-    
+
     if (req.user) return res.redirect("/");
     return res.render('auth/signup.ejs');
 }
@@ -62,7 +62,7 @@ const postLoginPage = async (req, res) => {
 
         const session = await createSession(sessionInfo);
 
-        const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: user.phone, role: "clinic" }, ACCESS_TOKEN_EXPIRE);
+        const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: clinic.phone, role: "clinic" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
 
         const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
@@ -153,10 +153,41 @@ const postLogout = (req, res) => {
     return res.redirect("/");
 }
 
+const updateUser = async (req, res) => {
+    try {
+        const form = req.body;
+
+        const user = await getUserByNumber(form.oldphone);
+        
+        if (!user) {
+            res.redirect('/');
+        }
+
+        const updatedUser = await updateUserData(user, form);
+        if (!updatedUser) return res.redirect(`/${user._id.toString()}`);
+        const refreshToken = req.cookies.refreshToken;
+
+        const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
+
+        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+
+        res.cookie("accessToken", newAccessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
+        res.cookie("refreshToken", newRefreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
+
+        req.user = newUser;
+
+        return res.redirect(`/${user._id.toString()}`);
+
+    } catch (error) {
+
+    }
+}
+
 export {
     getLoginPage,
     getSignupPage,
     postLoginPage,
     postSignupPage,
     postLogout,
+    updateUser
 }

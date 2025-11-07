@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Dashboard</title>
+    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="./js/tailwind.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        .form-input,
+        .form-textarea,
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.25rem;
+            border-width: 1px;
+            border-color: #d1d5db;
+            /* gray-300 */
+            border-radius: 0.375rem;
+            /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: #4f46e5;
+            /* indigo-600 */
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+            /* indigo-500 ring */
+            outline: none;
+        }
+
+        /* Custom styles for the Status Toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #10B981;
+            /* emerald-500 */
+        }
+
+        .toggle-label {
+            background-color: #D1D5DB;
+            /* gray-300 */
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #10B981;
+            /* emerald-500 */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <%- include('../particles/header') %>
+
+        <div class="p-6 md:p-10 max-w-7xl mx-auto">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-8 flex items-center">
+                Clinic Profile Setting
+            </h1>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <div class="lg:col-span-2 space-y-8">
+
+                    <form method="post" action="/clinic/update" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">
+                            Clinic Information
+                        </h2>
+
+                        <div class="mb-6">
+                            <label for="description" class="block text-sm font-medium text-gray-700">
+                                Update the Description
+                            </label>
+                            <textarea value="<%= dataClinic.description || '' %>" id="description" rows="4"
+                                placeholder="A detailed summary of the clinic, its mission, and what it offers (Max 500 characters)..."
+                                class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                required></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="location" class="block text-sm font-medium text-gray-700">
+                                    Update the Location
+                                </label>
+                                <input value="<%= dataClinic.address || '' %>" type="text" id="location"
+                                    placeholder="123 Health Ave, City, Zip"
+                                    class="form-input block w-full rounded-md border-gray-300 shadow-sm" required>
+                            </div>
+                            <div>
+                                <label for="hours" class="block text-sm font-medium text-gray-700">
+                                    Opening Hours
+                                </label>
+                                <input value="<%= dataClinic.opening || '' %>" type="text" id="hours"
+                                    placeholder="Mon-Fri: 9:00 AM - 5:00 PM; Sat: 10:00 AM - 2:00 PM"
+                                    class="form-input block w-full rounded-md border-gray-300 shadow-sm" required>
+                            </div>
+
+                            <div>
+                                <label for="hours" class="block text-sm font-medium text-gray-700">
+                                    Speciality
+                                </label>
+                                <input value="<%= dataClinic.speciality[0] || '' %>" type="text" id="hours"
+                                    placeholder="Cardiology, General Medicine, Pediatrics, Orthopedics"
+                                    class="form-input block w-full rounded-md border-gray-300 shadow-sm" required>
+                            </div>
+                            <div class="flex items-end">
+                                 <!-- <label for="hours" class="block text-sm font-medium text-gray-700">
+                                    Note: Make sure to send approval
+                                </label> -->
+                                <button id="open-doctor-modal"
+                                    class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-8 rounded-lg text-sm font-medium transition duration-150 shadow-md">
+                                    Update
+                                </button>
+                            </div>
+
+
+                        </div>
+                    </form>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2
+                            class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6 flex justify-between items-center">
+                            6. Manage Doctors
+                            <button id="open-doctor-modal"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition duration-150 shadow-md">
+                                + Add Doctor
+                            </button>
+                        </h2>
+
+                        <div class="space-y-4">
+                            <div
+                                class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-lg text-indigo-800">Dr. Sarah Chen</p>
+                                    <p class="text-sm text-gray-600">Speciality: **Cardiology**</p>
+                                    <p class="text-xs text-gray-500 mt-1">Dedicated to advanced cardiovascular
+                                        treatments and patient care.</p>
+                                </div>
+                                <div class="space-x-2">
+                                    <button class="text-sm text-blue-600 hover:text-blue-800">Edit</button>
+                                    <button class="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-lg text-indigo-800">Dr. Marcus Lee</p>
+                                    <p class="text-sm text-gray-600">Speciality: **Pediatrics**</p>
+                                    <p class="text-xs text-gray-500 mt-1">Focuses on child wellness, developmental
+                                        milestones, and routine checkups.</p>
+                                </div>
+                                <div class="space-x-2">
+                                    <button class="text-sm text-blue-600 hover:text-blue-800">Edit</button>
+                                    <button class="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">
+                            7. Add Time Slots
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mb-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700">Date</label>
+                                <input type="date"
+                                    class="form-input block w-full rounded-md border-gray-300 shadow-sm text-sm">
+                            </div>
+                            <div class="flex gap-2 md:col-span-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Time</label>
+                                    <input type="time"
+                                        class="form-input block w-full rounded-md border-gray-300 shadow-sm text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Doctor</label>
+                                    <select
+                                        class="form-select block w-full rounded-md border-gray-300 shadow-sm text-sm">
+                                        <option>Dr. Chen</option>
+                                        <option>Dr. Lee</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button
+                                class="md:col-span-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-150 shadow-md">
+                                + Add Slot
+                            </button>
+                        </div>
+
+                        <div class="text-sm text-gray-600">
+                            <p class="font-semibold mb-2">Upcoming Slots:</p>
+                            <ul class="space-y-1">
+                                <li class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                    <span>**Nov 10, 2025** at 10:00 AM (Dr. Chen)</span>
+                                    <button class="text-red-500 hover:text-red-700 text-xs">Remove</button>
+                                </li>
+                                <li class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                    <span>**Nov 10, 2025** at 2:30 PM (Dr. Lee)</span>
+                                    <button class="text-red-500 hover:text-red-700 text-xs">Remove</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 space-y-8">
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 lg:sticky lg:top-10">
+
+                        <div class="border-b pb-4 mb-4">
+                            <label class="text-xl font-bold text-gray-800 block mb-3">
+                                3. Set Status: Available On/Off
+                            </label>
+                            <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 border">
+                                <span class="font-medium text-gray-700">Accepting Appointments</span>
+                                <div
+                                    class="relative inline-block w-14 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle"
+                                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all"
+                                        checked>
+                                    <label for="toggle"
+                                        class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <button
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-6 rounded-xl shadow-xl uppercase tracking-wider transition duration-150 transform hover:scale-[1.01]">
+                            8. Send Approval Button
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-doctor-modal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+            <div class="flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-900 opacity-70"></div>
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div
+                    class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <h3 class="text-2xl leading-6 font-bold text-gray-900 mb-4" id="modal-title">
+                                    Add New Doctor
+                                </h3>
+                                <form class="mt-2 space-y-4">
+                                    <div>
+                                        <label for="doctor-name"
+                                            class="block text-sm font-medium text-gray-700">Name</label>
+                                        <input type="text" id="doctor-name"
+                                            class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                                            placeholder="Dr. First Last Name" required>
+                                    </div>
+                                    <div>
+                                        <label for="doctor-speciality"
+                                            class="block text-sm font-medium text-gray-700">Speciality</label>
+                                        <input type="text" id="doctor-speciality"
+                                            class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                                            placeholder="e.g., General Medicine" required>
+                                    </div>
+                                    <div>
+                                        <label for="doctor-description"
+                                            class="block text-sm font-medium text-gray-700">Little Description</label>
+                                        <textarea id="doctor-description" rows="3"
+                                            class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                                            placeholder="A brief bio (max 150 characters)" required></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Save Doctor
+                        </button>
+                        <button type="button" id="close-doctor-modal"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../particles/footer') %>
+
+            <script src="../js/script.js"></script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const openButton = document.getElementById('open-doctor-modal');
+                    const closeButton = document.getElementById('close-doctor-modal');
+                    const modal = document.getElementById('add-doctor-modal');
+                    const toggleCheckbox = document.getElementById('toggle');
+
+                    // --- Doctor Modal Logic ---
+
+                    // Show the Modal when 'Add Doctor' is clicked
+                    if (openButton) {
+                        openButton.addEventListener('click', () => {
+                            modal.classList.remove('hidden');
+                        });
+                    }
+
+                    // Hide the Modal when 'Cancel' is clicked
+                    if (closeButton) {
+                        closeButton.addEventListener('click', () => {
+                            modal.classList.add('hidden');
+                        });
+                    }
+
+                    // Hide modal if user clicks outside of it (on the background overlay)
+                    if (modal) {
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                modal.classList.add('hidden');
+                            }
+                        });
+                    }
+
+                    // --- Status Toggle Logic (Visual only) ---
+
+                    if (toggleCheckbox) {
+                        const statusSpan = document.querySelector('.flex.justify-between.items-center span');
+                        toggleCheckbox.addEventListener('change', () => {
+                            if (toggleCheckbox.checked) {
+                                statusSpan.textContent = 'Accepting Appointments';
+                                statusSpan.classList.remove('text-red-700');
+                                statusSpan.classList.add('text-green-700');
+                            } else {
+                                statusSpan.textContent = 'Not Accepting Appointments';
+                                statusSpan.classList.remove('text-green-700');
+                                statusSpan.classList.add('text-red-700');
+                            }
+                        });
+                    }
+                });
+            </script>
+</body>
+
+</html>

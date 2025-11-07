@@ -65,7 +65,7 @@ const generateNewToken = async (token) => {
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
         } else {
             const clinic = await Clinic.findById(session.userId);
-            newUser = { id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: user.phone, role: "clinic" };
+            newUser = { id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: clinic.phone, role: "clinic" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
         }
@@ -108,11 +108,38 @@ const createNewClinic = async ({ clinicName, email, phone, address, password }) 
     }
 }
 
+const updateUserData = async (userObj, form) => {
+    try {
+
+        const existingUser = await User.findOne({
+            phone: form['phone-number'],
+            _id: { $ne: userObj._id },
+        });
+
+        if (existingUser) return;
+
+        const user = await User.findById(userObj._id);
+        if (!user) return;
+
+        user.firstName = form['first-name'];
+        user.lastName = form['last-name'];
+        user.phone = form['phone-number'];
+        user.address = form.address;
+
+        await user.save();
+
+        return user;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export {
     getUserByNumber,
     signupUser,
     createSession,
     generateNewToken,
     getClinicByNumber,
-    createNewClinic
+    createNewClinic,
+    updateUserData
 }

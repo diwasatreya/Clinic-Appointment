@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.username %> - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+      <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/tailwind.js"></script>
+    <style>
+        /* Custom styling for inputs to mimic the Tailwind Forms plugin */
+        .form-input {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.25rem;
+            border-width: 1px;
+            border-color: #d1d5db;
+            /* gray-300 */
+            border-radius: 0.375rem;
+            /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-input:focus {
+            border-color: #10b981;
+            /* emerald-500 */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5);
+            /* emerald ring */
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <%- include('./particles/header') %>
+
+        <div class="p-6 md:p-10 max-w-4xl mx-auto">
+            <header class="mb-8 border-b pb-4">
+                <h1 class="text-3xl font-extrabold text-gray-900 flex items-center">
+                    My Profile Settings
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">
+                    Update your personal and contact details for better service.
+                </p>
+            </header>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">
+                    Personal Information
+                </h2>
+
+                <form action="/auth/update" method="POST" class="space-y-6">
+                    <input type="text" value="<%= dataUser.phone %>" name="oldphone" hidden>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700">
+                                First Name
+                            </label>
+                            <input type="text" id="first-name" name="first-name" autocomplete="given-name" class="form-input"
+                                value="<%= dataUser.firstName %>" required>
+                        </div>
+
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700">
+                                Last Name
+                            </label>
+                            <input type="text" id="last-name" name="last-name" autocomplete="family-name" class="form-input" value="<%= dataUser.lastName %>" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone-number" class="block text-sm font-medium text-gray-700">
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone-number" name="phone-number" autocomplete="tel" class="form-input"
+                            placeholder="(555) 123-4567" value="<%= dataUser.phone %>" required>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            Address
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="street-address" class="block text-sm font-medium text-gray-700">
+                                   Home Address
+                                </label>
+                                <input type="text" id="street-address" name="address" autocomplete="street-address" class="form-input"
+                                    value="<%= dataUser.address || '' %>">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="pt-6 flex justify-end">
+                        <button type="submit"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-150">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <%- include('./particles/footer') %>
+            <script src="./js/script.js"></script>
+</body>
+
+</html>
