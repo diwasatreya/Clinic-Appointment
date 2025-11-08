@@ -1,5 +1,5 @@
 import { getUserByNumber } from "../services/auth.services.js";
-import { getClinicById } from "../services/clinics.services.js";
+import { getClinicById, getClinicDoctors } from "../services/clinics.services.js";
 
 
 const userProfile = async (req, res, next) => {
@@ -27,7 +27,9 @@ const userProfile = async (req, res, next) => {
             clinic.speciality.forEach(tag => {
                 tags += tag + ', ';
             });
-            res.render('clinicDashboard/profile.ejs', { user: req.user, dataClinic: clinic, tags });
+
+            const doctors = await getClinicDoctors(req.user.id);
+            res.render('clinicDashboard/profile.ejs', { user: req.user, dataClinic: clinic, tags, doctors });
             return next();
         }
 
