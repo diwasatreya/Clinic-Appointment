@@ -1,5 +1,5 @@
 import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints, deleteAppoint } from "../services/appointment.services.js";
-import { getClinicById } from "../services/clinics.services.js";
+import { getClinicById, getClinicDoctors } from "../services/clinics.services.js";
 
 const showAppointment = async (req, res) => {
     if (!req.user) return res.redirect('/auth/login');
@@ -7,15 +7,22 @@ const showAppointment = async (req, res) => {
     const clinicId = req.query.id;
     if (!clinicId) return res.redirect('/');
     const clinic = await getClinicById(clinicId);
+    const doctors = await getClinicDoctors(clinic._id);
+    let tags = ''
+    clinic.speciality.forEach(tag => {
+        tags += tag + ', ';
+    });
     if (!clinic) return res.redirect('/');
     const clinicInfo = {
         _id: clinic._id.toString(),
         clinicName: clinic.clinicName,
         phone: clinic.phone,
         address: clinic.address,
-        email: clinic.email
+        email: clinic.email,
+        description: clinic.description,
+        opening: clinic.opening
     }
-    return res.render('bookAppointment.ejs', { user: req.user, clinic: clinicInfo });
+    return res.render('bookAppointment.ejs', { user: req.user, clinic: clinicInfo, doctors, speciality: tags });
 }
 
 const postAppointment = async (req, res) => {

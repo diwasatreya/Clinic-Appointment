@@ -89,7 +89,9 @@
                         <i class="fa-solid fa-user-doctor text-accent-green text-lg mt-1"></i>
                         <div>
                             <p class="font-semibold text-gray-800">Speciality</p>
-                            <p>Cardiology, General Medicine, Pediatrics, Orthopedics</p>
+                            <p>
+                                <%= speciality || 'No Speciality Provided' %>
+                            </p>
                         </div>
                     </div>
 
@@ -98,7 +100,9 @@
                         <i class="fa-solid fa-clock text-accent-green text-lg mt-1"></i>
                         <div>
                             <p class="font-semibold text-gray-800">Opening Hours</p>
-                            <p>Mon – Fri: 9 AM – 6 PM<br>Sat: 9 AM – 1 PM</p>
+                            <p>
+                                <%= clinic.opening || 'Unavailable' %>
+                            </p>
                         </div>
                     </div>
 
@@ -167,35 +171,35 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                            <label for="doctor-smith"
-                                class="doctor-card p-5 border-2 rounded-lg transition duration-300 ease-in-out cursor-pointer">
-                                <div class="flex items-center space-x-4">
+                            <% if(doctors.length !=0) { %>
+                                <% doctors.forEach(doctor=> { %>
 
-                                    <div>
-                                        <p class="text-lg font-bold ">Dr. Amelia Smith, MD</p>
-                                        <p class="text-sm text-gray-600">Cardiology Specialist</p>
-                                    </div>
-                                    <input type="radio" id="doctor-smith" name="selected_doctor" value="Smith" checked
-                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
-                                </div>
-                                <p class="text-sm mt-3 text-gray-700">Specializes in preventative heart health and
-                                    diagnostics.</p>
-                            </label>
+                                    <label for="<%= doctor._id %>"
+                                        class="doctor-card p-5 border-2 rounded-lg transition duration-300 ease-in-out cursor-pointer">
+                                        <div class="flex items-center space-x-4">
 
+                                            <div>
+                                                <p class="text-lg font-bold ">Dr. <%= doctor.name %>
+                                                </p>
+                                                <p class="text-sm text-gray-600">
+                                                    <%= doctor.speciality %>
+                                                </p>
+                                            </div>
+                                            <input type="radio" id="<%= doctor._id %>" name="selected_doctor"
+                                                value="<%= doctor.name %>"
+                                                class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
+                                        </div>
+                                        <p class="text-sm mt-3 text-gray-700">
+                                            <%= doctor.description %>
+                                        </p>
+                                    </label>
 
-                            <label for="doctor-jones"
-                                class="doctor-card p-5 border-2 border-gray-200 rounded-lg transition duration-300 ease-in-out cursor-pointer hover:bg-gray-50">
-                                <div class="flex items-center space-x-4">
-                                    <div>
-                                        <p class="text-lg font-bold text-gray-800">Dr. Ben Jones, DO</p>
-                                        <p class="text-sm text-gray-600">General Practice</p>
-                                    </div>
-                                    <input type="radio" id="doctor-jones" name="selected_doctor" value="Jones"
-                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
-                                </div>
-                                <p class="text-sm mt-3 text-gray-700">Trusted primary care physician for comprehensive
-                                    family health.</p>
-                            </label>
+                                    <% }) %>
+
+                                        <% } else { %>
+                                            <span class="text-gray-500">No Doctors Here</span>
+                                            <% } %>
+
 
                         </div>
                     </section>
@@ -216,28 +220,18 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Available Time Slots</label>
                         <div class="flex flex-wrap gap-3">
 
-                            <label for="time-900"
-                                class="px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer">
-                                <span>9:00 AM</span>
-                                <input type="radio" id="time-900" name="time_slot" value="9:00 AM" class="hidden"
-                                    checked>
-                            </label>
+                            <% doctors.forEach((doctor, dindex)=> { %>
+                                <% doctor.time.forEach((time, index)=> { %>
+                                    <label for="<%= dindex+index %>" name="doctor-time" id="time-<%= doctor._id %>"
+                                        class="hidden px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer">
+                                        <span>
+                                            <%= time %>
+                                        </span>
+                                        <input type="radio" id="<%= dindex+index %>" name="time_slot"
+                                            value="<%= time %>" class="hidden">
+                                    </label>
 
-                            <label for="time-1030"
-                                class="px-4 py-2 border rounded-lg font-medium hover:bg-green-100 cursor-pointer">
-                                <span>10:30 AM</span>
-                                <input type="radio" id="time-1030" name="time_slot" value="10:30 AM" class="hidden">
-                            </label>
-
-                            <button
-                                class="px-4 py-2 border border-gray-300 bg-gray-100 text-gray-500 rounded-lg font-medium opacity-70 cursor-not-allowed"
-                                disabled>11:00 AM (Booked)</button>
-
-                            <label for="time-1300"
-                                class="px-4 py-2 border rounded-lg font-medium hover:bg-green-100 cursor-pointer">
-                                <span>1:00 PM</span>
-                                <input type="radio" id="time-1300" name="time_slot" value="1:00 PM" class="hidden">
-                            </label>
+                                    <% }) }) %>
 
                         </div>
                     </section>
@@ -290,9 +284,12 @@
                             </p>
                         </div>
 
-                        <button type="submit"
-                            class="mt-6 w-full bg-accent-green text-white text-lg font-bold py-3 rounded-lg hover:bg-green-600 transition shadow-lg">
-                            Confirm Appointment
+                        <button type="submit" <%- (doctors.length==0 || doctors[0].time.length==0) ? 'disabled' : '' %>
+                            class="mt-6 w-full <%- (doctors.length==0 || doctors[0].time.length==0)
+                                ? 'bg-gray-500 cursor-disabled cursor-not-allowed'
+                                : 'bg-accent-green hover:bg-green-600' %> text-white text-lg font-bold py-3 rounded-lg
+                                transition shadow-lg">
+                                Confirm Appointment
                         </button>
 
                     </div>
@@ -316,7 +313,13 @@
                 const userDate = document.getElementsByName('appointment_date')[0];
                 const userTime = document.getElementsByName('time_slot');
 
-                console.log(userTime);
+                userDoctor[0].checked = true;
+                userTime[0].checked = true;
+
+                const cht = document.querySelectorAll(`#time-${userDoctor[0].id}`);
+                cht.forEach(t => {
+                    t.classList.remove('hidden');
+                })
 
                 const today = new Date().toISOString().split('T')[0];
 
@@ -326,7 +329,7 @@
                 }
 
                 checkupValue.innerText = userCheckup[0].value;
-                doctorValue.innerText = userDoctor[0].value;
+                doctorValue.innerText = `Dr. ${userDoctor[0].value}`;
                 userDate.setAttribute("min", today);
                 userDate.value = today;
                 dateValue.innerText = formatDate(today)
@@ -344,7 +347,20 @@
 
                 userDoctor.forEach((option) => {
                     option.addEventListener("input", (e) => {
-                        doctorValue.innerText = option.value
+                        doctorValue.innerText = `Dr. ${option.value}`;
+
+                        const allTime = document.getElementsByName('doctor-time');
+                        allTime.forEach(t => {
+                            t.classList.add('hidden');
+                        })
+
+                        const time = document.querySelectorAll(`#time-${option.id}`);
+                        time.forEach(t => {
+
+                            t.classList.remove('hidden');
+                        })
+                        time[0].childNodes[3].checked = true;
+
                     })
                 })
 
