@@ -1,4 +1,5 @@
 import Appointment from '../models/appointment.model.js';
+import { parseDateTime } from '../utils/util.js';
 
 const createAppointment = async (form, user) => {
     const { clinicID, checkup_type, selected_doctor, appointment_date, time_slot, reason } = form;
@@ -34,34 +35,6 @@ const getAllAppointments = async (id) => {
         return null
     }
 };
-
-
-const parseDateTime = (str) => {
-    // Example input: "2025-11-22 1:00 PM"
-    const match = str.match(
-        /^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i
-    );
-
-    if (!match) {
-        console.warn("Invalid date format:", str);
-        return null;
-    }
-
-    const [_, datePart, hourStr, minuteStr, meridian] = match;
-    let hours = parseInt(hourStr, 10);
-    const minutes = parseInt(minuteStr, 10);
-
-    // Convert 12-hour → 24-hour format
-    if (meridian.toUpperCase() === "PM" && hours !== 12) hours += 12;
-    if (meridian.toUpperCase() === "AM" && hours === 12) hours = 0;
-
-    // Create local Date (not UTC)
-    const [year, month, day] = datePart.split("-").map(Number);
-    const date = new Date(year, month - 1, day, hours, minutes, 0);
-
-    return date;
-};
-
 
 const getUpCommingAppoints = (appoints, key) => {
 
@@ -114,7 +87,6 @@ const deleteAppoint = async (id) => {
 export {
     createAppointment,
     getAllAppointments,
-    parseDateTime,
     getUpCommingAppoints,
     getFormattedDateInfo,
     deleteAppoint
