@@ -27,6 +27,7 @@ const showAppointment = async (req, res) => {
 
 const postAppointment = async (req, res) => {
     const form = req.body;
+    // const { clinicID, checkup_type, selected_doctor, appointment_date, time_slot, reason, file_upload } = form;
 
     const appointment = await createAppointment(form, req.user);
 

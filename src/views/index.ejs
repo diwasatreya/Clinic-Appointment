@@ -79,11 +79,11 @@
                                 <!-- Accepting Patients Badge -->
                                 <div class="flex items-center text-sm">
                                     <span
-                                        class="<%- (clinic.status == true) ? 'text-accent-green' : 'text-red-500' %> font-semibold flex items-center">
+                                        class="<%- (clinic.status == true && (clinic.doctors.length != 0)) ? 'text-accent-green' : 'text-red-500' %> font-semibold flex items-center">
                                         <i
-                                            class="fa-solid <%- (clinic.status == true) ? 'fa-circle-check' : 'fa-circle-xmark' %> mr-1"></i>
-                                        <%- (clinic.status==true) ? 'Accepting New Patients' : 'Closed for New Patients'
-                                            %>
+                                            class="fa-solid <%- (clinic.status == true && (clinic.doctors.length != 0)) ? 'fa-circle-check' : 'fa-circle-xmark' %> mr-1"></i>
+                                        <%- (clinic.status==true && (clinic.doctors.length !=0))
+                                            ? 'Accepting New Patients' : 'Closed for New Patients' %>
                                     </span>
                                 </div>
                             </div>
@@ -91,13 +91,18 @@
                             <!-- Bottom Section: Button -->
                             <form action="/appoint" method="get">
                                 <input type="text" name="id" value="<%= clinic._id.toString() %>" hidden>
-                                <button type="submit" <%- (clinic.status==true) ? '' : 'disabled'  %>
-                                    class="block w-full <%- (clinic.status == true) ? 'bg-accent-green hover:bg-green-600' : 'bg-gray-400' %> text-center text-white py-3 rounded-lg font-semibold transition duration-150 shadow-md btn-hover-scale">
-                                    <i class="fa-solid fa-calendar-check mr-1"></i>
-                                    Book Appointment
+                                <button type="submit" <%- (clinic.status==true && (clinic.doctors.length !=0)) ? ''
+                                    : 'disabled' %>
+                                    class="block w-full <%- (clinic.status==true && (clinic.doctors.length !=0))
+                                        ? 'bg-accent-green hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed' %>
+                                        text-center text-white
+                                        py-3 rounded-lg font-semibold transition duration-150 shadow-md
+                                        btn-hover-scale">
+                                        <i class="fa-solid fa-calendar-check mr-1"></i>
+                                        Book Appointment
                                 </button>
 
-                                
+
                             </form>
 
                         </div>

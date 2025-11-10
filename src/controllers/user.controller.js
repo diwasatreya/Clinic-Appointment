@@ -1,4 +1,4 @@
-import { getAllClinics, filterClinics } from "../services/clinics.services.js";
+import { getAllClinics, filterClinics, getClinicDoctors } from "../services/clinics.services.js";
 
 const showHomePage = async (req, res) => {
 
@@ -10,8 +10,10 @@ const showHomePage = async (req, res) => {
         clinics = await filterClinics(search);
     } else {
         clinics = await getAllClinics();
+        for (let i = 0; i < clinics.length; i++) {
+            clinics[i]['doctors'] = await getClinicDoctors(clinics[i]._id);
+        }
     }
-
     return res.render('index.ejs', { user: req.user, clinics });
 }
 
