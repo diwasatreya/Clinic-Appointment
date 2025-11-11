@@ -8,6 +8,9 @@ const showHomePage = async (req, res) => {
 
     if (search && search.length != 0) {
         clinics = await filterClinics(search);
+        for (let i = 0; i < clinics.length; i++) {
+            clinics[i]['doctors'] = await getClinicDoctors(clinics[i]._id);
+        }
     } else {
         clinics = await getAllClinics();
         for (let i = 0; i < clinics.length; i++) {
