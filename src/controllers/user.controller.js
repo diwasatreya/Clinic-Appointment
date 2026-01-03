@@ -6,6 +6,11 @@ const showHomePage = async (req, res) => {
         return res.redirect('/clinic/dashboard');
     }
 
+    // Redirect admins to admin dashboard
+    if (req.user && req.user.role === 'admin') {
+        return res.redirect('/admin/dashboard');
+    }
+
     const { search } = req.query;
 
     let clinics;

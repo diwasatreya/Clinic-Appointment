@@ -75,6 +75,10 @@ const generateNewToken = async (token) => {
             newUser = { id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), phone: user.phone, role: "user" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
+        } else if (decodedRefreshToken.role == "admin") {
+            newUser = { id: 'admin', username: 'Admin', sid: session._id.toString(), phone: 0, role: "admin" };
+            newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
+            newRefreshToken = generateJWT({ sid: session._id.toString(), role: "admin" }, REFRESH_TOKEN_EXPIRE);
         } else {
             const clinic = await Clinic.findById(session.userId);
             if (!clinic) throw new Error("Clinic not found!");

@@ -3,7 +3,7 @@ import Doctors from '../models/doctor.model.js';
 
 const getAllClinics = async () => {
     try {
-        const clinics = await Clinics.find();
+        const clinics = await Clinics.find({ approved: true, status: true });
         return clinics;
     } catch (error) {
         console.error(error);
@@ -23,7 +23,7 @@ const getClinicById = async (id) => {
 
 const filterClinics = async (str) => {
     try {
-        const clinics = await Clinics.find();
+        const clinics = await Clinics.find({ approved: true, status: true });
         const searchValue = str.toLowerCase();
 
         const filteredClinics = clinics.filter((clinic) => { return clinic.clinicName.toLowerCase().includes(searchValue) || clinic.address.toLowerCase().includes(searchValue) });

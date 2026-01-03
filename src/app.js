@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import useAuth from './middlewares/auth.middleware.js';
 import userProfile from './middlewares/profile.middleware.js';
 import clinicRoute from './routes/clinic.routes.js';
+import adminRoute from './routes/admin.routes.js';
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use("/", userRoute);
 app.use("/auth", authRoute);
 app.use("/", appointmentRoute);
 app.use("/clinic", clinicRoute);
+app.use("/admin", adminRoute);
 app.use(userProfile);
 export default app;
