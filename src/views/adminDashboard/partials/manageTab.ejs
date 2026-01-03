@@ -1,0 +1,82 @@
+<!-- Search Bar -->
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-6">
+    <form method="get" action="/admin/dashboard" class="flex gap-4">
+        <input type="hidden" name="tab" value="manage">
+        <input type="text" 
+               name="search" 
+               value="<%= searchTerm %>"
+               placeholder="Search by clinic name, email, address, or phone..."
+               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-green focus:border-accent-green">
+        <button type="submit" 
+                class="bg-accent-green hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition shadow-md">
+            <i class="fa-solid fa-search mr-2"></i>Search
+        </button>
+        <% if (searchTerm) { %>
+            <a href="/admin/dashboard?tab=manage" 
+               class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition">
+                Clear
+            </a>
+        <% } %>
+    </form>
+</div>
+
+<!-- Clinics with Full Info -->
+<% if (clinicDetails && clinicDetails.length > 0) { %>
+    <div class="space-y-6">
+        <% clinicDetails.forEach((item) => { %>
+            <% const clinic = item.clinic || item; %>
+            <% const doctors = item.doctors || []; %>
+            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800"><%= clinic.clinicName %></h3>
+                        <div class="flex gap-2 mt-2">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= clinic.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                <%= clinic.status ? 'Active' : 'Banned' %>
+                            </span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= clinic.approved ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' %>">
+                                <%= clinic.approved ? 'Approved' : 'Pending' %>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <% if (clinic.status) { %>
+                            <form method="post" action="/admin/clinic/ban" class="inline">
+                                <input type="hidden" name="clinicId" value="<%= clinic._id %>">
+                                <button type="submit" 
+                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-md"
+                                    onclick="return confirm('Are you sure you want to ban this clinic?')">
+                                    <i class="fa-solid fa-ban mr-2"></i>Ban
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <form method="post" action="/admin/clinic/unban" class="inline">
+                                <input type="hidden" name="clinicId" value="<%= clinic._id %>">
+                                <button type="submit" 
+                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-md">
+                                    <i class="fa-solid fa-check mr-2"></i>Unban
+                                </button>
+                            </form>
+                        <% } %>
+                        <% if (clinic.approved) { %>
+                            <form method="post" action="/admin/clinic/deapprove" class="inline">
+                                <input type="hidden" name="clinicId" value="<%= clinic._id %>">
+                                <button type="submit" 
+                                    class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-md"
+                                    onclick="return confirm('Are you sure you want to deapprove this clinic?')">
+                                    <i class="fa-solid fa-times mr-2"></i>Deapprove
+                                </button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+                <%- include('clinicCard', { clinic, doctors }) %>
+            </div>
+        <% }) %>
+    </div>
+<% } else { %>
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-12 text-center">
+        <i class="fa-solid fa-search text-6xl text-gray-300 mb-4"></i>
+        <p class="text-xl text-gray-600">No clinics found</p>
+    </div>
+<% } %>

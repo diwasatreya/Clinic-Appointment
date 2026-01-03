@@ -1,0 +1,88 @@
+<script src="../js/script.js"></script>
+<script>
+    function openCancelModal(appointmentId) {
+        document.getElementById('cancel-appointment-id').value = appointmentId;
+        document.getElementById('cancel-modal').classList.remove('hidden');
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancel-modal').classList.add('hidden');
+        document.getElementById('cancel-reason').value = '';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('cancel-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCancelModal();
+        }
+    });
+
+    // Doctor Modal Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const openButton = document.getElementById('open-doctor-modal');
+        const closeButton = document.getElementById('close-doctor-modal');
+        const modal = document.getElementById('add-doctor-modal');
+        const toggleCheckbox = document.getElementById('status-toggle');
+
+        if (openButton) {
+            openButton.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+        }
+
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        }
+
+        // Status Toggle Logic
+        if (toggleCheckbox) {
+            toggleCheckbox.addEventListener('change', () => {
+                const status = toggleCheckbox.checked;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/clinic/status';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'status';
+                input.value = status;
+                form.appendChild(input);
+                
+                const redirectInput = document.createElement('input');
+                redirectInput.type = 'hidden';
+                redirectInput.name = 'redirectTab';
+                redirectInput.value = 'settings';
+                form.appendChild(redirectInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+    });
+</script>
+
+<style>
+    .toggle-checkbox:checked {
+        right: 0;
+        background-color: #10B981;
+    }
+
+    .toggle-label {
+        background-color: #D1D5DB;
+    }
+
+    .toggle-checkbox:checked+.toggle-label {
+        background-color: #10B981;
+    }
+</style>
+

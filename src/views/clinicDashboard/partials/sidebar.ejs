@@ -1,0 +1,47 @@
+<!-- Sidebar -->
+<aside class="w-64 bg-white shadow-lg flex flex-col h-screen sticky top-0">
+    <!-- Logo -->
+    <div class="p-6 border-b">
+        <div class="flex items-center">
+            <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
+            <h1 class="text-2xl font-extrabold text-accent-green">FindaCare</h1>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 p-4">
+        <a href="/clinic/dashboard?tab=overview" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-gauge-high mr-3 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+            <span class="font-medium">Overview</span>
+        </a>
+        <a href="/clinic/dashboard?tab=appointments" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-calendar-check mr-3 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+            <span class="font-medium">Appointments</span>
+        </a>
+        <a href="/clinic/dashboard?tab=clinic-info" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-building mr-3 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+            <span class="font-medium">Clinic Info</span>
+        </a>
+        <a href="/clinic/dashboard?tab=doctors" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-user-doctor mr-3 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+            <span class="font-medium">Doctors</span>
+        </a>
+        <a href="/clinic/dashboard?tab=settings" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-cog mr-3 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+            <span class="font-medium">Settings</span>
+        </a>
+    </nav>
+
+    <!-- Clinic Info & Logout -->
+    <div class="p-4 border-t">
+        <div class="mb-3">
+            <p class="text-sm font-semibold text-gray-800"><%= dataClinic.clinicName %></p>
+            <p class="text-xs text-gray-500"><%= dataClinic.email %></p>
+        </div>
+        <a href="/auth/logout" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+            <i class="fa-solid fa-sign-out-alt mr-3"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>
+

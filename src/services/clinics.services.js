@@ -178,8 +178,8 @@ const requestClinicApproval = async (clinicId) => {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
         
-        // Request approval (set to false to indicate pending approval)
-        // In a real system, this would send a notification to admins
+        // Request approval - set flag to indicate clinic has requested approval
+        clinic.pendingApproval = true;
         clinic.approved = false;
         await clinic.save();
         

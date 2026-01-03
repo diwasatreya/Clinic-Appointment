@@ -1,13 +1,10 @@
 import Clinics from '../models/clinic.model.js';
 import Doctors from '../models/doctor.model.js';
 
-const ADMIN_PHONE = 0; // 0000000000 as number
-const ADMIN_PASSWORD_HASH = '$argon2id$v=19$m=65536,t=3,p=4$adminhash'; // We'll verify with hardcoded password for now
-
-// Get all pending clinics (not approved)
+// Get all pending clinics (those that have requested approval)
 const getPendingClinics = async () => {
     try {
-        const clinics = await Clinics.find({ approved: false });
+        const clinics = await Clinics.find({ pendingApproval: true });
         return clinics;
     } catch (error) {
         console.error(error);
@@ -51,6 +48,7 @@ const approveClinic = async (clinicId) => {
         if (!clinic) return null;
         
         clinic.approved = true;
+        clinic.pendingApproval = false; // Clear the pending approval flag
         await clinic.save();
         
         return clinic;
@@ -60,17 +58,17 @@ const approveClinic = async (clinicId) => {
     }
 };
 
-// Decline clinic (delete or mark as declined - we'll mark as declined by setting status to false)
+// Decline clinic (clear the pending approval flag, but keep the clinic)
 const declineClinic = async (clinicId) => {
     try {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
         
-        // Optionally delete the clinic, or just mark as not approved
-        // For now, we'll just delete it
-        await Clinics.findByIdAndDelete(clinicId);
+        // Clear the pending approval flag when declined
+        clinic.pendingApproval = false;
+        await clinic.save();
         
-        return { success: true };
+        return clinic;
     } catch (error) {
         console.error(error);
         return null;
@@ -144,7 +142,6 @@ const getClinicDetails = async (clinicId) => {
 };
 
 export {
-    ADMIN_PHONE,
     getPendingClinics,
     getAllClinicsForAdmin,
     searchClinics,

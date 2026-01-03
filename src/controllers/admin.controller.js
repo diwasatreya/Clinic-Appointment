@@ -26,6 +26,12 @@ const showDashboard = async (req, res) => {
             } else {
                 clinics = await getAllClinicsForAdmin();
             }
+            // Get details for each clinic in manage tab
+            const clinicsWithDetails = await Promise.all(clinics.map(async (clinic) => {
+                const details = await getClinicDetails(clinic._id);
+                return details;
+            }));
+            clinicDetails = clinicsWithDetails.filter(d => d !== null);
         }
 
         return res.render('adminDashboard/dashboard.ejs', {
@@ -129,4 +135,3 @@ export {
     unbanClinicAction,
     deapproveClinicAction
 };
-

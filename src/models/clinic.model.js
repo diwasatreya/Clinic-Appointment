@@ -10,7 +10,8 @@ const clinicSchema = new mongoose.Schema({
     opening: { type: String, required: false },
     speciality: { type: Array, required: false },
     status: { type: Boolean, default: true, required: false },
-    approved: { type: Boolean, default: true, required: false },
+    approved: { type: Boolean, default: false, required: false },
+    pendingApproval: { type: Boolean, default: false, required: false },
     googleMapLink: { type: String, required: false }
 }, {
     timestamps: true

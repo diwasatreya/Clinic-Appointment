@@ -1,0 +1,85 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Clinic Information -->
+    <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fa-solid fa-building mr-2 text-accent-green"></i>Clinic Information
+        </h4>
+        <div class="space-y-3">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Description</p>
+                <p class="text-gray-800 mt-1"><%= clinic.description || 'No description provided' %></p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600">Address</p>
+                <p class="text-gray-800 mt-1"><%= clinic.address %></p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600">Phone</p>
+                <p class="text-gray-800 mt-1"><%= clinic.phone %></p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600">Email</p>
+                <p class="text-gray-800 mt-1"><%= clinic.email %></p>
+            </div>
+            <% if (clinic.opening) { %>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Opening Hours</p>
+                    <p class="text-gray-800 mt-1"><%= clinic.opening %></p>
+                </div>
+            <% } %>
+            <% if (clinic.speciality && clinic.speciality.length > 0) { %>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Speciality</p>
+                    <p class="text-gray-800 mt-1"><%= clinic.speciality.join(', ') %></p>
+                </div>
+            <% } %>
+            <% if (clinic.googleMapLink) { %>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Google Maps</p>
+                    <a href="<%= clinic.googleMapLink %>" target="_blank" class="text-accent-green hover:underline mt-1">
+                        View on Google Maps
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Doctors and Time Slots -->
+    <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fa-solid fa-user-doctor mr-2 text-accent-green"></i>Doctors & Time Slots
+        </h4>
+        <% if (doctors && doctors.length > 0) { %>
+            <div class="space-y-4">
+                <% doctors.forEach((doctor) => { %>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="font-semibold text-gray-800">Dr. <%= doctor.name %></p>
+                        <p class="text-sm text-gray-600 mt-1">Speciality: <%= doctor.speciality %></p>
+                        <% if (doctor.description) { %>
+                            <p class="text-xs text-gray-500 mt-2"><%= doctor.description %></p>
+                        <% } %>
+                        <% if (doctor.time && doctor.time.length > 0) { %>
+                            <div class="mt-3">
+                                <p class="text-xs font-medium text-gray-600 mb-2">Available Time Slots:</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <% doctor.time.forEach((slot) => { %>
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs bg-accent-green/10 text-accent-green border border-accent-green/20">
+                                            <%= typeof slot === 'string' ? slot : slot.time %>
+                                            <% if (typeof slot === 'object' && slot.limit) { %>
+                                                <span class="ml-1 text-gray-500">(Limit: <%= slot.limit %>)</span>
+                                            <% } %>
+                                        </span>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <p class="text-xs text-gray-500 mt-2">No time slots added</p>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p class="text-gray-500 text-sm">No doctors added yet</p>
+        <% } %>
+    </div>
+</div>

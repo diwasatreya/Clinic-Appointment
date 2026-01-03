@@ -1,0 +1,97 @@
+<!-- Add Doctor Modal -->
+<div id="add-doctor-modal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-900 opacity-70"></div>
+        </div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <form method="post" action="/clinic/doctor/add"
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <input type="hidden" name="redirectTab" value="doctors">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-2xl leading-6 font-bold text-gray-900 mb-4" id="modal-title">
+                            <i class="fa-solid fa-user-doctor mr-2 text-accent-green"></i>Add New Doctor
+                        </h3>
+                        <div class="mt-2 space-y-4">
+                            <div>
+                                <label for="doctor-name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input type="text" name="doctor-name" id="doctor-name"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border"
+                                    placeholder="First Last Name" required>
+                            </div>
+                            <div>
+                                <label for="doctor-speciality" class="block text-sm font-medium text-gray-700 mb-1">Speciality</label>
+                                <input type="text" name="doctor-speciality" id="doctor-speciality"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border"
+                                    placeholder="e.g., General Medicine" required>
+                            </div>
+                            <div>
+                                <label for="doctor-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea name="doctor-description" id="doctor-description" rows="3"
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border"
+                                    placeholder="A brief bio (max 150 characters)" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="submit"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-accent-green text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-green sm:ml-3 sm:w-auto sm:text-sm">
+                    <i class="fa-solid fa-save mr-2"></i>Save Doctor
+                </button>
+                <button type="button" id="close-doctor-modal"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-accent-green hover:text-white hover:border-accent-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-green sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition duration-150">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cancel Appointment Modal -->
+<div id="cancel-modal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-900 opacity-70"></div>
+        </div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <form method="post" action="/clinic/appointment/cancel"
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-xl leading-6 font-bold text-gray-900 mb-4">
+                            Cancel Appointment
+                        </h3>
+                        <div class="mt-2">
+                            <label for="cancel-reason" class="block text-sm font-medium text-gray-700 mb-2">
+                                Cancellation Reason <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="cancel-reason" name="reason" rows="4" required
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border"
+                                placeholder="Please provide a reason for cancellation..."></textarea>
+                            <input type="hidden" id="cancel-appointment-id" name="appointmentId">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="submit"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel Appointment
+                </button>
+                <button type="button" onclick="closeCancelModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-accent-green hover:text-white hover:border-accent-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-green sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition duration-150">
+                    Close
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
