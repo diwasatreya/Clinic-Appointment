@@ -4,30 +4,30 @@
     <div class="p-6 border-b">
         <div class="flex items-center">
             <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
-            <h1 class="text-2xl font-extrabold text-accent-green">FindaCare</h1>
+            <h1 class="text-2xl font-extrabold"><a href="/">FindaCare</a></h1>
         </div>
     </div>
 
     <!-- Navigation -->
     <nav class="flex-1 p-4">
-        <a href="/clinic/dashboard?tab=overview" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
-            <i class="fa-solid fa-gauge-high mr-3 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+        <a href="/clinic/dashboard?tab=overview" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'bg-accent-green rounded-lg text-white mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-gauge-high mr-3 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'text-white' : 'text-gray-600' %>"></i>
             <span class="font-medium">Overview</span>
         </a>
-        <a href="/clinic/dashboard?tab=appointments" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
-            <i class="fa-solid fa-calendar-check mr-3 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+        <a href="/clinic/dashboard?tab=appointments" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'bg-accent-green rounded-lg text-white mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-calendar-check mr-3 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'text-white' : 'text-gray-600' %>"></i>
             <span class="font-medium">Appointments</span>
         </a>
-        <a href="/clinic/dashboard?tab=clinic-info" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
-            <i class="fa-solid fa-building mr-3 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+        <a href="/clinic/dashboard?tab=clinic-info" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'bg-accent-green rounded-lg text-white mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-building mr-3 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'text-white' : 'text-gray-600' %>"></i>
             <span class="font-medium">Clinic Info</span>
         </a>
-        <a href="/clinic/dashboard?tab=doctors" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
-            <i class="fa-solid fa-user-doctor mr-3 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+        <a href="/clinic/dashboard?tab=doctors" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'bg-accent-green rounded-lg text-white mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-user-doctor mr-3 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'text-white' : 'text-gray-600' %>"></i>
             <span class="font-medium">Doctors</span>
         </a>
-        <a href="/clinic/dashboard?tab=settings" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
-            <i class="fa-solid fa-cog mr-3 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'text-accent-green' : 'text-gray-600' %>"></i>
+        <a href="/clinic/dashboard?tab=settings" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'bg-accent-green rounded-lg text-white mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <i class="fa-solid fa-cog mr-3 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'text-white' : 'text-gray-600' %>"></i>
             <span class="font-medium">Settings</span>
         </a>
     </nav>

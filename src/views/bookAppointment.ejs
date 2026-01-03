@@ -72,7 +72,9 @@
                             <p class="font-semibold">
                                 <%= clinic.address || "No description available" %>
                             </p>
-                            <a href="https://www.google.com/maps/search/?api=1&query=<%= clinic.address.trim().replace(',', '') %>"
+                            <a href="<%= clinic.googleMapLink && clinic.googleMapLink.length !== 0 
+                            ? clinic.googleMapLink
+                            : 'https://www.google.com/maps/search/?api=1&query=' + clinic.address.trim().replace(/,/g, '')%>"
                                 target="_blank" class="text-sm text-accent-green hover:underline">
                                 View on Google Maps
                             </a>
@@ -186,8 +188,7 @@
                                                 </p>
                                             </div>
                                             <input type="radio" id="<%= doctor._id %>" name="selected_doctor"
-                                                value="<%= doctor._id %>"
-                                                data-name="<%= doctor.name %>"
+                                                value="<%= doctor._id %>" data-name="<%= doctor.name %>"
                                                 class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
                                         </div>
                                         <p class="text-sm mt-3 text-gray-700">
@@ -224,20 +225,20 @@
                         <div class="flex flex-wrap gap-3">
 
                             <% doctors.forEach((doctor, dindex)=> { %>
-                                <% 
-                                    const timeSlots = doctor.time || [];
-                                    timeSlots.forEach((timeSlot, index)=> { 
-                                        const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
-                                        const slotId = `${dindex}-${index}`;
-                                %>
-                                    <label for="<%= slotId %>" name="doctor-time" id="time-<%= doctor._id %>" 
+                                <% const timeSlots=doctor.time || []; timeSlots.forEach((timeSlot, index)=> {
+                                    const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
+                                    const slotId = `${dindex}-${index}`;
+                                    %>
+                                    <label for="<%= slotId %>" name="doctor-time" id="time-<%= doctor._id %>"
                                         data-time="<%= time %>" data-doctor-id="<%= doctor._id %>"
                                         class="hidden px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer time-slot-label">
-                                        <span class="time-slot-text"><%= time %></span>
-                                        <input type="radio" id="<%= slotId %>" name="time_slot"
-                                            value="<%= time %>" class="hidden time-slot-input" data-doctor-id="<%= doctor._id %>">
+                                        <span class="time-slot-text">
+                                            <%= time %>
+                                        </span>
+                                        <input type="radio" id="<%= slotId %>" name="time_slot" value="<%= time %>"
+                                            class="hidden time-slot-input" data-doctor-id="<%= doctor._id %>">
                                     </label>
-                                <% }) }) %>
+                                    <% }) }) %>
 
                         </div>
                     </section>
@@ -395,11 +396,11 @@
                         if (data.availability) {
                             // Get all time slot labels for the selected doctor
                             const timeLabels = document.querySelectorAll(`#time-${selectedDoctor.id}`);
-                            
+
                             timeLabels.forEach(label => {
                                 const timeInput = label.querySelector('.time-slot-input');
                                 const timeText = label.querySelector('.time-slot-text');
-                                
+
                                 if (timeInput && timeText) {
                                     const time = timeInput.value;
                                     const availability = data.availability[time];

@@ -56,7 +56,8 @@ const showAppointment = async (req, res) => {
         address: clinic.address,
         email: clinic.email,
         description: clinic.description,
-        opening: clinic.opening
+        opening: clinic.opening,
+        googleMapLink: clinic.googleMapLink,
     }
     return res.render('bookAppointment.ejs', { user: req.user, clinic: clinicInfo, doctors, speciality: tags });
 }
