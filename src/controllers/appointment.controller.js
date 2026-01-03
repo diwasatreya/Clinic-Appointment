@@ -7,12 +7,12 @@ const showAppointment = async (req, res) => {
     const clinicId = req.query.id;
     if (!clinicId) return res.redirect('/');
     const clinic = await getClinicById(clinicId);
+    if (!clinic) return res.redirect('/');
     const doctors = await getClinicDoctors(clinic._id);
     let tags = ''
     clinic.speciality.forEach(tag => {
         tags += tag + ', ';
     });
-    if (!clinic) return res.redirect('/');
     const clinicInfo = {
         _id: clinic._id.toString(),
         clinicName: clinic.clinicName,
@@ -39,11 +39,15 @@ const showMyAppointments = async (req, res) => {
     if (req.user.role == "clinic") return res.redirect('/');
 
     const appoints = await getAllAppointments(req.user.id);
+    if (!appoints) {
+        return res.render('myAppointments.ejs', { user: req.user, completedAppoints: [], upComingAppoints: [] });
+    }
 
     const myAppoints = [];
 
     for (const appoint of appoints) {
         const clinic = await getClinicById(appoint.clinicID);
+        if (!clinic) continue;
 
         myAppoints.push({
             _id: appoint._id.toString(),

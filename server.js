@@ -6,18 +6,19 @@ dotenv.config();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
-function start() {
+async function start() {
 
     try {
         if (!PORT) throw Error('No Server PORT provided!');
 
-        connectDB(MONGO_URI);
+        await connectDB(MONGO_URI);
 
         app.listen(PORT, () => {
             console.log(`🔥 Server Started in http://localhost:${PORT}`);
         })
     } catch (error) {
         console.error(error);
+        process.exit(1);
     }
 
 }

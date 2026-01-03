@@ -1,12 +1,14 @@
-import { name } from 'ejs';
 import Clinics from '../models/clinic.model.js';
 import Doctors from '../models/doctor.model.js';
 
 const getAllClinics = async () => {
-
-    const clinics = await Clinics.find();
-
-    return clinics;
+    try {
+        const clinics = await Clinics.find();
+        return clinics;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 }
 
 const getClinicById = async (id) => {
@@ -30,6 +32,7 @@ const filterClinics = async (str) => {
 
     } catch (error) {
         console.error(error);
+        return [];
     }
 };
 
@@ -89,12 +92,12 @@ const deleteDoctor = async (id) => {
 const getClinicDoctors = async (id) => {
     try {
         const doctors = await Doctors.find({ clinicId: id });
-        if (!doctors) return;
+        if (!doctors) return [];
 
         return doctors;
     } catch (error) {
         console.error(error);
-        return;
+        return [];
     }
 }
 

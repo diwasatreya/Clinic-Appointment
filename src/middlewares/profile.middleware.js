@@ -38,7 +38,7 @@ const userProfile = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
-        return next(err);
+        return next(error);
     }
 
 }

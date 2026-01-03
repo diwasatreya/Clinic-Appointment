@@ -41,9 +41,10 @@ const getUpCommingAppoints = (appoints, key) => {
     try {
         const now = new Date();
 
-        return [...appoints].sort((a, b) => {
+        return [...appoints].filter(appoint => parseDateTime(appoint[key]) !== null).sort((a, b) => {
             const dateA = parseDateTime(a[key]);
             const dateB = parseDateTime(b[key]);
+            if (!dateA || !dateB) return 0;
             return Math.abs(dateA - now) - Math.abs(dateB - now);
 
         });
@@ -51,6 +52,7 @@ const getUpCommingAppoints = (appoints, key) => {
 
     } catch (error) {
         console.error(error);
+        return [];
     }
 
 }

@@ -67,13 +67,22 @@
                 </p>
             </div>
 
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-800 flex items-center">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                    <%= error %>
+                </p>
+            </div>
+            <% } %>
+
             <!-- Role Toggle Switch -->
             <div class="flex p-1 mb-8 bg-gray-100 rounded-xl shadow-inner max-w-md mx-auto">
-                <button id="patient-btn"
+                <button id="patient-btn" type="button"
                     class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 bg-accent-green text-white shadow-md">
                     Patient Signup
                 </button>
-                <button id="clinic-btn"
+                <button id="clinic-btn" type="button"
                     class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 text-gray-600 hover:text-text-dark">
                     Clinic Registration
                 </button>
@@ -131,8 +140,9 @@
             patientBtn.addEventListener('click', () => switchRole('patient'));
             clinicBtn.addEventListener('click', () => switchRole('clinic'));
 
-            // Initial state: ensure patient form is visible by default
-            switchRole('patient');
+            // Initial state: use formType from server or default to 'user'
+            const initialType = '<%= typeof formType !== "undefined" ? formType : "user" %>';
+            switchRole(initialType === 'clinic' ? 'clinic' : 'patient');
         });
     </script>
 </body>
