@@ -1,6 +1,10 @@
 import { getAllClinics, filterClinics, getClinicDoctors } from "../services/clinics.services.js";
 
 const showHomePage = async (req, res) => {
+    // Redirect clinics to dashboard
+    if (req.user && req.user.role === 'clinic') {
+        return res.redirect('/clinic/dashboard');
+    }
 
     const { search } = req.query;
 

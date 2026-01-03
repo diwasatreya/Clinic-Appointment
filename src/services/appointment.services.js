@@ -85,11 +85,63 @@ const deleteAppoint = async (id) => {
     }
 }
 
+const getClinicAppointments = async (clinicId) => {
+    try {
+        const appointments = await Appointment.find({ clinicID: clinicId }).sort({ createdAt: -1 });
+        return appointments;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
+const getClinicAppointmentStats = async (clinicId) => {
+    try {
+        const appointments = await Appointment.find({ clinicID: clinicId });
+        
+        const stats = {
+            total: appointments.length,
+            pending: appointments.filter(a => a.status === "Pending").length,
+            cancelled: appointments.filter(a => a.status === "Canceled").length,
+            approved: appointments.filter(a => a.status === "Approved").length,
+            completed: appointments.filter(a => a.completed === true).length
+        };
+        
+        return stats;
+    } catch (error) {
+        console.error(error);
+        return { total: 0, pending: 0, cancelled: 0, approved: 0, completed: 0 };
+    }
+};
+
+const updateAppointmentStatus = async (appointmentId, status, reason = null) => {
+    try {
+        const appointment = await Appointment.findById(appointmentId);
+        if (!appointment) return null;
+        
+        appointment.status = status;
+        if (reason) {
+            appointment.cancellationReason = reason;
+        }
+        if (status === "Canceled") {
+            appointment.completed = true;
+        }
+        
+        await appointment.save();
+        return appointment;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 export {
     createAppointment,
     getAllAppointments,
     getUpCommingAppoints,
     getFormattedDateInfo,
-    deleteAppoint
+    deleteAppoint,
+    getClinicAppointments,
+    getClinicAppointmentStats,
+    updateAppointmentStatus
 }

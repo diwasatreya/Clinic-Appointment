@@ -11,9 +11,15 @@
             <a href="/" class="hover:text-accent-green transition duration-150 flex items-center">
                 Home
             </a>
+            <% if(typeof user !=='undefined' && user && user.role === 'clinic') { %>
+            <a href="/clinic/dashboard" class="hover:text-accent-green transition duration-150 flex items-center">
+                <i class="fa-solid fa-gauge-high mr-1"></i>Dashboard
+            </a>
+            <% } else { %>
             <a href="/appointments" class="hover:text-accent-green transition duration-150 flex items-center">
                Appointments
             </a>
+            <% } %>
             <a href="/contact" class="hover:text-accent-green transition duration-150 flex items-center">
                 Contact
             </a>
@@ -24,11 +30,19 @@
             <!-- Desktop Auth Links (Hidden on mobile) -->
             <div class="hidden md:flex items-center space-x-4">
                 <% if(typeof user !=='undefined' && user) { %>
+                    <% if(user.role === 'clinic') { %>
+                    <a href="/clinic/dashboard"
+                        class="hover:text-accent-green font-medium transition duration-150 hidden lg:inline-block">
+                        <i class="fa-solid fa-gauge-high mr-1"></i>
+                        <%= user.username %>
+                    </a>
+                    <% } else { %>
                     <a href="/<%= user.id %>"
                         class="hover:text-accent-green font-medium transition duration-150 hidden lg:inline-block">
                         <i class="fa-solid fa-user-circle mr-1"></i>
                         <%= user.username %>
                     </a>
+                    <% } %>
                     <a href="/auth/logout"
                         class="bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition duration-150 shadow-md btn-hover-scale text-sm">
                         Logout
@@ -72,9 +86,15 @@
         <a href="/" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
             <i class="fa-solid fa-home mr-3 w-5"></i> Home
         </a>
+        <% if(typeof user !=='undefined' && user && user.role === 'clinic') { %>
+        <a href="/clinic/dashboard" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
+            <i class="fa-solid fa-gauge-high mr-3 w-5"></i> Dashboard
+        </a>
+        <% } else { %>
         <a href="/appointments" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
             <i class="fa-solid fa-calendar-alt mr-3 w-5"></i> My Appointments
         </a>
+        <% } %>
         <a href="/contact" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
             <i class="fa-solid fa-envelope mr-3 w-5"></i> Contact Us
         </a>
@@ -82,11 +102,19 @@
 
     <div class="pt-4 border-t space-y-4">
         <% if(typeof user !=='undefined' && user) { %>
+            <% if(user.role === 'clinic') { %>
+            <a href="/clinic/dashboard"
+                class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
+                <i class="fa-solid fa-gauge-high mr-1"></i>
+                Dashboard (<%= user.username %>)
+            </a>
+            <% } else { %>
             <a href="/<%= user.id %>"
                 class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
                 <i class="fa-solid fa-user-circle mr-1"></i>
                 Profile (<%= user.username %>)
             </a>
+            <% } %>
             <a href="/auth/logout"
                 class="block text-center bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-150 shadow-md">
                 <i class="fa-solid fa-sign-out-alt mr-1"></i>

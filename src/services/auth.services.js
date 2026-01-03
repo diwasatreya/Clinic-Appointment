@@ -14,6 +14,16 @@ const getUserByNumber = async (phone) => {
     }
 };
 
+const getUserById = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 
 const signupUser = async (form) => {
     const { firstName, lastName, phone, password } = form;
@@ -112,7 +122,8 @@ const createNewClinic = async ({ clinicName, email, phone, address, password }) 
             email: email.trim().toLowerCase(),
             phone,
             address,
-            password: hashedPassword
+            password: hashedPassword,
+            approved: false // New clinics need to request approval
         });
         await clinic.save();
         return clinic;
@@ -161,5 +172,6 @@ export {
     getClinicByNumber,
     getClinicByEmail,
     createNewClinic,
-    updateUserData
+    updateUserData,
+    getUserById
 }

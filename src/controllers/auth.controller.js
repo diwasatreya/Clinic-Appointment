@@ -80,6 +80,8 @@ const postLoginPage = async (req, res) => {
 
         res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
+        
+        return res.redirect('/clinic/dashboard');
     } else {
         return res.redirect('/auth/login?error=' + encodeURIComponent('Invalid phone number or password'));
     }

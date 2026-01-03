@@ -9,7 +9,8 @@ const appointmentSchema = new mongoose.Schema({
     appointmentTime: { type: String, required: true },
     reason: { type: String, required: false },
     completed: { type: Boolean, default: false, required: false },
-    status: { type: String, default: "Pending", required: false }
+    status: { type: String, default: "Pending", required: false },
+    cancellationReason: { type: String, required: false }
 
 
 

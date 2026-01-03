@@ -142,6 +142,38 @@ const removeDoctorTime = async (form) => {
     }
 }
 
+const updateClinicStatus = async (clinicId, status) => {
+    try {
+        const clinic = await Clinics.findById(clinicId);
+        if (!clinic) return null;
+        
+        clinic.status = status;
+        await clinic.save();
+        
+        return clinic;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const requestClinicApproval = async (clinicId) => {
+    try {
+        const clinic = await Clinics.findById(clinicId);
+        if (!clinic) return null;
+        
+        // Request approval (set to false to indicate pending approval)
+        // In a real system, this would send a notification to admins
+        clinic.approved = false;
+        await clinic.save();
+        
+        return clinic;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 export {
     getAllClinics,
     getClinicById,
@@ -151,5 +183,7 @@ export {
     getClinicDoctors,
     deleteDoctor,
     createDoctorTime,
-    removeDoctorTime
+    removeDoctorTime,
+    updateClinicStatus,
+    requestClinicApproval
 }
