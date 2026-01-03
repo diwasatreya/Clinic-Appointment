@@ -31,18 +31,29 @@ export const validateEmail = (email) => {
     return { isValid: true };
 };
 
-// Validate password (minimum 6 characters)
+// Validate password (minimum 8 characters, at least one number and one symbol)
 export const validatePassword = (password) => {
     if (!password) {
         return { isValid: false, error: 'Password is required' };
     }
     
-    if (password.length < 6) {
-        return { isValid: false, error: 'Password must be at least 6 characters long' };
+    if (password.length < 8) {
+        return { isValid: false, error: 'Password must be at least 8 characters long' };
     }
     
     if (password.length > 128) {
         return { isValid: false, error: 'Password is too long (maximum 128 characters)' };
+    }
+    
+    // Check for at least one number
+    if (!/[0-9]/.test(password)) {
+        return { isValid: false, error: 'Password must contain at least one number' };
+    }
+    
+    // Check for at least one symbol (special character)
+    // Symbols: !@#$%^&*()_+-=[]{}|;:,.<>?
+    if (!/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password)) {
+        return { isValid: false, error: 'Password must contain at least one symbol (!@#$%^&* etc.)' };
     }
     
     return { isValid: true };
