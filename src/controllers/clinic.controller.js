@@ -1,5 +1,5 @@
 import { updateDataClinic, addNewDoctor, deleteDoctor, createDoctorTime, removeDoctorTime, getClinicById, getClinicDoctors, updateClinicStatus, requestClinicApproval } from "../services/clinics.services.js";
-import { getClinicAppointments, getClinicAppointmentStats, updateAppointmentStatus } from "../services/appointment.services.js";
+import { getClinicAppointments, getClinicAppointmentStats, updateAppointmentStatus, getTodayAppointments } from "../services/appointment.services.js";
 import { getUserById } from "../services/auth.services.js";
 
 const showDashboard = async (req, res) => {
@@ -16,8 +16,15 @@ const showDashboard = async (req, res) => {
         // Get appointment statistics
         const stats = await getClinicAppointmentStats(req.user.id);
         
-        // Get all appointments for this clinic
-        const appointments = await getClinicAppointments(req.user.id);
+        // Get filter from query (pending, approved, cancelled, completed)
+        const filter = req.query.filter || 'pending';
+        const statusFilter = filter === 'pending' ? 'Pending' : filter === 'approved' ? 'Approved' : filter === 'Completed' ? 'Completed' : filter === 'Canceled' ? 'Canceled' : null;
+        
+        // Get appointments based on filter
+        const appointments = await getClinicAppointments(req.user.id, statusFilter);
+        
+        // Get today's appointments for overview
+        const todayAppointments = await getTodayAppointments(req.user.id);
         
         // Get doctors once for all appointments
         const doctors = await getClinicDoctors(req.user.id);
@@ -25,7 +32,34 @@ const showDashboard = async (req, res) => {
         // Populate user and doctor info for each appointment
         const appointmentsWithDetails = await Promise.all(appointments.map(async (appointment) => {
             const user = await getUserById(appointment.userId);
-            const doctor = doctors.find(d => d._id.toString() === appointment.doctorId);
+            // Try both string and ObjectId comparison
+            const doctor = doctors.find(d => {
+                const doctorIdStr = d._id.toString();
+                const appointmentDoctorId = appointment.doctorId ? appointment.doctorId.toString() : null;
+                return doctorIdStr === appointmentDoctorId;
+            });
+            
+            return {
+                ...appointment.toObject(),
+                user: user ? {
+                    name: `${user.firstName} ${user.lastName}`,
+                    phone: user.phone
+                } : null,
+                doctor: doctor ? {
+                    name: doctor.name,
+                    speciality: doctor.speciality
+                } : null
+            };
+        }));
+        
+        // Populate today's appointments
+        const todayAppointmentsWithDetails = await Promise.all(todayAppointments.map(async (appointment) => {
+            const user = await getUserById(appointment.userId);
+            const doctor = doctors.find(d => {
+                const doctorIdStr = d._id.toString();
+                const appointmentDoctorId = appointment.doctorId ? appointment.doctorId.toString() : null;
+                return doctorIdStr === appointmentDoctorId;
+            });
             
             return {
                 ...appointment.toObject(),
@@ -53,6 +87,7 @@ const showDashboard = async (req, res) => {
             dataClinic: clinic, 
             stats,
             appointments: appointmentsWithDetails,
+            todayAppointments: todayAppointmentsWithDetails,
             doctors,
             tags,
             query: req.query
@@ -205,6 +240,23 @@ const cancelAppointment = async (req, res) => {
     }
 };
 
+const completeAppointment = async (req, res) => {
+    try {
+        if (!req.user || req.user.role !== "clinic") {
+            return res.redirect('/');
+        }
+
+        const { appointmentId } = req.body;
+        
+        await updateAppointmentStatus(appointmentId, "Completed");
+        
+        return res.redirect('/clinic/dashboard?tab=' + (req.body.redirectTab || 'overview'));
+    } catch (error) {
+        console.error(error);
+        return res.redirect('/clinic/dashboard?tab=overview');
+    }
+};
+
 export {
     showDashboard,
     updateClinic,
@@ -215,5 +267,6 @@ export {
     toggleClinicStatus,
     sendForApproval,
     approveAppointment,
-    cancelAppointment
+    cancelAppointment,
+    completeAppointment
 }

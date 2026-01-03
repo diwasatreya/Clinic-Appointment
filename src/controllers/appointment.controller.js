@@ -1,5 +1,41 @@
-import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints, deleteAppoint } from "../services/appointment.services.js";
+import { createAppointment, getAllAppointments, getFormattedDateInfo, getUpCommingAppoints, deleteAppoint, getTimeSlotCount } from "../services/appointment.services.js";
 import { getClinicById, getClinicDoctors } from "../services/clinics.services.js";
+
+const checkTimeSlotAvailability = async (req, res) => {
+    try {
+        const { clinicId, doctorId, date } = req.query;
+        
+        if (!clinicId || !doctorId || !date) {
+            return res.json({ error: 'Missing required parameters' });
+        }
+
+        const doctors = await getClinicDoctors(clinicId);
+        const doctor = doctors.find(d => d._id.toString() === doctorId);
+        
+        if (!doctor || !doctor.time) {
+            return res.json({ availability: {} });
+        }
+
+        const availability = {};
+        
+        for (const timeSlot of doctor.time) {
+            const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
+            const limit = typeof timeSlot === 'string' ? 10 : (timeSlot.limit || 10);
+            
+            const count = await getTimeSlotCount(clinicId, doctorId, date, time);
+            availability[time] = {
+                available: count < limit,
+                count: count,
+                limit: limit
+            };
+        }
+
+        return res.json({ availability });
+    } catch (error) {
+        console.error(error);
+        return res.json({ error: 'Failed to check availability' });
+    }
+};
 
 const showAppointment = async (req, res) => {
     if (!req.user) return res.redirect('/auth/login');
@@ -49,10 +85,15 @@ const showMyAppointments = async (req, res) => {
         const clinic = await getClinicById(appoint.clinicID);
         if (!clinic) continue;
 
+        // Get doctor name
+        const doctors = await getClinicDoctors(appoint.clinicID);
+        const doctor = doctors.find(d => d._id.toString() === appoint.doctorId.toString());
+        const doctorName = doctor ? doctor.name : 'N/A';
+
         myAppoints.push({
             _id: appoint._id.toString(),
             checkupType: appoint.checkupType,
-            doctor: appoint.doctorId,
+            doctor: doctorName,
             appointmentDate: appoint.appointmentDate,
             appointmentTime: appoint.appointmentTime,
             time: appoint.appointmentDate + " " + appoint.appointmentTime,
@@ -92,5 +133,6 @@ export {
     showAppointment,
     postAppointment,
     showMyAppointments,
-    postDelete
+    postDelete,
+    checkTimeSlotAvailability
 }

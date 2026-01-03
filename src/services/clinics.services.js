@@ -44,6 +44,7 @@ const updateDataClinic = async (info, form) => {
         clinic.description = form.description;
         clinic.address = form.address;
         clinic.opening = form.opening;
+        clinic.googleMapLink = form.googleMapLink || '';
         const tags = form.speciality.split(', ').slice(0, 5);
         clinic.speciality = [];
         tags.forEach(tag => {
@@ -114,7 +115,15 @@ const createDoctorTime = async (form) => {
             return `${formattedHour}:${minute} ${ampm}`;
         }
 
-        doctor.time.push(formatTime(form.time));
+        const formattedTime = formatTime(form.time);
+        const limit = parseInt(form.limit) || 10;
+
+        // Handle migration: if time is array of strings, convert to objects
+        if (doctor.time && doctor.time.length > 0 && typeof doctor.time[0] === 'string') {
+            doctor.time = doctor.time.map(t => ({ time: t, limit: 10 }));
+        }
+
+        doctor.time.push({ time: formattedTime, limit: limit });
 
         await doctor.save();
 
@@ -129,7 +138,14 @@ const removeDoctorTime = async (form) => {
         const doctor = await Doctors.findById(form.doctorId);
         if (!doctor) return;
 
-        const index = doctor.time.indexOf(form.time);
+        // Handle both old (string) and new (object) formats
+        const index = doctor.time.findIndex(t => {
+            if (typeof t === 'string') {
+                return t === form.time;
+            } else {
+                return t.time === form.time;
+            }
+        });
 
         if (index !== -1) doctor.time.splice(index, 1);
 

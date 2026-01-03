@@ -186,7 +186,8 @@
                                                 </p>
                                             </div>
                                             <input type="radio" id="<%= doctor._id %>" name="selected_doctor"
-                                                value="<%= doctor.name %>"
+                                                value="<%= doctor._id %>"
+                                                data-name="<%= doctor.name %>"
                                                 class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
                                         </div>
                                         <p class="text-sm mt-3 text-gray-700">
@@ -223,17 +224,20 @@
                         <div class="flex flex-wrap gap-3">
 
                             <% doctors.forEach((doctor, dindex)=> { %>
-                                <% doctor.time.forEach((time, index)=> { %>
-                                    <label for="<%= dindex+index %>" name="doctor-time" id="time-<%= doctor._id %>"
-                                        class="hidden px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer">
-                                        <span>
-                                            <%= time %>
-                                        </span>
-                                        <input type="radio" id="<%= dindex+index %>" name="time_slot"
-                                            value="<%= time %>" class="hidden">
+                                <% 
+                                    const timeSlots = doctor.time || [];
+                                    timeSlots.forEach((timeSlot, index)=> { 
+                                        const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
+                                        const slotId = `${dindex}-${index}`;
+                                %>
+                                    <label for="<%= slotId %>" name="doctor-time" id="time-<%= doctor._id %>" 
+                                        data-time="<%= time %>" data-doctor-id="<%= doctor._id %>"
+                                        class="hidden px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer time-slot-label">
+                                        <span class="time-slot-text"><%= time %></span>
+                                        <input type="radio" id="<%= slotId %>" name="time_slot"
+                                            value="<%= time %>" class="hidden time-slot-input" data-doctor-id="<%= doctor._id %>">
                                     </label>
-
-                                    <% }) }) %>
+                                <% }) }) %>
 
                         </div>
                     </section>
@@ -335,7 +339,7 @@
                 }
 
                 checkupValue.innerText = userCheckup[0].value;
-                doctorValue.innerText = (userDoctor[0]) ? `Dr. ${userDoctor[0].value}` : ``;
+                doctorValue.innerText = (userDoctor[0]) ? `Dr. ${userDoctor[0].dataset.name || userDoctor[0].value}` : ``;
                 userDate.setAttribute("min", today);
                 userDate.value = today;
                 dateValue.innerText = formatDate(today)
@@ -343,6 +347,7 @@
 
                 userDate.addEventListener('input', (e) => {
                     dateValue.innerText = formatDate(userDate.value);
+                    checkTimeSlotAvailability();
                 })
 
                 userTime.forEach((option) => {
@@ -353,7 +358,7 @@
 
                 userDoctor.forEach((option) => {
                     option.addEventListener("input", (e) => {
-                        doctorValue.innerText = `Dr. ${option.value}`;
+                        doctorValue.innerText = `Dr. ${option.dataset.name || option.value}`;
 
                         const allTime = document.getElementsByName('doctor-time');
                         allTime.forEach(t => {
@@ -362,13 +367,70 @@
 
                         const time = document.querySelectorAll(`#time-${option.id}`);
                         time.forEach(t => {
-
                             t.classList.remove('hidden');
                         })
-                        time[0].childNodes[3].checked = true;
+                        if (time[0]) {
+                            const radioInput = time[0].querySelector('.time-slot-input');
+                            if (radioInput && !radioInput.disabled) radioInput.checked = true;
+                        }
 
+                        checkTimeSlotAvailability();
                     })
                 })
+
+                // Function to check time slot availability
+                async function checkTimeSlotAvailability() {
+                    const selectedDoctor = document.querySelector('input[name="selected_doctor"]:checked');
+                    const selectedDate = userDate.value;
+                    const clinicId = document.querySelector('input[name="clinicID"]').value;
+
+                    if (!selectedDoctor || !selectedDate || !clinicId) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`/api/check-availability?clinicId=${clinicId}&doctorId=${selectedDoctor.value}&date=${selectedDate}`);
+                        const data = await response.json();
+
+                        if (data.availability) {
+                            // Get all time slot labels for the selected doctor
+                            const timeLabels = document.querySelectorAll(`#time-${selectedDoctor.id}`);
+                            
+                            timeLabels.forEach(label => {
+                                const timeInput = label.querySelector('.time-slot-input');
+                                const timeText = label.querySelector('.time-slot-text');
+                                
+                                if (timeInput && timeText) {
+                                    const time = timeInput.value;
+                                    const availability = data.availability[time];
+
+                                    if (availability) {
+                                        if (!availability.available) {
+                                            // Disable the time slot
+                                            timeInput.disabled = true;
+                                            label.classList.add('opacity-50', 'cursor-not-allowed');
+                                            label.classList.remove('hover:bg-green-100', 'cursor-pointer');
+                                            timeText.innerHTML = `${time} <span class="text-red-500 text-xs">(Full)</span>`;
+                                        } else {
+                                            // Enable the time slot
+                                            timeInput.disabled = false;
+                                            label.classList.remove('opacity-50', 'cursor-not-allowed');
+                                            label.classList.add('hover:bg-green-100', 'cursor-pointer');
+                                            timeText.textContent = time;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error checking availability:', error);
+                    }
+                }
+
+                // Check availability on page load
+                setTimeout(() => {
+                    checkTimeSlotAvailability();
+                }, 100);
 
                 userCheckup.forEach((option) => {
                     option.addEventListener("input", (e) => {

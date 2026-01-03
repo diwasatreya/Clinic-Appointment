@@ -11,6 +11,7 @@ const clinicSchema = new mongoose.Schema({
     speciality: { type: Array, required: false },
     status: { type: Boolean, default: true, required: false },
     approved: { type: Boolean, default: true, required: false },
+    googleMapLink: { type: String, required: false }
 }, {
     timestamps: true
 });

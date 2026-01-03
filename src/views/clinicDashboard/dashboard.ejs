@@ -21,29 +21,29 @@
         <div class="p-6 border-b">
             <div class="flex items-center">
                 <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
-                <h1 class="text-2xl font-extrabold">FindaCare</h1>
+                <h1 class="text-2xl font-extrabold text-accent-green">FindaCare</h1>
             </div>
         </div>
 
         <!-- Navigation -->
         <nav class="flex-1 p-4">
-            <a href="/clinic/dashboard?tab=overview" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <a href="/clinic/dashboard?tab=overview" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
                 <i class="fa-solid fa-gauge-high mr-3 <%= (typeof query === 'undefined' || !query.tab || query.tab === 'overview') ? 'text-accent-green' : 'text-gray-600' %>"></i>
                 <span class="font-medium">Overview</span>
             </a>
-            <a href="/clinic/dashboard?tab=appointments" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <a href="/clinic/dashboard?tab=appointments" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
                 <i class="fa-solid fa-calendar-check mr-3 <%= (typeof query !== 'undefined' && query.tab === 'appointments') ? 'text-accent-green' : 'text-gray-600' %>"></i>
                 <span class="font-medium">Appointments</span>
             </a>
-            <a href="/clinic/dashboard?tab=clinic-info" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <a href="/clinic/dashboard?tab=clinic-info" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
                 <i class="fa-solid fa-building mr-3 <%= (typeof query !== 'undefined' && query.tab === 'clinic-info') ? 'text-accent-green' : 'text-gray-600' %>"></i>
                 <span class="font-medium">Clinic Info</span>
             </a>
-            <a href="/clinic/dashboard?tab=doctors" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <a href="/clinic/dashboard?tab=doctors" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
                 <i class="fa-solid fa-user-doctor mr-3 <%= (typeof query !== 'undefined' && query.tab === 'doctors') ? 'text-accent-green' : 'text-gray-600' %>"></i>
                 <span class="font-medium">Doctors</span>
             </a>
-            <a href="/clinic/dashboard?tab=settings" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
+            <a href="/clinic/dashboard?tab=settings" class="flex items-center px-4 py-3 text-gray-700 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'bg-accent-green bg-opacity-10 rounded-lg mb-2 border-l-4 border-accent-green' : 'hover:bg-gray-50 rounded-lg mb-2' %>">
                 <i class="fa-solid fa-cog mr-3 <%= (typeof query !== 'undefined' && query.tab === 'settings') ? 'text-accent-green' : 'text-gray-600' %>"></i>
                 <span class="font-medium">Settings</span>
             </a>
@@ -130,10 +130,120 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Today's Appointments -->
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden mb-8">
+                    <div class="p-6 border-b">
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fa-solid fa-calendar-day mr-2 text-accent-green"></i>
+                            Today's Appointments
+                        </h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <% if (todayAppointments && todayAppointments.length > 0) { %>
+                                    <% todayAppointments.forEach((appointment) => { %>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        <%= appointment.user ? appointment.user.name : 'N/A' %>
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">
+                                                        <%= appointment.user ? appointment.user.phone : '' %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">
+                                                    <%= appointment.doctor ? `Dr. ${appointment.doctor.name}` : 'N/A' %>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900"><%= appointment.appointmentTime %></div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900"><%= appointment.checkupType %></div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="text-sm text-gray-900 max-w-xs truncate" title="<%= appointment.reason || 'No reason provided' %>">
+                                                    <%= appointment.reason || 'No reason provided' %>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <% 
+                                                    let statusClass = 'bg-gray-100 text-gray-800';
+                                                    if (appointment.status === 'Approved') statusClass = 'bg-green-100 text-green-800';
+                                                    else if (appointment.status === 'Canceled') statusClass = 'bg-red-100 text-red-800';
+                                                    else if (appointment.status === 'Pending') statusClass = 'bg-yellow-100 text-yellow-800';
+                                                    else if (appointment.status === 'Completed') statusClass = 'bg-blue-100 text-blue-800';
+                                                %>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= statusClass %>">
+                                                    <%= appointment.status %>
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <% if (appointment.status !== 'Completed' && appointment.status !== 'Canceled') { %>
+                                                    <form action="/clinic/appointment/complete" method="POST" class="inline">
+                                                        <input type="hidden" name="appointmentId" value="<%= appointment._id %>">
+                                                        <input type="hidden" name="redirectTab" value="overview">
+                                                        <button type="submit" class="text-accent-green hover:text-green-700 px-3 py-1 rounded hover:bg-accent-green/10 transition">
+                                                            <i class="fa-solid fa-check-circle mr-1"></i>Mark Complete
+                                                        </button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <span class="text-gray-400">-</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                            No appointments for today.
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             <% } %>
 
             <!-- Appointments Tab -->
             <% if (typeof query !== 'undefined' && query.tab === 'appointments') { %>
+                <!-- Filter Links -->
+                <div class="mb-6 flex flex-wrap gap-3">
+                    <a href="/clinic/dashboard?tab=appointments&filter=pending" 
+                       class="px-4 py-2 rounded-lg <%= (typeof query === 'undefined' || !query.filter || query.filter === 'pending') ? 'bg-accent-green text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' %> transition">
+                        Pending
+                    </a>
+                    <a href="/clinic/dashboard?tab=appointments&filter=approved" 
+                       class="px-4 py-2 rounded-lg <%= (typeof query !== 'undefined' && query.filter === 'approved') ? 'bg-accent-green text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' %> transition">
+                        Approved
+                    </a>
+                    <a href="/clinic/dashboard?tab=appointments&filter=Completed" 
+                       class="px-4 py-2 rounded-lg <%= (typeof query !== 'undefined' && query.filter === 'Completed') ? 'bg-accent-green text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' %> transition">
+                        Completed
+                    </a>
+                    <a href="/clinic/dashboard?tab=appointments&filter=Canceled" 
+                       class="px-4 py-2 rounded-lg <%= (typeof query !== 'undefined' && query.filter === 'Canceled') ? 'bg-accent-green text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' %> transition">
+                        Cancelled
+                    </a>
+                </div>
+
                 <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                     <div class="p-6 border-b">
                         <h2 class="text-xl font-bold text-gray-900">Appointments</h2>
@@ -146,6 +256,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -176,12 +287,18 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900"><%= appointment.checkupType %></div>
                                             </td>
+                                            <td class="px-6 py-4">
+                                                <div class="text-sm text-gray-900 max-w-xs truncate" title="<%= appointment.reason || 'No reason provided' %>">
+                                                    <%= appointment.reason || 'No reason provided' %>
+                                                </div>
+                                            </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <% 
                                                     let statusClass = 'bg-gray-100 text-gray-800';
                                                     if (appointment.status === 'Approved') statusClass = 'bg-green-100 text-green-800';
                                                     else if (appointment.status === 'Canceled') statusClass = 'bg-red-100 text-red-800';
                                                     else if (appointment.status === 'Pending') statusClass = 'bg-yellow-100 text-yellow-800';
+                                                    else if (appointment.status === 'Completed') statusClass = 'bg-blue-100 text-blue-800';
                                                 %>
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= statusClass %>">
                                                     <%= appointment.status %>
@@ -212,7 +329,7 @@
                                     <% }) %>
                                 <% } else { %>
                                     <tr>
-                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                                             No appointments found.
                                         </td>
                                     </tr>
@@ -262,6 +379,14 @@
                             </div>
 
                             <div>
+                                <label for="googleMapLink" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Google Maps Link
+                                </label>
+                                <input name="googleMapLink" value="<%= dataClinic.googleMapLink || '' %>" type="url" id="googleMapLink"
+                                    placeholder="https://maps.google.com/..."
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border">
+                            </div>
+                            <div>
                                 <label for="speciality" class="block text-sm font-medium text-gray-700 mb-2">
                                     Speciality
                                 </label>
@@ -269,13 +394,13 @@
                                     placeholder="Cardiology, General Medicine, Pediatrics, Orthopedics"
                                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border" required>
                             </div>
-                            <div class="flex items-end">
-                                <button type="submit"
-                                    class="w-full bg-accent-green hover:bg-green-700 text-white py-3 px-8 rounded-lg text-sm font-medium transition duration-150 shadow-md">
-                                    <i class="fa-solid fa-save mr-2"></i>
-                                    Update Information
-                                </button>
-                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit"
+                                class="bg-accent-green hover:bg-green-700 text-white py-3 px-8 rounded-lg text-sm font-medium transition duration-150 shadow-md">
+                                <i class="fa-solid fa-save mr-2"></i>
+                                Update Information
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -327,16 +452,22 @@
                         </h2>
 
                         <form method="post" action="/clinic/doctor/time"
-                            class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mb-6">
+                            class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mb-6">
                             <input type="hidden" name="redirectTab" value="doctors">
-                            <div class="flex flex-grow gap-4 col-span-4">
-                                <div class="w-1/2">
+                            <div class="flex flex-grow gap-4 col-span-5">
+                                <div class="w-1/3">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
                                     <input type="time" name="time"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm"
                                         required>
                                 </div>
-                                <div class="w-1/2">
+                                <div class="w-1/3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Limit People</label>
+                                    <input type="number" name="limit" min="1" value="10"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm"
+                                        required>
+                                </div>
+                                <div class="w-1/3">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Doctor</label>
                                     <select name="doctorId"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm">
@@ -364,11 +495,15 @@
                                         <% if (doctor.time && doctor.time.length > 0) { %>
                                             <% doctor.time.forEach(t=> { %>
                                                 <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                                    <span><strong><%= t %></strong> <span class="text-gray-500">(Dr. <%= doctor.name %>)</span></span>
+                                                    <span>
+                                                        <strong><%= typeof t === 'string' ? t : t.time %></strong>
+                                                        <span class="text-gray-500 ml-2">(Limit: <%= typeof t === 'string' ? '10' : t.limit || 10 %>)</span>
+                                                        <span class="text-gray-500">(Dr. <%= doctor.name %>)</span>
+                                                    </span>
                                                     <form action="/clinic/doctor/time/delete" method="post" class="inline">
                                                         <input type="hidden" name="redirectTab" value="doctors">
                                                         <input type="text" name="doctorId" value="<%= doctor._id %>" hidden>
-                                                        <input type="text" name="time" value="<%= t %>" hidden>
+                                                        <input type="text" name="time" value="<%= typeof t === 'string' ? t : t.time %>" hidden>
                                                         <button type="submit" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50 transition">
                                                             <i class="fa-solid fa-times mr-1"></i>Remove
                                                         </button>

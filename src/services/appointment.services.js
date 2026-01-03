@@ -85,9 +85,31 @@ const deleteAppoint = async (id) => {
     }
 }
 
-const getClinicAppointments = async (clinicId) => {
+const getClinicAppointments = async (clinicId, status = null) => {
     try {
-        const appointments = await Appointment.find({ clinicID: clinicId }).sort({ createdAt: -1 });
+        let query = { clinicID: clinicId };
+        if (status) {
+            query.status = status;
+        }
+        const appointments = await Appointment.find(query).sort({ appointmentDate: 1, appointmentTime: 1 });
+        return appointments;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
+const getTodayAppointments = async (clinicId) => {
+    try {
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        const appointments = await Appointment.find({ 
+            clinicID: clinicId,
+            appointmentDate: todayStr,
+            status: 'Approved'
+        }).sort({ appointmentTime: 1 });
+        
         return appointments;
     } catch (error) {
         console.error(error);
@@ -123,7 +145,7 @@ const updateAppointmentStatus = async (appointmentId, status, reason = null) => 
         if (reason) {
             appointment.cancellationReason = reason;
         }
-        if (status === "Canceled") {
+        if (status === "Canceled" || status === "Completed") {
             appointment.completed = true;
         }
         
@@ -135,6 +157,22 @@ const updateAppointmentStatus = async (appointmentId, status, reason = null) => 
     }
 };
 
+const getTimeSlotCount = async (clinicId, doctorId, appointmentDate, appointmentTime) => {
+    try {
+        const count = await Appointment.countDocuments({
+            clinicID: clinicId,
+            doctorId: doctorId,
+            appointmentDate: appointmentDate,
+            appointmentTime: appointmentTime,
+            status: { $in: ['Pending', 'Approved'] }
+        });
+        return count;
+    } catch (error) {
+        console.error(error);
+        return 0;
+    }
+};
+
 export {
     createAppointment,
     getAllAppointments,
@@ -143,5 +181,7 @@ export {
     deleteAppoint,
     getClinicAppointments,
     getClinicAppointmentStats,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    getTodayAppointments,
+    getTimeSlotCount
 }

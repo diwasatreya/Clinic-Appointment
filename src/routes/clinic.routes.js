@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { showDashboard, updateClinic, addClinicDoctor, deleteClinicDoctor, addDoctorTime, deleteDoctorTime, toggleClinicStatus, sendForApproval, approveAppointment, cancelAppointment } from "../controllers/clinic.controller.js";
+import { showDashboard, updateClinic, addClinicDoctor, deleteClinicDoctor, addDoctorTime, deleteDoctorTime, toggleClinicStatus, sendForApproval, approveAppointment, cancelAppointment, completeAppointment } from "../controllers/clinic.controller.js";
 
 const router = Router();
 
@@ -13,5 +13,6 @@ router.route('/status').post(toggleClinicStatus);
 router.route('/approval').post(sendForApproval);
 router.route('/appointment/approve').post(approveAppointment);
 router.route('/appointment/cancel').post(cancelAppointment);
+router.route('/appointment/complete').post(completeAppointment);
 
 export default router;
