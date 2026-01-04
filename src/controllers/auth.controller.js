@@ -87,6 +87,10 @@ const postLoginPage = async (req, res) => {
             return res.redirect('/auth/login?error=' + encodeURIComponent('Invalid phone number or password'));
         }
 
+        if(clinic.banned) {
+            return res.redirect('/auth/login?error=' + encodeURIComponent('This clinic is banned. Please contact the admin.'));
+        }
+
         const sessionInfo = {
             userId: clinic._id.toString(),
             userAgent: req.headers['user-agent']

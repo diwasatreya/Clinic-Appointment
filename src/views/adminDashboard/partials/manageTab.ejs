@@ -31,8 +31,8 @@
                     <div>
                         <h3 class="text-2xl font-bold text-gray-800"><%= clinic.clinicName %></h3>
                         <div class="flex gap-2 mt-2">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= clinic.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                                <%= clinic.status ? 'Active' : 'Banned' %>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= clinic.banned ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                                <%= clinic.banned ? 'Banned' : 'Active' %>
                             </span>
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= clinic.approved ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' %>">
                                 <%= clinic.approved ? 'Approved' : 'Pending' %>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="flex gap-3">
-                        <% if (clinic.status) { %>
+                        <% if (!clinic.banned) { %>
                             <form method="post" action="/admin/clinic/ban" class="inline">
                                 <input type="hidden" name="clinicId" value="<%= clinic._id %>">
                                 <button type="submit" 

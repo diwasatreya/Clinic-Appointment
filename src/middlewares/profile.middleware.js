@@ -44,4 +44,4 @@ const userProfile = async (req, res, next) => {
 
     }
 
-export default userProfile
+export default userProfile;

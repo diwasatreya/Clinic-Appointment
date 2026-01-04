@@ -29,11 +29,7 @@ const showHomePage = async (req, res) => {
     return res.render('index.ejs', { user: req.user, clinics });
 }
 
-const showTest = async (req, res) => {
-    res.render('test.ejs');
-}
 
 export {
     showHomePage,
-    showTest
 }

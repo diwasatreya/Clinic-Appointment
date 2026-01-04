@@ -12,7 +12,8 @@ const clinicSchema = new mongoose.Schema({
     status: { type: Boolean, default: true, required: false },
     approved: { type: Boolean, default: false, required: false },
     pendingApproval: { type: Boolean, default: false, required: false },
-    googleMapLink: { type: String, required: false }
+    googleMapLink: { type: String, required: false },
+    banned: { type: Boolean, default: false, required: false }
 }, {
     timestamps: true
 });

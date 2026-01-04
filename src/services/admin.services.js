@@ -81,8 +81,12 @@ const banClinic = async (clinicId) => {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
         
+        clinic.approved = false;
+        clinic.pendingApproval = true; 
         clinic.status = false;
+        clinic.banned = true;
         await clinic.save();
+
         
         return clinic;
     } catch (error) {
@@ -97,7 +101,7 @@ const unbanClinic = async (clinicId) => {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
         
-        clinic.status = true;
+        clinic.banned = false;
         await clinic.save();
         
         return clinic;
