@@ -1,7 +1,17 @@
 <!-- Sidebar -->
-<aside class="w-64 bg-white shadow-lg flex flex-col h-screen sticky top-0">
+<aside id="sidebar" class="hidden md:flex md:w-64 bg-white shadow-lg flex flex-col h-screen md:sticky md:top-0 z-50">
+    <div class="md:hidden flex items-center justify-between p-4 border-b">
+        <div class="flex items-center">
+            <i class="fa-solid fa-heart-pulse text-2xl text-accent-green mr-2"></i>
+            <h1 class="text-xl font-extrabold"><a href="/">FindaCare</a></h1>
+        </div>
+        <button id="close-sidebar-btn" class="p-2 text-gray-700">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
     <!-- Logo -->
-    <div class="p-6 border-b">
+    <div class="p-6 border-b md:flex hidden">
         <div class="flex items-center">
             <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
             <h1 class="text-2xl font-extrabold"><a href="/">FindaCare</a></h1>

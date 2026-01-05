@@ -69,6 +69,35 @@
             });
         }
     });
+
+        // Sidebar toggle for mobile
+        function openSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('fixed', 'inset-y-0', 'left-0', 'translate-x-0');
+            overlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('fixed', 'inset-y-0', 'left-0', 'translate-x-0');
+            overlay.classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-sidebar-btn');
+            const closeBtn = document.getElementById('close-sidebar-btn');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            if (openBtn) openBtn.addEventListener('click', openSidebar);
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+        });
 </script>
 
 <style>
