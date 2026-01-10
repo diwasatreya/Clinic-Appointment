@@ -9,7 +9,7 @@
                         <h3 class="text-2xl font-bold text-gray-800"><%= clinic.clinicName %></h3>
                         <p class="text-sm text-gray-500 mt-1">Submitted: <%= new Date(clinic.createdAt).toLocaleDateString() %></p>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="flex gap-3 flex-wrap items-center">
                         <form method="post" action="/admin/clinic/approve" class="inline">
                             <input type="hidden" name="clinicId" value="<%= clinic._id %>">
                             <button type="submit" 
