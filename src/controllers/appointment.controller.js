@@ -68,7 +68,7 @@ const postAppointment = async (req, res) => {
 
     const appointment = await createAppointment(form, req.user);
 
-    return res.redirect('/appointments');
+    return res.redirect('/appointments?success=' + encodeURIComponent('Appointment booked successfully.'));
 }
 
 const showMyAppointments = async (req, res) => {
@@ -122,10 +122,11 @@ const postDelete = async (req, res) => {
         if (!appointId) return;
         await deleteAppoint(appointId);
 
-        return res.redirect('/appointments');
+        return res.redirect('/appointments?success=' + encodeURIComponent('Appointment cancelled.'));
 
     } catch (error) {
         console.error(error);
+        return res.redirect('/appointments?error=' + encodeURIComponent('Failed to cancel appointment. Please try again.'));
     }
 }
 

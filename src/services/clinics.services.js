@@ -36,20 +36,18 @@ const filterClinics = async (str) => {
     }
 };
 
-const updateDataClinic = async (info, form) => {
+const updateDataClinic = async (info, form, verificationPath = null) => {
     try {
         const clinic = await Clinics.findById(info.id);
-        if (!clinic) return;
+        if (!clinic) return null;
 
         clinic.description = form.description;
         clinic.address = form.address;
         clinic.opening = form.opening;
         clinic.googleMapLink = form.googleMapLink || '';
-        const tags = form.speciality.split(', ').slice(0, 5);
-        clinic.speciality = [];
-        tags.forEach(tag => {
-            clinic.speciality.push(tag);
-        });
+        if (verificationPath !== undefined) clinic.verificationDocument = verificationPath || null;
+        const tags = (form.speciality || '').split(',').map(t => t.trim()).filter(Boolean).slice(0, 10);
+        clinic.speciality = tags;
 
         await clinic.save();
 
@@ -57,6 +55,7 @@ const updateDataClinic = async (info, form) => {
 
     } catch (error) {
         console.error(error);
+        return null;
     }
 }
 

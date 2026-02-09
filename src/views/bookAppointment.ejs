@@ -1,448 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Appointment | FindaCare</title>
     <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="./js/tailwind.js"></script>
     <link rel="stylesheet" href="./css/style.css">
-
-    <style>
-        .doctor-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        label:has(input[type="radio"]:checked) {
-            border-color: #4ade80;
-            /* accent-green */
-            background-color: #ecfdf5;
-            /* green-50 */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-
-            :first-child {
-                color: #151b4e;
-            }
-        }
-    </style>
 </head>
+<body class="min-h-screen flex flex-col bg-page font-sans antialiased">
 
-<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
-
-    <!-- Header -->
     <%- include('./particles/header') %>
 
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">Book your appointment</h1>
+            <p class="text-gray-600">Choose checkup type, doctor, and time slot.</p>
+        </div>
 
+        <!-- Clinic info card -->
+        <section class="card p-6 md:p-8 mb-10">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-start gap-4">
+                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+                        <i class="fa-solid fa-hospital text-2xl"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900"><%= clinic.clinicName %></h2>
+                        <p class="text-gray-600 mt-1 max-w-lg"><%= clinic.description || "No description available" %></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 text-gray-700 shrink-0">
+                    <i class="fa-solid fa-location-dot text-accent-green text-xl"></i>
+                    <div>
+                        <p class="font-semibold"><%= clinic.address || "—" %></p>
+                        <a href="<%= clinic.googleMapLink && clinic.googleMapLink.length !== 0 ? clinic.googleMapLink : 'https://www.google.com/maps/search/?api=1&query=' + (clinic.address || '').trim().replace(/,/g, '') %>" target="_blank" class="text-sm text-accent-green hover:underline">View on map</a>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-100 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-user-doctor text-accent-green mt-0.5"></i>
+                    <div><p class="font-semibold text-gray-800">Speciality</p><p class="text-gray-600"><%= speciality || '—' %></p></div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-clock text-accent-green mt-0.5"></i>
+                    <div><p class="font-semibold text-gray-800">Hours</p><p class="text-gray-600"><%= clinic.opening || '—' %></p></div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-phone text-accent-green mt-0.5"></i>
+                    <div><p class="font-semibold text-gray-800">Contact</p><p class="text-gray-600"><%= clinic.phone || "—" %><br><%= clinic.email %></p></div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+        <form action="/appoint" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <input type="hidden" name="clinicID" value="<%= clinic._id %>">
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Checkup type -->
+                <section class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/10 text-accent-green text-sm font-bold">1</span>
+                        Checkup type
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <label for="type-initial" class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition doctor-card">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Initial consultation</p>
+                                    <p class="text-sm text-gray-600 mt-1">45 min – new or complex issues</p>
+                                </div>
+                                <input type="radio" id="type-initial" name="checkup_type" value="Initial Consultation" checked class="h-5 w-5 text-accent-green focus:ring-accent-green mt-1">
+                            </div>
+                        </label>
+                        <label for="type-followup" class="p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition doctor-card">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Follow-up</p>
+                                    <p class="text-sm text-gray-600 mt-1">15 min – review or minor issues</p>
+                                </div>
+                                <input type="radio" id="type-followup" name="checkup_type" value="Follow-up Visit" class="h-5 w-5 text-accent-green focus:ring-accent-green mt-1">
+                            </div>
+                        </label>
+                    </div>
+                </section>
 
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-extrabold text-gray-800 mb-3">Book Your Appointment</h2>
-                <p class="text-xl text-gray-500">Select your preferred checkup type, doctor, and time slot.</p>
+                <!-- Doctor -->
+                <section class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/10 text-accent-green text-sm font-bold">2</span>
+                        Choose doctor
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <% if(doctors.length != 0) { %>
+                            <% doctors.forEach(doctor=> { %>
+                            <label for="<%= doctor._id %>" class="doctor-card p-5 border-2 border-gray-200 rounded-xl cursor-pointer transition">
+                                <div class="flex items-center justify-between gap-4">
+                                    <div>
+                                        <p class="font-bold text-gray-900">Dr. <%= doctor.name %></p>
+                                        <p class="text-sm text-gray-600"><%= doctor.speciality %></p>
+                                    </div>
+                                    <input type="radio" id="<%= doctor._id %>" name="selected_doctor" value="<%= doctor._id %>" data-name="<%= doctor.name %>" class="h-5 w-5 text-accent-green focus:ring-accent-green shrink-0">
+                                </div>
+                                <% if(doctor.description) { %><p class="text-sm text-gray-600 mt-3"><%= doctor.description %></p><% } %>
+                            </label>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-gray-500 col-span-2">No doctors available.</p>
+                        <% } %>
+                    </div>
+                </section>
+
+                <!-- Date & time -->
+                <section class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/10 text-accent-green text-sm font-bold">3</span>
+                        Date & time
+                    </h2>
+                    <div class="mb-4">
+                        <label for="appointment_date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                        <input type="date" id="appointment_date" name="appointment_date" <%- (doctors.length==0 || doctors[0].time.length==0) ? 'disabled' : '' %>
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green">
+                    </div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Time slots</label>
+                    <div class="flex flex-wrap gap-2">
+                        <% doctors.forEach((doctor, dindex)=> { %>
+                            <% const timeSlots=doctor.time || []; timeSlots.forEach((timeSlot, index)=> {
+                                const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
+                                const slotId = `${dindex}-${index}`;
+                            %>
+                            <label for="<%= slotId %>" name="doctor-time" id="time-<%= doctor._id %>" data-time="<%= time %>" data-doctor-id="<%= doctor._id %>"
+                                class="hidden px-4 py-2.5 border border-gray-200 rounded-xl font-medium hover:bg-accent-green/10 cursor-pointer time-slot-label">
+                                <span class="time-slot-text"><%= time %></span>
+                                <input type="radio" id="<%= slotId %>" name="time_slot" value="<%= time %>" class="hidden time-slot-input" data-doctor-id="<%= doctor._id %>">
+                            </label>
+                        <% }) }) %>
+                    </div>
+                </section>
             </div>
 
-            <!-- Clinic Info Section -->
-            <section class="bg-white p-8 rounded-xl shadow-lg mb-12 border border-gray-200">
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <!-- Left: Clinic Name and Description -->
-                    <div class="flex items-start space-x-4">
-                        <div class="bg-green-100 p-4 rounded-full">
-                            <i class="fa-solid fa-hospital text-3xl text-accent-green"></i>
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <div class="lg:sticky lg:top-24 card border-t-4 border-t-accent-green p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">4. Your details & summary</h3>
+                    <div class="space-y-4">
+                        <input type="text" placeholder="Full name" name="full_name" required value="<%= user.username %>"
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm">
+                        <input type="text" placeholder="Phone" name="phone" required value="<%= user.phone %>"
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm">
+                        <div>
+                            <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason (optional)</label>
+                            <textarea id="reason" name="reason" placeholder="Briefly describe your concern." rows="3"
+                                class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm"></textarea>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800">
-                                <%= clinic.clinicName %>
-                            </h2>
-                            <p class="text-gray-600 mt-1 max-w-lg">
-                                <%= clinic.description || "No description available" %>
-                            </p>
+                            <label for="file_upload" class="block text-sm font-medium text-gray-700 mb-1">Records (optional)</label>
+                            <input type="file" id="file_upload" name="file_upload"
+                                class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-green/10 file:text-accent-green hover:file:bg-accent-green/20">
                         </div>
                     </div>
-
-                    <!-- Right: Location -->
-                    <div class="flex items-center space-x-3 text-gray-700 mt-4 md:mt-0">
-                        <i class="fa-solid fa-location-dot text-accent-green text-xl"></i>
-                        <div>
-                            <p class="font-semibold">
-                                <%= clinic.address || "No description available" %>
-                            </p>
-                            <a href="<%= clinic.googleMapLink && clinic.googleMapLink.length !== 0 
-                            ? clinic.googleMapLink
-                            : 'https://www.google.com/maps/search/?api=1&query=' + clinic.address.trim().replace(/,/g, '')%>"
-                                target="_blank" class="text-sm text-accent-green hover:underline">
-                                View on Google Maps
-                            </a>
-                        </div>
+                    <div class="mt-6 pt-4 border-t border-gray-100 space-y-2 text-sm text-gray-700">
+                        <p><strong>Type:</strong> <span id="liveCheckup"></span></p>
+                        <p><strong>Doctor:</strong> <span id="liveDoctor"></span></p>
+                        <p><strong>When:</strong> <span id="liveDate"></span>, <span id="liveTime"></span></p>
+                        <p class="pt-3 flex justify-between font-semibold text-gray-900 text-base">
+                            <span>Total</span><span id="summary-price">Rs. 100</span>
+                        </p>
                     </div>
+                    <button type="submit" <%- (doctors.length==0 || doctors[0].time.length==0) ? 'disabled' : '' %>
+                        class="mt-6 w-full py-3 rounded-xl font-semibold text-white transition
+                        <%- (doctors.length==0 || doctors[0].time.length==0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent-green hover:bg-emerald-600 btn-hover-scale' %>">
+                        Confirm appointment
+                    </button>
                 </div>
+            </aside>
+        </form>
+    </main>
 
-                <!-- Divider -->
-                <div
-                    class="border-t border-gray-200 mt-6 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-600 text-sm">
+    <%- include('./particles/footer') %>
 
-                    <!-- Column 1 -->
-                    <div class="flex items-start space-x-3">
-                        <i class="fa-solid fa-user-doctor text-accent-green text-lg mt-1"></i>
-                        <div>
-                            <p class="font-semibold text-gray-800">Speciality</p>
-                            <p>
-                                <%= speciality || 'No Speciality Provided' %>
-                            </p>
-                        </div>
-                    </div>
+    <script>
+        const checkupValue = document.getElementById('liveCheckup');
+        const doctorValue = document.getElementById('liveDoctor');
+        const dateValue = document.getElementById('liveDate');
+        const dateTime = document.getElementById('liveTime');
+        const userCheckup = document.getElementsByName('checkup_type');
+        const userDoctor = document.getElementsByName('selected_doctor');
+        const userDate = document.getElementsByName('appointment_date')[0];
+        const userTime = document.getElementsByName('time_slot');
+        const today = new Date().toISOString().split('T')[0];
+        const formatDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-                    <!-- Column 2 -->
-                    <div class="flex items-start space-x-3">
-                        <i class="fa-solid fa-clock text-accent-green text-lg mt-1"></i>
-                        <div>
-                            <p class="font-semibold text-gray-800">Opening Hours</p>
-                            <p>
-                                <%= clinic.opening || 'Unavailable' %>
-                            </p>
-                        </div>
-                    </div>
+        if (userDoctor[0]) {
+            userDoctor[0].checked = true;
+            document.querySelectorAll('#time-' + userDoctor[0].id).forEach(t => t.classList.remove('hidden'));
+        }
+        if (userTime[0]) userTime[0].checked = true;
+        if (userDate) userDate.setAttribute('min', today);
+        userDate.value = today;
 
-                    <!-- Column 3 -->
-                    <div class="flex items-start space-x-3">
-                        <i class="fa-solid fa-phone text-accent-green text-lg mt-1"></i>
-                        <div>
-                            <p class="font-semibold text-gray-800">Contact</p>
-                            <p>
-                                <%= clinic.phone || "0000000000" %><br>
-                                    <%= clinic.email %>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        checkupValue.innerText = userCheckup[0].value;
+        doctorValue.innerText = userDoctor[0] ? 'Dr. ' + (userDoctor[0].dataset.name || userDoctor[0].value) : '';
+        dateValue.innerText = formatDate(today);
+        dateTime.innerText = userTime[0] ? userTime[0].value : '—';
 
+        userDate.addEventListener('input', () => { dateValue.innerText = formatDate(userDate.value); checkTimeSlotAvailability(); });
+        userTime.forEach(opt => opt.addEventListener('input', () => dateTime.innerText = opt.value));
+        userDoctor.forEach(opt => {
+            opt.addEventListener('input', () => {
+                doctorValue.innerText = 'Dr. ' + (opt.dataset.name || opt.value);
+                document.querySelectorAll('[name="doctor-time"]').forEach(t => t.classList.add('hidden'));
+                document.querySelectorAll('#time-' + opt.id).forEach(t => t.classList.remove('hidden'));
+                const slot = document.querySelector('#time-' + opt.id);
+                if (slot) { const radio = slot.querySelector('.time-slot-input'); if (radio && !radio.disabled) radio.checked = true; }
+                checkTimeSlotAvailability();
+            });
+        });
+        userCheckup.forEach(opt => opt.addEventListener('input', () => { checkupValue.innerText = opt.value; }));
 
-            <form action="/appoint" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <input type="text" name="clinicID" value="<%= clinic._id %>" hidden>
-                <div class="lg:col-span-2 space-y-10">
-
-                    <!-- Step 1: Checkup Type -->
-                    <section class="bg-white p-6 rounded-xl shadow-lg">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
-                            1. Choose Checkup Type
-                        </h2>
-
-                        <div class="grid md:grid-cols-2 gap-4">
-
-                            <label for="type-initial"
-                                class="p-4 border-2 rounded-lg cursor-pointer transition duration-200">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex-grow">
-                                        <p class="font-semibold text-lg ">Initial Consultation</p>
-                                        <p class="text-sm text-gray-600">45 Minutes - For new or complex issues.</p>
-                                    </div>
-                                    <input type="radio" id="type-initial" name="checkup_type"
-                                        value="Initial Consultation" checked
-                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
-                                </div>
-                            </label>
-
-                            <label for="type-followup"
-                                class="p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex-grow">
-                                        <p class="font-semibold text-lg text-gray-800">Follow-up
-                                            Visit</p>
-                                        <p class="text-sm text-gray-600">15 Minutes - Review results or minor issues.
-                                        </p>
-                                    </div>
-                                    <input type="radio" id="type-followup" name="checkup_type" value="Follow-up Visit"
-                                        class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-4">
-                                </div>
-                            </label>
-
-                        </div>
-                    </section>
-
-                    <!-- Step 2: Doctor Selection -->
-                    <section class="bg-white p-6 rounded-xl shadow-lg">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
-                            2. Choose Your Doctor
-                        </h2>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            <% if(doctors.length !=0) { %>
-                                <% doctors.forEach(doctor=> { %>
-
-                                    <label for="<%= doctor._id %>"
-                                        class="doctor-card p-5 border-2 rounded-lg transition duration-300 ease-in-out cursor-pointer">
-                                        <div class="flex items-center space-x-4">
-
-                                            <div>
-                                                <p class="text-lg font-bold ">Dr. <%= doctor.name %>
-                                                </p>
-                                                <p class="text-sm text-gray-600">
-                                                    <%= doctor.speciality %>
-                                                </p>
-                                            </div>
-                                            <input type="radio" id="<%= doctor._id %>" name="selected_doctor"
-                                                value="<%= doctor._id %>" data-name="<%= doctor.name %>"
-                                                class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 ml-auto">
-                                        </div>
-                                        <p class="text-sm mt-3 text-gray-700">
-                                            <%= doctor.description %>
-                                        </p>
-                                    </label>
-
-                                    <% }) %>
-
-                                        <% } else { %>
-                                            <span class="text-gray-500">No Doctors Here</span>
-                                            <% } %>
-
-
-                        </div>
-                    </section>
-
-                    <!-- Step 3: Date & Time -->
-                    <section class="bg-white p-6 rounded-xl shadow-lg">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center">
-                            3. Select Date & Time
-                        </h2>
-
-                        <div class="mb-6">
-                            <label for="appointment_date" class="block text-sm font-medium text-gray-700 mb-2">Select
-                                Date</label>
-                            <input <%- (doctors.length==0 || doctors[0].time.length==0) ? 'disabled' : '' %> type="date"
-                            id="appointment_date" name="appointment_date"
-                            class="p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500
-                            text-base w-full">
-                        </div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Available Time Slots</label>
-                        <div class="flex flex-wrap gap-3">
-
-                            <% doctors.forEach((doctor, dindex)=> { %>
-                                <% const timeSlots=doctor.time || []; timeSlots.forEach((timeSlot, index)=> {
-                                    const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
-                                    const slotId = `${dindex}-${index}`;
-                                    %>
-                                    <label for="<%= slotId %>" name="doctor-time" id="time-<%= doctor._id %>"
-                                        data-time="<%= time %>" data-doctor-id="<%= doctor._id %>"
-                                        class="hidden px-4 py-2 border border rounded-lg font-medium hover:bg-green-100 cursor-pointer time-slot-label">
-                                        <span class="time-slot-text">
-                                            <%= time %>
-                                        </span>
-                                        <input type="radio" id="<%= slotId %>" name="time_slot" value="<%= time %>"
-                                            class="hidden time-slot-input" data-doctor-id="<%= doctor._id %>">
-                                    </label>
-                                    <% }) }) %>
-
-                        </div>
-                    </section>
-
-                </div>
-
-                <!-- Sidebar: Patient Details -->
-                <aside class="lg:col-span-1">
-                    <div class="lg:sticky lg:top-8 bg-white p-6 rounded-xl shadow-2xl border-t-4 border-accent-green">
-
-                        <h3 class="text-xl font-bold text-accent-green mb-4">4. Patient Details & Reason</h3>
-                        <hr class="mb-4">
-
-                        <div class="space-y-4">
-                            <input type="text" placeholder="Full Name (Required)" name="full_name" required
-                                class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"
-                                value="<%= user.username %>">
-                            <input type="text" placeholder="Phone Number (Required)" name="phone" required
-                                class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"
-                                value="<%= user.phone %>">
-
-                            <div>
-                                <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason for
-                                    Visit
-                                    (Optional)</label>
-                                <textarea id="reason" name="reason"
-                                    placeholder="Briefly describe your concern or symptoms." rows="3"
-                                    class="w-full p-2 border rounded-md focus:ring-accent-green focus:border-accent-green text-sm"></textarea>
-                            </div>
-
-                            <div>
-                                <label for="file_upload" class="block text-sm font-medium text-gray-700 mb-1">Upload
-                                    Records/Referrals (Optional)</label>
-                                <input type="file" id="file_upload" name="file_upload"
-                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-green/20 file:text-accent-green hover:file:bg-accent-green/30" />
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h3 class="text-xl font-bold text-accent-green mb-4">Summary</h3>
-                        <div class="space-y-2 text-gray-700 text-sm">
-                            <p><strong>Checkup Type:</strong> <span id="liveCheckup"></span></p>
-                            <p><strong>Doctor:</strong> <span id="liveDoctor"></span></p>
-                            <p><strong>Date & Time:</strong> <span id="liveDate"></span>, <span id="liveTime"></span>
-                            </p>
-                            <p class="pt-2 border-t mt-3 flex justify-between font-semibold text-base text-gray-900">
-                                <span>Total Fee:</span>
-                                <span id="summary-price">Rs. 100</span>
-                            </p>
-                        </div>
-
-                        <button type="submit" <%- (doctors.length==0 || doctors[0].time.length==0) ? 'disabled' : '' %>
-                            class="mt-6 w-full <%- (doctors.length==0 || doctors[0].time.length==0)
-                                ? 'bg-gray-500 cursor-disabled cursor-not-allowed'
-                                : 'bg-accent-green hover:bg-green-600' %> text-white text-lg font-bold py-3 rounded-lg
-                                transition shadow-lg">
-                                Confirm Appointment
-                        </button>
-
-                    </div>
-                </aside>
-            </form>
-
-        </main>
-
-        <!-- Footer -->
-        <%- include('./particles/footer') %>
-
-            <script>
-                const form = document.getElementsByTagName('form');
-                const checkupValue = document.getElementById('liveCheckup');
-                const doctorValue = document.getElementById('liveDoctor');
-                const dateValue = document.getElementById('liveDate');
-                const dateTime = document.getElementById('liveTime');
-
-                const userCheckup = document.getElementsByName('checkup_type');
-                const userDoctor = document.getElementsByName('selected_doctor');
-                const userDate = document.getElementsByName('appointment_date')[0];
-                const userTime = document.getElementsByName('time_slot');
-
-                if (userDoctor[0]) {
-                    userDoctor[0].checked = true;
-                    const cht = document.querySelectorAll(`#time-${userDoctor[0].id}`);
-                    cht.forEach(t => {
-                        t.classList.remove('hidden');
-                    })
-                }
-                if (userTime[0]) userTime[0].checked = true;
-
-
-
-
-                const today = new Date().toISOString().split('T')[0];
-
-                const formatDate = (opt) => {
-                    const date = new Date(opt);
-                    return date.toLocaleDateString('en-US', { month: "short", day: "numeric" });
-                }
-
-                checkupValue.innerText = userCheckup[0].value;
-                doctorValue.innerText = (userDoctor[0]) ? `Dr. ${userDoctor[0].dataset.name || userDoctor[0].value}` : ``;
-                userDate.setAttribute("min", today);
-                userDate.value = today;
-                dateValue.innerText = formatDate(today)
-                dateTime.innerText = (userTime[0]) ? userTime[0].value : `HH:MM`;
-
-                userDate.addEventListener('input', (e) => {
-                    dateValue.innerText = formatDate(userDate.value);
-                    checkTimeSlotAvailability();
-                })
-
-                userTime.forEach((option) => {
-                    option.addEventListener('input', (e) => {
-                        dateTime.innerText = option.value
-                    })
-                })
-
-                userDoctor.forEach((option) => {
-                    option.addEventListener("input", (e) => {
-                        doctorValue.innerText = `Dr. ${option.dataset.name || option.value}`;
-
-                        const allTime = document.getElementsByName('doctor-time');
-                        allTime.forEach(t => {
-                            t.classList.add('hidden');
-                        })
-
-                        const time = document.querySelectorAll(`#time-${option.id}`);
-                        time.forEach(t => {
-                            t.classList.remove('hidden');
-                        })
-                        if (time[0]) {
-                            const radioInput = time[0].querySelector('.time-slot-input');
-                            if (radioInput && !radioInput.disabled) radioInput.checked = true;
+        async function checkTimeSlotAvailability() {
+            const selectedDoctor = document.querySelector('input[name="selected_doctor"]:checked');
+            const selectedDate = userDate.value;
+            const clinicId = document.querySelector('input[name="clinicID"]').value;
+            if (!selectedDoctor || !selectedDate || !clinicId) return;
+            try {
+                const res = await fetch('/api/check-availability?clinicId=' + clinicId + '&doctorId=' + selectedDoctor.value + '&date=' + selectedDate);
+                const data = await res.json();
+                if (data.availability) {
+                    document.querySelectorAll('#time-' + selectedDoctor.id).forEach(label => {
+                        const input = label.querySelector('.time-slot-input');
+                        const text = label.querySelector('.time-slot-text');
+                        if (!input || !text) return;
+                        const avail = data.availability[input.value];
+                        if (avail) {
+                            if (!avail.available) {
+                                input.disabled = true;
+                                label.classList.add('opacity-50', 'cursor-not-allowed');
+                                label.classList.remove('hover:bg-accent-green/10', 'cursor-pointer');
+                                text.innerHTML = input.value + ' <span class="text-red-500 text-xs">(Full)</span>';
+                            } else {
+                                input.disabled = false;
+                                label.classList.remove('opacity-50', 'cursor-not-allowed');
+                                label.classList.add('hover:bg-accent-green/10', 'cursor-pointer');
+                                text.textContent = input.value;
+                            }
                         }
-
-                        checkTimeSlotAvailability();
-                    })
-                })
-
-                // Function to check time slot availability
-                async function checkTimeSlotAvailability() {
-                    const selectedDoctor = document.querySelector('input[name="selected_doctor"]:checked');
-                    const selectedDate = userDate.value;
-                    const clinicId = document.querySelector('input[name="clinicID"]').value;
-
-                    if (!selectedDoctor || !selectedDate || !clinicId) {
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(`/api/check-availability?clinicId=${clinicId}&doctorId=${selectedDoctor.value}&date=${selectedDate}`);
-                        const data = await response.json();
-
-                        if (data.availability) {
-                            // Get all time slot labels for the selected doctor
-                            const timeLabels = document.querySelectorAll(`#time-${selectedDoctor.id}`);
-
-                            timeLabels.forEach(label => {
-                                const timeInput = label.querySelector('.time-slot-input');
-                                const timeText = label.querySelector('.time-slot-text');
-
-                                if (timeInput && timeText) {
-                                    const time = timeInput.value;
-                                    const availability = data.availability[time];
-
-                                    if (availability) {
-                                        if (!availability.available) {
-                                            // Disable the time slot
-                                            timeInput.disabled = true;
-                                            label.classList.add('opacity-50', 'cursor-not-allowed');
-                                            label.classList.remove('hover:bg-green-100', 'cursor-pointer');
-                                            timeText.innerHTML = `${time} <span class="text-red-500 text-xs">(Full)</span>`;
-                                        } else {
-                                            // Enable the time slot
-                                            timeInput.disabled = false;
-                                            label.classList.remove('opacity-50', 'cursor-not-allowed');
-                                            label.classList.add('hover:bg-green-100', 'cursor-pointer');
-                                            timeText.textContent = time;
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    } catch (error) {
-                        console.error('Error checking availability:', error);
-                    }
+                    });
                 }
-
-                // Check availability on page load
-                setTimeout(() => {
-                    checkTimeSlotAvailability();
-                }, 100);
-
-                userCheckup.forEach((option) => {
-                    option.addEventListener("input", (e) => {
-                        checkupValue.innerText = option.value
-                    })
-                })
-
-            </script>
-
-            <script src="./js/script.js"></script>
-
+            } catch (e) { console.error(e); }
+        }
+        setTimeout(checkTimeSlotAvailability, 100);
+    </script>
+    <script src="./js/script.js"></script>
 </body>
-
 </html>

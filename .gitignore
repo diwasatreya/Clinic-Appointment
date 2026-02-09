@@ -302,6 +302,9 @@ FakesAssemblies/
 node_modules/
 package-lock.json
 
+# Uploaded clinic verification files (local dev)
+src/public/uploads/
+
 # Visual Studio 6 build log
 *.plg
 

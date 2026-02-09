@@ -1,113 +1,149 @@
-<div class="space-y-6">
-    <!-- Manage Doctors Section -->
-    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-        <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6 flex justify-between items-center">
-            <span><i class="fa-solid fa-user-doctor mr-2 text-accent-green"></i>Manage Doctors</span>
-            <button id="open-doctor-modal"
-                class="bg-accent-green hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition duration-150 shadow-md">
-                <i class="fa-solid fa-plus mr-1"></i>Add Doctor
+<div class="space-y-8">
+    <!-- Manage Doctors -->
+    <div class="card p-6 md:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </span>
+                Doctors
+            </h2>
+            <button id="open-doctor-modal" type="button"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white bg-accent-green hover:bg-emerald-600 transition shadow-soft btn-hover-scale">
+                <i class="fa-solid fa-plus"></i>
+                Add doctor
             </button>
-        </h2>
-
-        <div class="space-y-4">
-            <% if (doctors && doctors.length > 0) { %>
-                <% doctors.forEach((doctor)=> { %>
-                    <div class="p-4 bg-accent-green/10 border border-accent-green/20 rounded-lg flex justify-between items-start">
-                        <div class="flex-1">
-                            <p class="font-semibold text-lg text-accent-green">Dr. <%= doctor.name %></p>
-                            <p class="text-sm text-gray-600 mt-1">Speciality: <strong><%= doctor.speciality %></strong></p>
-                            <p class="text-xs text-gray-500 mt-2"><%= doctor.description %></p>
-                        </div>
-                        <div class="ml-4">
-                            <form action="/clinic/doctor/delete" method="post" class="bg-red-200 text-red-800 rounded-md text-sm hover:bg-red-100 hover:text-red-700">
-                                <input type="hidden" name="redirectTab" value="doctors">
-                                <input type="text" name="doctorId" value="<%= doctor._id  %>" hidden>
-                                <button type="submit" class="px-3 py-1 transition">
-                                    <i class="fa-solid fa-trash mr-1"></i>Delete
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <% }) %>
-            <% } else { %>
-                <p class="text-gray-500 text-center py-8">No doctors added yet. Click "Add Doctor" to get started.</p>
-            <% } %>
         </div>
+
+        <% if (doctors && doctors.length > 0) { %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <% doctors.forEach((doctor)=> { %>
+            <div class="group relative p-5 rounded-xl border-2 border-gray-100 bg-gray-50/50 hover:border-accent-green/30 hover:bg-accent-green/5 transition">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-bold text-gray-900 text-lg">Dr. <%= doctor.name %></p>
+                        <p class="text-sm text-gray-600 mt-0.5">
+                            <span class="font-medium text-accent-green"><%= doctor.speciality %></span>
+                        </p>
+                        <% if (doctor.description) { %>
+                        <p class="text-sm text-gray-500 mt-2 line-clamp-2"><%= doctor.description %></p>
+                        <% } %>
+                    </div>
+                    <form action="/clinic/doctor/delete" method="post" class="shrink-0">
+                        <input type="hidden" name="redirectTab" value="doctors">
+                        <input type="hidden" name="doctorId" value="<%= doctor._id %>">
+                        <button type="submit" onclick="return confirm('Remove Dr. <%= doctor.name %>? This cannot be undone.');"
+                            class="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition" title="Delete doctor">
+                            <i class="fa-solid fa-trash text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <div class="text-center py-12 px-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50">
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-200 text-gray-400 mb-4">
+                <i class="fa-solid fa-user-doctor text-2xl"></i>
+            </span>
+            <p class="text-gray-600 font-medium">No doctors yet</p>
+            <p class="text-sm text-gray-500 mt-1">Add your first doctor to start managing appointments.</p>
+            <button type="button" id="open-doctor-modal-empty" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white bg-accent-green hover:bg-emerald-600 transition">
+                <i class="fa-solid fa-plus"></i> Add doctor
+            </button>
+        </div>
+        <% } %>
     </div>
 
-    <!-- Time Slots Section -->
-    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-        <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">
-            <i class="fa-solid fa-clock mr-2 text-accent-green"></i>Time Slots
+    <!-- Time Slots -->
+    <div class="card p-6 md:p-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+                <i class="fa-solid fa-clock"></i>
+            </span>
+            Time slots
         </h2>
 
-        <form method="post" action="/clinic/doctor/time"
-            class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mb-6">
+        <form method="post" action="/clinic/doctor/time" class="card p-4 mb-6 bg-gray-50/50 border border-gray-100">
             <input type="hidden" name="redirectTab" value="doctors">
-            <div class="flex flex-grow gap-4 col-span-5">
-                <div class="w-1/3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
-                    <input type="time" name="time" value="09:00"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm"
-                        required>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input type="time" name="time" value="09:00" required
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm transition">
                 </div>
-                <div class="w-1/3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Limit People</label>
-                    <input type="number" name="limit" min="1" value="10"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm"
-                        required>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Max people</label>
+                    <input type="number" name="limit" min="1" value="10" required
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm transition">
                 </div>
-                <div class="w-1/3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Doctor</label>
-                    <select name="doctorId"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border text-sm">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                    <select name="doctorId" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green text-sm bg-white transition"
+                        <%- (!doctors || doctors.length == 0) ? 'disabled' : '' %>>
                         <% if (doctors && doctors.length > 0) { %>
                             <% doctors.forEach(doctor=> { %>
-                                <option value="<%= doctor._id %>"><%= doctor.name %></option>
+                                <option value="<%= doctor._id %>">Dr. <%= doctor.name %></option>
                             <% }) %>
                         <% } else { %>
-                            <option disabled>No doctors available</option>
+                            <option>No doctors</option>
                         <% } %>
                     </select>
                 </div>
+                <div>
+                    <button type="submit" <%- (!doctors || doctors.length == 0) ? 'disabled' : '' %>
+                        class="w-full py-2.5 rounded-xl font-semibold text-white transition
+                        <%- (!doctors || doctors.length == 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent-green hover:bg-emerald-600' %>">
+                        <i class="fa-solid fa-plus mr-2"></i> Add slot
+                    </button>
+                </div>
             </div>
-            <button type="submit" <%- (!doctors || doctors.length == 0) ? 'disabled' : '' %>
-                class="md:col-span-1 <%- (!doctors || doctors.length == 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent-green hover:bg-green-600' %> text-white font-medium py-2.5 rounded-lg transition duration-150 shadow-md">
-                <i class="fa-solid fa-plus mr-1"></i>Add Slot
-            </button>
         </form>
 
-        <div class="text-sm text-gray-600">
-            <p class="font-semibold mb-3">Available Time Slots:</p>
+        <div>
+            <p class="text-sm font-semibold text-gray-700 mb-3">Current slots</p>
+            <% const hasAnySlots = doctors && doctors.length > 0 && doctors.some(d => d.time && d.time.length > 0); %>
+            <% if (hasAnySlots) { %>
             <ul class="space-y-2">
-                <% if (doctors && doctors.length > 0) { %>
-                    <% doctors.forEach(doctor=> { %>
-                        <% if (doctor.time && doctor.time.length > 0) { %>
-                            <% doctor.time.forEach(t=> { %>
-                                <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                    <span>
-                                        <strong><%= typeof t === 'string' ? t : t.time %></strong>
-                                        <span class="text-gray-500 ml-2">(Limit: <%= typeof t === 'string' ? '10' : t.limit || 10 %>)</span>
-                                        <span class="text-gray-500">(Dr. <%= doctor.name %>)</span>
-                                    </span>
-                                    <form action="/clinic/doctor/time/delete" method="post" class="inline">
-                                        <input type="hidden" name="redirectTab" value="doctors">
-                                        <input type="text" name="doctorId" value="<%= doctor._id %>" hidden>
-                                        <input type="text" name="time" value="<%= typeof t === 'string' ? t : t.time %>" hidden>
-                                        <button type="submit" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50 transition">
-                                            <i class="fa-solid fa-times mr-1"></i>Remove
-                                        </button>
-                                    </form>
-                                </li>
-                            <% }) %>
-                        <% } %>
-                    <% }) %>
-                <% } %>
-                <% if (!doctors || doctors.length == 0 || (doctors && doctors.every(d => !d.time || d.time.length == 0))) { %>
-                    <li class="text-gray-500 text-center py-4">No time slots added yet.</li>
-                <% } %>
+                <% doctors.forEach(doctor=> { %>
+                    <% if (doctor.time && doctor.time.length > 0) { %>
+                        <% doctor.time.forEach(t=> { %>
+                        <li class="flex flex-wrap items-center justify-between gap-3 py-3 px-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100/80 transition">
+                            <span class="flex items-center gap-2 text-sm">
+                                <span class="font-semibold text-gray-900"><%= typeof t === 'string' ? t : t.time %></span>
+                                <span class="text-gray-500">·</span>
+                                <span class="text-gray-600">Dr. <%= doctor.name %></span>
+                                <span class="text-gray-400 text-xs">(max <%= typeof t === 'string' ? '10' : (t.limit || 10) %>)</span>
+                            </span>
+                            <form action="/clinic/doctor/time/delete" method="post" class="inline">
+                                <input type="hidden" name="redirectTab" value="doctors">
+                                <input type="hidden" name="doctorId" value="<%= doctor._id %>">
+                                <input type="hidden" name="time" value="<%= typeof t === 'string' ? t : t.time %>">
+                                <button type="submit" class="text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded-lg transition font-medium">
+                                    <i class="fa-solid fa-trash-can mr-1"></i> Remove
+                                </button>
+                            </form>
+                        </li>
+                        <% }) %>
+                    <% } %>
+                <% }) %>
             </ul>
+            <% } else { %>
+            <div class="py-8 px-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-center">
+                <i class="fa-solid fa-clock text-2xl text-gray-300 mb-2"></i>
+                <p class="text-gray-500 text-sm">No time slots yet. Add a slot above to get started.</p>
+            </div>
+            <% } %>
         </div>
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var emptyBtn = document.getElementById('open-doctor-modal-empty');
+        if (emptyBtn) emptyBtn.addEventListener('click', function() {
+            var modal = document.getElementById('add-doctor-modal');
+            if (modal) modal.classList.remove('hidden');
+        });
+    });
+</script>

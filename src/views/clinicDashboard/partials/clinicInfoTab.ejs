@@ -1,63 +1,72 @@
-<div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-    <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6 flex items-center">
-        <!-- <i class="fa-solid fa-building mr-2 text-accent-green"></i> -->
-        Clinic Information
+<div class="card p-6 md:p-8">
+    <h2 class="text-xl font-bold text-gray-900 border-b border-gray-100 pb-4 mb-6 flex items-center gap-2">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+            <i class="fa-solid fa-building"></i>
+        </span>
+        Clinic information
     </h2>
 
-    <form method="post" action="/clinic/update">
+    <form method="post" action="/clinic/update" enctype="multipart/form-data">
         <input type="hidden" name="redirectTab" value="clinic-info">
         <div class="mb-6">
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                Description
-            </label>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <textarea name="description" id="description" rows="4"
                 placeholder="A detailed summary of the clinic, its mission, and what it offers..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green transition"
                 required><%= dataClinic.description || '' %></textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
-                    Address
-                </label>
+                <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
                 <input name="address" value="<%= dataClinic.address || '' %>" type="text" id="location"
                     placeholder="123 Health Ave, City, Zip"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border" required>
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green transition" required>
             </div>
             <div>
-                <label for="hours" class="block text-sm font-medium text-gray-700 mb-2">
-                    Opening Hours
-                </label>
+                <label for="hours" class="block text-sm font-medium text-gray-700 mb-2">Opening hours</label>
                 <input name="opening" value="<%= dataClinic.opening || '' %>" type="text" id="hours"
-                    placeholder="Mon-Fri: 9:00 AM - 5:00 PM; Sat: 10:00 AM - 2:00 PM"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border" required>
+                    placeholder="Mon–Fri: 9:00 AM – 5:00 PM"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green transition" required>
             </div>
-
             <div>
-                <label for="googleMapLink" class="block text-sm font-medium text-gray-700 mb-2">
-                    Google Maps Link
-                </label>
+                <label for="googleMapLink" class="block text-sm font-medium text-gray-700 mb-2">Google Maps link</label>
                 <input name="googleMapLink" value="<%= dataClinic.googleMapLink || '' %>" type="url" id="googleMapLink"
                     placeholder="https://maps.google.com/..."
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border">
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green transition">
             </div>
             <div>
-                <label for="speciality" class="block text-sm font-medium text-gray-700 mb-2">
-                    Speciality
-                </label>
+                <label for="speciality" class="block text-sm font-medium text-gray-700 mb-2">Speciality</label>
                 <input name="speciality" value="<%= tags || '' %>" type="text" id="speciality"
-                    placeholder="Cardiology, General Medicine, Pediatrics, Orthopedics"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-accent-green focus:ring-accent-green p-2 border" required>
+                    placeholder="Cardiology, General Medicine, Pediatrics"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green transition" required>
             </div>
         </div>
+
+        <div class="mt-6 pt-6 border-t border-gray-100">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fa-solid fa-file-certificate text-accent-green mr-1"></i>
+                License / verification document
+            </label>
+            <p class="text-xs text-gray-500 mb-2">Upload a photo or PDF of your clinic license or any verification (max 10 MB). Images: JPG, PNG, GIF, WebP. Optional.</p>
+            <% if (dataClinic.verificationDocument) { %>
+            <div class="mb-3 flex items-center gap-3">
+                <span class="text-sm text-gray-600">Current file:</span>
+                <a href="<%= dataClinic.verificationDocument %>" target="_blank" rel="noopener"
+                    class="inline-flex items-center gap-2 text-sm font-medium text-accent-green hover:underline">
+                    <i class="fa-solid fa-external-link"></i> View document
+                </a>
+            </div>
+            <% } %>
+            <input type="file" name="verificationDocument" id="verificationDocument" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf"
+                class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-green/10 file:text-accent-green hover:file:bg-accent-green/20">
+        </div>
+
         <div class="mt-6">
             <button type="submit"
-                class="bg-accent-green hover:bg-green-700 text-white py-3 px-8 rounded-lg text-sm font-medium transition duration-150 shadow-md">
-                <!-- <i class="fa-solid fa-save mr-2"></i> -->
-                Update Information
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white bg-accent-green hover:bg-emerald-600 transition shadow-soft">
+                <i class="fa-solid fa-save"></i> Update information
             </button>
         </div>
     </form>
 </div>
-

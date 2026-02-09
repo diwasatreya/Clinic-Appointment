@@ -104,12 +104,18 @@ const updateClinic = async (req, res) => {
 
         if (!req.user) return res.redirect('/');
 
-        const updateData = await updateDataClinic(req.user, form);
+        const verificationPath = req.file
+            ? `/uploads/clinic-verification/${req.file.filename}`
+            : undefined;
 
-        return res.redirect('/clinic/dashboard');
+        const updateData = await updateDataClinic(req.user, form, verificationPath);
+
+        if (!updateData) return res.redirect('/clinic/dashboard?tab=clinic-info&error=' + encodeURIComponent('Failed to update. Please try again.'));
+
+        return res.redirect('/clinic/dashboard?tab=clinic-info&success=' + encodeURIComponent('Clinic info updated.'));
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard');
+        return res.redirect('/clinic/dashboard?tab=clinic-info&error=' + encodeURIComponent('Failed to update. Please try again.'));
     }
 }
 
@@ -122,10 +128,10 @@ const addClinicDoctor = async (req, res) => {
         const newDoctor = await addNewDoctor(form, req.user.id);
 
         const redirectTab = form.redirectTab || 'doctors';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Doctor added.')}`);
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=doctors');
+        return res.redirect('/clinic/dashboard?tab=doctors&error=' + encodeURIComponent('Failed to add doctor.'));
     }
 }
 
@@ -135,11 +141,11 @@ const deleteClinicDoctor = async (req, res) => {
 
         await deleteDoctor(form.doctorId);
         const redirectTab = form.redirectTab || 'doctors';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Doctor removed.')}`);
 
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=doctors');
+        return res.redirect('/clinic/dashboard?tab=doctors&error=' + encodeURIComponent('Failed to remove doctor.'));
     }
 };
 
@@ -149,11 +155,11 @@ const addDoctorTime = async (req, res) => {
         await createDoctorTime(form)
 
         const redirectTab = form.redirectTab || 'doctors';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Time slot added.')}`);
 
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=doctors');
+        return res.redirect('/clinic/dashboard?tab=doctors&error=' + encodeURIComponent('Failed to add time slot.'));
     }
 };
 
@@ -164,10 +170,10 @@ const deleteDoctorTime = async (req, res) => {
         await removeDoctorTime(form);
 
         const redirectTab = form.redirectTab || 'doctors';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Time slot removed.')}`);
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=doctors');
+        return res.redirect('/clinic/dashboard?tab=doctors&error=' + encodeURIComponent('Failed to remove time slot.'));
     }
 }
 
@@ -181,10 +187,10 @@ const toggleClinicStatus = async (req, res) => {
         await updateClinicStatus(req.user.id, newStatus);
 
         const redirectTab = req.body.redirectTab || 'settings';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Status updated.')}`);
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=settings');
+        return res.redirect('/clinic/dashboard?tab=settings&error=' + encodeURIComponent('Failed to update status.'));
     }
 };
 
@@ -195,10 +201,10 @@ const sendForApproval = async (req, res) => {
         await requestClinicApproval(req.user.id);
 
         const redirectTab = req.body.redirectTab || 'settings';
-        return res.redirect(`/clinic/dashboard?tab=${redirectTab}`);
+        return res.redirect(`/clinic/dashboard?tab=${redirectTab}&success=${encodeURIComponent('Sent for approval.')}`);
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=settings');
+        return res.redirect('/clinic/dashboard?tab=settings&error=' + encodeURIComponent('Failed to send.'));
     }
 };
 
@@ -212,10 +218,10 @@ const approveAppointment = async (req, res) => {
         
         await updateAppointmentStatus(appointmentId, "Approved");
         
-        return res.redirect('/clinic/dashboard?tab=appointments');
+        return res.redirect('/clinic/dashboard?tab=appointments&success=' + encodeURIComponent('Appointment approved.'));
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=appointments');
+        return res.redirect('/clinic/dashboard?tab=appointments&error=' + encodeURIComponent('Failed to approve.'));
     }
 };
 
@@ -233,10 +239,10 @@ const cancelAppointment = async (req, res) => {
         
         await updateAppointmentStatus(appointmentId, "Canceled", reason);
         
-        return res.redirect('/clinic/dashboard?tab=appointments');
+        return res.redirect('/clinic/dashboard?tab=appointments&success=' + encodeURIComponent('Appointment cancelled.'));
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=appointments');
+        return res.redirect('/clinic/dashboard?tab=appointments&error=' + encodeURIComponent('Failed to cancel.'));
     }
 };
 
@@ -250,10 +256,10 @@ const completeAppointment = async (req, res) => {
         
         await updateAppointmentStatus(appointmentId, "Completed");
         
-        return res.redirect('/clinic/dashboard?tab=' + (req.body.redirectTab || 'overview'));
+        return res.redirect('/clinic/dashboard?tab=' + (req.body.redirectTab || 'overview') + '&success=' + encodeURIComponent('Appointment marked complete.'));
     } catch (error) {
         console.error(error);
-        return res.redirect('/clinic/dashboard?tab=overview');
+        return res.redirect('/clinic/dashboard?tab=overview&error=' + encodeURIComponent('Failed to complete.'));
     }
 };
 

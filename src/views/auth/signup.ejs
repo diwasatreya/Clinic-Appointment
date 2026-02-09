@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - FindaCare</title>
+    <title>Sign up – FindaCare</title>
     <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Tailwind CSS CDN and Professional Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../js/tailwind.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Ensures the content is vertically centered */
         body {
             min-height: 100vh;
             display: flex;
@@ -22,7 +19,7 @@
             justify-content: center;
             align-items: center;
             padding: 2rem;
-            background-image: linear-gradient(to bottom right, #F9FAFB, #E5E7EB);
+            background: linear-gradient(to bottom, #f8fafc, #e5f7e3);
         }
 
         main {
@@ -32,119 +29,83 @@
             align-items: center;
             width: 100%;
         }
-
-        /* Focus styles for inputs */
-        .form-input-focus:focus {
-            --tw-ring-color: #059669;
-            /* accent-green */
-            border-color: #059669;
-            /* accent-green */
-            outline: 2px solid transparent;
-            outline-offset: 2px;
-            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
-        }
     </style>
 </head>
 
-<body class="font-sans text-text-dark">
+<body class="font-sans antialiased text-gray-900">
+    <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>
 
     <main>
-        <div
-            class="w-full max-w-xl bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-8 border-accent-green transform transition duration-500 ease-in-out">
+        <div class="w-full max-w-xl bg-white p-8 sm:p-10 rounded-2xl shadow-soft-lg border border-gray-100">
             <div class="text-center mb-8">
-                <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
-                <a href="/" class="text-3xl font-extrabold text-accent-green tracking-tight">
-                    FindaCare
+                <a href="/" class="inline-flex items-center gap-2 text-accent-green hover:text-emerald-600 transition">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-green/10">
+                        <i class="fa-solid fa-heart-pulse text-xl"></i>
+                    </span>
+                    <span class="text-2xl font-bold">FindaCare</span>
                 </a>
-                <h2 class="mt-4 text-2xl font-bold text-text-dark">
-                    Choose Your Registration Type
-                </h2>
-                <p class="mt-2 text-sm text-gray-600">
-                    Already registered?
-                    <a href="/auth/login" class="font-medium text-primary-blue hover:text-primary-hover">
-                        Log in here
-                    </a>
+                <h1 class="mt-6 text-2xl font-bold text-gray-900">Create account</h1>
+                <p class="mt-2 text-sm text-gray-500">
+                    Already have one? <a href="/auth/login" class="font-medium text-accent-green hover:underline">Log
+                        in</a>
                 </p>
             </div>
 
-            <% if (typeof error !== 'undefined' && error) { %>
-            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p class="text-sm text-red-800 flex items-center">
-                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+            <% if (typeof error !=='undefined' && error) { %>
+                <div
+                    class="mb-4 p-3 bg-red-50 border border-red-100 rounded-xl flex items-center gap-2 text-sm text-red-800">
+                    <i class="fa-solid fa-circle-exclamation text-red-500"></i>
                     <%= error %>
-                </p>
-            </div>
-            <% } %>
+                </div>
+                <% } %>
 
-            <!-- Role Toggle Switch -->
-            <div class="flex p-1 mb-8 bg-gray-100 rounded-xl shadow-inner max-w-md mx-auto">
-                <button id="patient-btn" type="button"
-                    class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 bg-accent-green text-white shadow-md">
-                    Patient Signup
-                </button>
-                <button id="clinic-btn" type="button"
-                    class="role-btn w-1/2 py-3 text-sm font-semibold rounded-lg transition duration-300 text-gray-600 hover:text-text-dark">
-                    Clinic Registration
-                </button>
-            </div>
+                    <div class="flex p-1 mb-6 bg-gray-100 rounded-xl max-w-md mx-auto">
+                        <button id="patient-btn" type="button"
+                            class="role-btn flex-1 py-3 text-sm font-semibold rounded-lg transition bg-accent-green text-white shadow-soft">
+                            Patient
+                        </button>
+                        <button id="clinic-btn" type="button"
+                            class="role-btn flex-1 py-3 text-sm font-semibold rounded-lg transition text-gray-600 hover:text-gray-900">
+                            Clinic
+                        </button>
+                    </div>
 
-
-            <!-- Patient Signup Form -->
-            <%- include('../particles/userForm') %>
-
-                <!-- Clinic Registration Form -->
-                <%- include('../particles/clinicForm') %>
+                    <%- include('../particles/userForm') %>
+                        <%- include('../particles/clinicForm') %>
         </div>
     </main>
 
-    <!-- Simple Footer -->
-    <footer class="text-center text-xs text-gray-500 py-4 w-full">
-        © 2025 FindaCare.
-    </footer>
+    <footer class="text-center text-xs text-gray-500 py-4 w-full">© <%= new Date().getFullYear() %> FindaCare</footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const patientBtn = document.getElementById('patient-btn');
-            const clinicBtn = document.getElementById('clinic-btn');
-            const patientForm = document.getElementById('patient-form-container');
-            const clinicForm = document.getElementById('clinic-form-container');
-
-            // Function to handle the role switch
-            const switchRole = (role) => {
-                if (role === 'patient') {
-                    // Update button styles
-                    patientBtn.classList.add('bg-accent-green', 'text-white', 'shadow-md');
-                    patientBtn.classList.remove('text-gray-600', 'hover:text-text-dark');
-
-                    clinicBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-md');
-                    clinicBtn.classList.add('text-gray-600', 'hover:text-text-dark');
-
-                    // Show patient form, hide clinic form
-                    patientForm.classList.remove('hidden');
-                    clinicForm.classList.add('hidden');
-                } else {
-                    // Update button styles
-                    clinicBtn.classList.add('bg-accent-green', 'text-white', 'shadow-md');
-                    clinicBtn.classList.remove('text-gray-600', 'hover:text-text-dark');
-
-                    patientBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-md');
-                    patientBtn.classList.add('text-gray-600', 'hover:text-text-dark');
-
-                    // Show clinic form, hide patient form
-                    clinicForm.classList.remove('hidden');
-                    patientForm.classList.add('hidden');
-                }
-            };
-
-            // Event listeners for role buttons
-            patientBtn.addEventListener('click', () => switchRole('patient'));
-            clinicBtn.addEventListener('click', () => switchRole('clinic'));
-
-            // Initial state: use formType from server or default to 'user'
-            const initialType = '<%= typeof formType !== "undefined" ? formType : "user" %>';
-            switchRole(initialType === 'clinic' ? 'clinic' : 'patient');
+        document.addEventListener('DOMContentLoaded', function () {
+            var patientBtn = document.getElementById('patient-btn');
+            var clinicBtn = document.getElementById('clinic-btn');
+            var patientForm = document.getElementById('patient-form-container');
+            var clinicForm = document.getElementById('clinic-form-container');
+            function setPatient() {
+                patientBtn.classList.add('bg-accent-green', 'text-white', 'shadow-soft');
+                patientBtn.classList.remove('text-gray-600');
+                clinicBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-soft');
+                clinicBtn.classList.add('text-gray-600');
+                patientForm.classList.remove('hidden');
+                clinicForm.classList.add('hidden');
+            }
+            function setClinic() {
+                clinicBtn.classList.add('bg-accent-green', 'text-white', 'shadow-soft');
+                clinicBtn.classList.remove('text-gray-600');
+                patientBtn.classList.remove('bg-accent-green', 'text-white', 'shadow-soft');
+                patientBtn.classList.add('text-gray-600');
+                clinicForm.classList.remove('hidden');
+                patientForm.classList.add('hidden');
+            }
+            patientBtn.addEventListener('click', setPatient);
+            clinicBtn.addEventListener('click', setClinic);
+            var initial = '<%= typeof formType !== "undefined" ? formType : "user" %>';
+            (initial === 'clinic' ? setClinic : setPatient)();
         });
     </script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

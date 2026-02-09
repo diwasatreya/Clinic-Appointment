@@ -1,139 +1,135 @@
-<header class="bg-white shadow-md sticky top-0 z-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+<header class="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10 shadow-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-2 flex-shrink-0 group">
+            <span
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green text-white shadow-soft group-hover:bg-emerald-600 transition">
+                <i class="fa-solid fa-heart-pulse text-lg"></i>
+            </span>
+            <span class="text-xl font-bold text-gray-900 tracking-tight">FindaCare</span>
+        </a>
 
-        <div class="flex items-center w-auto md:w-1/4 flex-shrink-0">
-            <i class="fa-solid fa-heart-pulse text-3xl text-accent-green mr-2"></i>
-            <h1 class="text-3xl font-extrabold text-gray-800"><a href="/">FindaCare</a></h1>
-        </div>
-
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex flex-grow justify-center space-x-8 text-gray-600 font-medium">
-            <a href="/" class="hover:text-accent-green transition duration-150 flex items-center">
-                Home
-            </a>
-            <% if(typeof user !=='undefined' && user && user.role === 'clinic') { %>
-            <a href="/clinic/dashboard" class="hover:text-accent-green transition duration-150 flex items-center">
-                <i class="fa-solid fa-gauge-high mr-1"></i>Dashboard
-            </a>
-            <% } else { %>
-            <a href="/appointments" class="hover:text-accent-green transition duration-150 flex items-center">
-               Appointments
-            </a>
-            <% } %>
-            <a href="/contact" class="hover:text-accent-green transition duration-150 flex items-center">
-                Contact
-            </a>
-        </nav>
-
-        <div class="flex items-center space-x-4 w-auto md:w-1/4 justify-end flex-shrink-0">
-
-            <!-- Desktop Auth Links (Hidden on mobile) -->
-            <div class="hidden md:flex items-center space-x-4">
-                <% if(typeof user !=='undefined' && user) { %>
-                    <% if(user.role === 'clinic') { %>
-                    <a href="/clinic/dashboard"
-                        class="hover:text-accent-green font-medium transition duration-150 hidden lg:inline-block">
-                        <i class="fa-solid fa-gauge-high mr-1"></i>
-                        <%= user.username %>
-                    </a>
-                    <% } else { %>
-                    <a href="/<%= user.id %>"
-                        class="hover:text-accent-green font-medium transition duration-150 hidden lg:inline-block">
-                        <i class="fa-solid fa-user-circle mr-1"></i>
-                        <%= user.username %>
+        <nav class="hidden md:flex items-center gap-1 flex-grow justify-center">
+            <a href="/"
+                class="px-4 py-2 rounded-lg text-gray-600 font-medium hover:text-accent-green hover:bg-accent-green/5 transition">Home</a>
+            <% if(typeof user !=='undefined' && user && user.role==='clinic' ) { %>
+                <a href="/clinic/dashboard"
+                    class="px-4 py-2 rounded-lg text-gray-600 font-medium hover:text-accent-green hover:bg-accent-green/5 transition flex items-center gap-2">
+                    <i class="fa-solid fa-gauge-high text-sm"></i> Dashboard
+                </a>
+                <% } else { %>
+                    <a href="/appointments"
+                        class="px-4 py-2 rounded-lg text-gray-600 font-medium hover:text-accent-green hover:bg-accent-green/5 transition flex items-center gap-2">
+                        Appointments
                     </a>
                     <% } %>
-                    <a href="/auth/logout"
-                        class="bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition duration-150 shadow-md btn-hover-scale text-sm">
-                        Logout
-                    </a>
-                    <% } else { %>
-                        <a href="/auth/login"
-                            class="hover:text-accent-green transition duration-150 hidden sm:inline-block">
-                            Login
-                        </a>
-                        <a href="/auth/signup"
-                            class="bg-accent-green text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition duration-150 shadow-md btn-hover-scale text-sm">
-                            Signup
-                        </a>
-                        <% } %>
-            </div>
+                        <a href="/contact"
+                            class="px-4 py-2 rounded-lg text-gray-600 font-medium hover:text-accent-green hover:bg-accent-green/5 transition">Contact</a>
+        </nav>
 
-            <!-- Mobile Menu Button (Visible on mobile, hidden on md+) -->
+        <div class="flex items-center gap-3 flex-shrink-0">
+            <div class="hidden md:flex items-center gap-3">
+                <% if(typeof user !=='undefined' && user) { %>
+                    <% if(user.role==='clinic' ) { %>
+                        <a href="/clinic/dashboard"
+                            class="hidden lg:inline-flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition">
+                            <i class="fa-solid fa-building text-accent-green"></i>
+                            <%= user.username %>
+                        </a>
+                        <% } else { %>
+                            <a href="/<%= user.id %>"
+                                class="hidden lg:inline-flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition">
+                                <i class="fa-solid fa-user text-accent-green"></i>
+                                <%= user.username %>
+                            </a>
+                            <% } %>
+                                <a href="/auth/logout"
+                                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-soft btn-hover-scale">
+                                    <i class="fa-solid fa-right-from-bracket text-xs"></i> Logout
+                                </a>
+                                <% } else { %>
+                                    <a href="/auth/login"
+                                        class="hidden sm:inline-flex text-gray-600 font-medium hover:text-accent-green transition">Login</a>
+                                    <a href="/auth/signup"
+                                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-accent-green hover:bg-emerald-600 transition shadow-soft btn-hover-scale">
+                                        Sign up
+                                    </a>
+                                    <% } %>
+            </div>
             <button id="mobile-menu-toggle-button"
-                class="md:hidden text-gray-700 text-2xl p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                <i class="fa-solid fa-bars"></i>
+                class="md:hidden p-2.5 rounded-xl text-gray-600 hover:bg-gray-100 transition" aria-label="Open menu">
+                <i class="fa-solid fa-bars text-xl"></i>
             </button>
         </div>
     </div>
 </header>
 
-<!-- Mobile Menu Overlay -->
+<!-- Mobile menu -->
 <div id="mobile-menu"
-    class="fixed inset-0 bg-white z-20 transform -translate-x-full transition-transform duration-300 md:hidden p-6 shadow-2xl overflow-y-auto">
-    <div class="flex justify-between items-center border-b pb-4 mb-4">
-        <div class="flex items-center">
-            <i class="fa-solid fa-heart-pulse text-2xl text-accent-green mr-2"></i>
-            <span class="text-2xl font-extrabold text-gray-800">FindaCare</span>
+    class="fixed inset-0 bg-white z-20 transform -translate-x-full transition-transform duration-300 md:hidden overflow-y-auto">
+    <div class="p-6 flex flex-col min-h-full">
+        <div class="flex justify-between items-center mb-8">
+            <a href="/" class="flex items-center gap-2">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green text-white">
+                    <i class="fa-solid fa-heart-pulse text-lg"></i>
+                </span>
+                <span class="text-xl font-bold text-gray-900">FindaCare</span>
+            </a>
+            <button id="mobile-menu-close-button" class="p-2.5 rounded-xl text-gray-600 hover:bg-gray-100 transition"
+                aria-label="Close menu">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
-        <button id="mobile-menu-close-button"
-            class="text-gray-600 text-2xl p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-    </div>
-
-    <nav class="flex flex-col space-y-3 text-lg text-gray-700 font-medium mb-8">
-        <a href="/" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-            <i class="fa-solid fa-home mr-3 w-5"></i> Home
-        </a>
-        <% if(typeof user !=='undefined' && user && user.role === 'clinic') { %>
-        <a href="/clinic/dashboard" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-            <i class="fa-solid fa-gauge-high mr-3 w-5"></i> Dashboard
-        </a>
-        <% } else { %>
-        <a href="/appointments" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-            <i class="fa-solid fa-calendar-alt mr-3 w-5"></i> My Appointments
-        </a>
-        <% } %>
-        <a href="/contact" class="p-3 rounded-lg hover:bg-gray-50 transition duration-150 flex items-center">
-            <i class="fa-solid fa-envelope mr-3 w-5"></i> Contact Us
-        </a>
-    </nav>
-
-    <div class="pt-4 border-t space-y-4">
-        <% if(typeof user !=='undefined' && user) { %>
-            <% if(user.role === 'clinic') { %>
-            <a href="/clinic/dashboard"
-                class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
-                <i class="fa-solid fa-gauge-high mr-1"></i>
-                Dashboard (<%= user.username %>)
+        <nav class="flex flex-col gap-1 mb-8">
+            <a href="/"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-accent-green/10 hover:text-accent-green transition">
+                <i class="fa-solid fa-home w-5 text-center"></i> Home
             </a>
-            <% } else { %>
-            <a href="/<%= user.id %>"
-                class="block text-center bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-150">
-                <i class="fa-solid fa-user-circle mr-1"></i>
-                Profile (<%= user.username %>)
-            </a>
-            <% } %>
-            <a href="/auth/logout"
-                class="block text-center bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-150 shadow-md">
-                <i class="fa-solid fa-sign-out-alt mr-1"></i>
-                Logout
-            </a>
-            <% } else { %>
-                <a href="/auth/login"
-                    class="block text-center bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">
-                    <i class="fa-solid fa-sign-in-alt mr-1"></i>
-                    Login
+            <% if(typeof user !=='undefined' && user && user.role==='clinic' ) { %>
+                <a href="/clinic/dashboard"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-accent-green/10 hover:text-accent-green transition">
+                    <i class="fa-solid fa-gauge-high w-5 text-center"></i> Dashboard
                 </a>
-                <a href="/auth/signup"
-                    class="block text-center bg-accent-green text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-150 shadow-md">
-                    <i class="fa-solid fa-user-plus mr-1"></i>
-                    Sign Up
-                </a>
-                <% } %>
+                <% } else { %>
+                    <a href="/appointments"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-accent-green/10 hover:text-accent-green transition">
+                        <i class="fa-solid fa-calendar-days w-5 text-center"></i> My Appointments
+                    </a>
+                    <% } %>
+                        <a href="/contact"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-accent-green/10 hover:text-accent-green transition">
+                            <i class="fa-solid fa-envelope w-5 text-center"></i> Contact
+                        </a>
+        </nav>
+        <div class="mt-auto pt-6 border-t border-gray-200 space-y-2">
+            <% if(typeof user !=='undefined' && user) { %>
+                <% if(user.role==='clinic' ) { %>
+                    <a href="/clinic/dashboard"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-semibold">
+                        <i class="fa-solid fa-building text-accent-green"></i>
+                        <%= user.username %>
+                    </a>
+                    <% } else { %>
+                        <a href="/<%= user.id %>"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-100 text-gray-800 font-semibold">
+                            <i class="fa-solid fa-user text-accent-green"></i> Profile
+                        </a>
+                        <% } %>
+                            <a href="/auth/logout"
+                                class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </a>
+                            <% } else { %>
+                                <a href="/auth/login"
+                                    class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition">
+                                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                                </a>
+                                <a href="/auth/signup"
+                                    class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-accent-green text-white font-semibold hover:bg-emerald-600 transition">
+                                    <i class="fa-solid fa-user-plus"></i> Sign up
+                                </a>
+                                <% } %>
+        </div>
     </div>
 </div>
 
-<!-- Toast Notifications -->
 <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>

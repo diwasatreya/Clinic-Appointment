@@ -1,19 +1,38 @@
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu (only when present)
     const mobileMenu = document.getElementById('mobile-menu');
     const openButton = document.getElementById('mobile-menu-toggle-button');
     const closeButton = document.getElementById('mobile-menu-close-button');
+    if (mobileMenu && (openButton || closeButton)) {
+        const openMenu = () => mobileMenu.classList.remove('-translate-x-full');
+        const closeMenu = () => mobileMenu.classList.add('-translate-x-full');
+        if (openButton) openButton.addEventListener('click', openMenu);
+        if (closeButton) closeButton.addEventListener('click', closeMenu);
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+    }
 
-    const openMenu = () => mobileMenu.classList.remove('-translate-x-full');
-    const closeMenu = () => mobileMenu.classList.add('-translate-x-full');
-
-    if (openButton) openButton.addEventListener('click', openMenu);
-    if (closeButton) closeButton.addEventListener('click', closeMenu);
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', closeMenu);
-    });
+    // Show toasts from URL query (success / error)
+    const container = document.getElementById('toast-container');
+    if (container && typeof showToast === 'function' && window.location.search) {
+        const params = new URLSearchParams(window.location.search);
+        const success = params.get('success');
+        const error = params.get('error');
+        if (success) {
+            showToast(decodeURIComponent(success), 'success');
+        }
+        if (error) {
+            showToast(decodeURIComponent(error), 'error');
+        }
+        if (success || error) {
+            params.delete('success');
+            params.delete('error');
+            const newSearch = params.toString();
+            const url = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            history.replaceState({}, '', url);
+        }
+    }
 });
 
 

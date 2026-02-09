@@ -1,10 +1,16 @@
 import { Router } from "express";
 import { showDashboard, updateClinic, addClinicDoctor, deleteClinicDoctor, addDoctorTime, deleteDoctorTime, toggleClinicStatus, sendForApproval, approveAppointment, cancelAppointment, completeAppointment } from "../controllers/clinic.controller.js";
+import { uploadClinicVerification } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
 router.route('/dashboard').get(showDashboard);
-router.route('/update').post(updateClinic);
+router.route('/update').post((req, res, next) => {
+    uploadClinicVerification(req, res, (err) => {
+        if (err) return res.redirect('/clinic/dashboard?tab=clinic-info&error=' + encodeURIComponent(err.message || 'Invalid file.'));
+        next();
+    });
+}, updateClinic);
 router.route('/doctor/add').post(addClinicDoctor);
 router.route('/doctor/delete').post(deleteClinicDoctor);
 router.route('/doctor/time').post(addDoctorTime);

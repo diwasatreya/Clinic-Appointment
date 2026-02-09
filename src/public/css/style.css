@@ -1,24 +1,110 @@
-        .clinic-list::-webkit-scrollbar {
-            width: 6px;
-        }
+/* FindaCare Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        .clinic-list::-webkit-scrollbar-thumb {
-            background-color: #9ca3af;
-            border-radius: 3px;
-        }
+:root {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-light: #ecfdf5;
+  --surface: #ffffff;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+}
 
-        .clinic-list::-webkit-scrollbar-track {
-            background-color: #f3f4f6;
-        }
+* {
+  font-family: var(--font-sans);
+}
 
-        /* Custom animation for button hover */
-        .btn-hover-scale:hover {
-            transform: scale(1.02);
-        }
+/* Layout */
+.min-h-screen-flex {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-        /* Enforce footer to stick to the bottom on short content pages */
-        .min-h-screen-flex {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+/* Cards */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card-hover:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.btn-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius);
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: scale(1.02);
+}
+
+/* Inputs */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: rgba(5, 150, 105, 0.35);
+}
+
+/* Clinic list scrollbar */
+.clinic-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.clinic-list::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 3px;
+}
+
+.clinic-list::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+}
+
+/* Doctor card selection (book appointment) */
+label:has(input[type="radio"]:checked) {
+  border-color: var(--accent) !important;
+  background-color: var(--accent-light) !important;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+}
+
+.doctor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Time slot labels - show when not hidden */
+.time-slot-label:not(.hidden) {
+  display: inline-flex !important;
+}
+
+/* Subtle page background */
+.bg-page {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f9f2 100%);
+}
+
+
+/* Toast container */
+#toast-container {
+  font-family: var(--font-sans);
+}

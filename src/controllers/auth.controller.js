@@ -196,7 +196,7 @@ const updateUser = async (req, res) => {
         }
 
         const updatedUser = await updateUserData(user, form);
-        if (!updatedUser) return res.redirect(`/${user._id.toString()}`);
+        if (!updatedUser) return res.redirect(`/${user._id.toString()}?error=${encodeURIComponent('Update failed. Please try again.')}`);
         const refreshToken = req.cookies.refreshToken;
 
         const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
@@ -208,11 +208,11 @@ const updateUser = async (req, res) => {
 
         req.user = newUser;
 
-        return res.redirect(`/${user._id.toString()}`);
+        return res.redirect(`/${user._id.toString()}?success=${encodeURIComponent('Profile updated successfully.')}`);
 
     } catch (error) {
         console.error(error);
-        return res.redirect('/');
+        return res.redirect('/?error=' + encodeURIComponent('Something went wrong. Please try again.'));
     }
 }
 

@@ -1,39 +1,39 @@
 <% if (clinicDetails && clinicDetails.length > 0) { %>
-    <div class="space-y-6">
-        <% clinicDetails.forEach((item) => { %>
-            <% const clinic = item.clinic || item; %>
-            <% const doctors = item.doctors || []; %>
-            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 class="text-2xl font-bold text-gray-800"><%= clinic.clinicName %></h3>
-                        <p class="text-sm text-gray-500 mt-1">Submitted: <%= new Date(clinic.createdAt).toLocaleDateString() %></p>
-                    </div>
-                    <div class="flex gap-3 flex-wrap items-center">
-                        <form method="post" action="/admin/clinic/approve" class="inline">
-                            <input type="hidden" name="clinicId" value="<%= clinic._id %>">
-                            <button type="submit" 
-                                class="bg-accent-green hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition shadow-md">
-                                <i class="fa-solid fa-check mr-2"></i>Approve
-                            </button>
-                        </form>
-                        <form method="post" action="/admin/clinic/decline" class="inline">
-                            <input type="hidden" name="clinicId" value="<%= clinic._id %>">
-                            <button type="submit" 
-                                class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition shadow-md"
-                                onclick="return confirm('Are you sure you want to decline this clinic? This action cannot be undone.')">
-                                <i class="fa-solid fa-times mr-2"></i>Decline
-                            </button>
-                        </form>
-                    </div>
+<div class="space-y-6">
+    <% clinicDetails.forEach((item) => { %>
+        <% const clinic = item.clinic || item; %>
+        <% const doctors = item.doctors || []; %>
+        <div class="card p-6">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900"><%= clinic.clinicName %></h3>
+                    <p class="text-sm text-gray-500 mt-1">Submitted <%= new Date(clinic.createdAt).toLocaleDateString() %></p>
                 </div>
-                <%- include('clinicCard', { clinic, doctors }) %>
+                <div class="flex gap-2 flex-wrap">
+                    <form method="post" action="/admin/clinic/approve" class="inline">
+                        <input type="hidden" name="clinicId" value="<%= clinic._id %>">
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-accent-green hover:bg-emerald-600 transition shadow-soft">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                    </form>
+                    <form method="post" action="/admin/clinic/decline" class="inline">
+                        <input type="hidden" name="clinicId" value="<%= clinic._id %>">
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-soft"
+                            onclick="return confirm('Decline this clinic? This cannot be undone.');">
+                            <i class="fa-solid fa-times"></i> Decline
+                        </button>
+                    </form>
+                </div>
             </div>
-        <% }) %>
-    </div>
+            <%- include('clinicCard', { clinic, doctors }) %>
+        </div>
+    <% }) %>
+</div>
 <% } else { %>
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-12 text-center">
-        <i class="fa-solid fa-check-circle text-6xl text-gray-300 mb-4"></i>
-        <p class="text-xl text-gray-600">No pending clinic approvals</p>
-    </div>
+<div class="card p-12 text-center">
+    <span class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 mb-4">
+        <i class="fa-solid fa-check-circle text-3xl"></i>
+    </span>
+    <p class="text-xl text-gray-600">No pending approvals</p>
+</div>
 <% } %>

@@ -3,52 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | FindaCare</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../css/style.css">
-    <style>
-        .accent-green { color: #10b981; }
-        .bg-accent-green { background-color: #10b981; }
-        .hover\:bg-accent-green:hover { background-color: #059669; }
-        .border-accent-green { border-color: #10b981; }
-        .text-accent-green { color: #10b981; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="/js/tailwind.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="bg-gray-50">
-    <div id="admin-sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
-    <div class="flex h-screen">
+<body class="min-h-screen bg-page font-sans antialiased">
+    <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>
+    <div id="admin-sidebar-overlay" class="fixed inset-0 bg-black/40 hidden z-40 md:hidden"></div>
+    <div class="flex min-h-screen">
         <%- include('./partials/sidebar') %>
 
         <div class="flex-1 overflow-y-auto">
-            <div class="p-8">
-                <div class="flex items-center justify-between mb-4 md:hidden">
-                    <button id="open-admin-sidebar-btn" class="p-2 rounded-md bg-white shadow text-gray-700">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6 md:hidden">
+                    <button id="open-admin-sidebar-btn" class="p-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 shadow-soft">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h2 class="text-lg font-semibold">Admin Panel</h2>
-                    <div></div>
+                    <span class="text-lg font-semibold text-gray-900">Admin</span>
+                    <div class="w-10"></div>
                 </div>
 
-                <!-- Header -->
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800">
-                        <% if (tab === 'pending') { %>
-                            Pending Clinic Approvals
-                        <% } else { %>
-                            Manage Clinics
-                        <% } %>
-                    </h2>
-                    <p class="text-gray-600 mt-2">
-                        <% if (tab === 'pending') { %>
-                            Review and approve or decline clinic registrations
-                        <% } else { %>
-                            Search, ban, and manage clinic approvals
-                        <% } %>
+                <header class="mb-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+                        <% if (tab === 'pending') { %>Pending approvals<% } else { %>Manage clinics<% } %>
+                    </h1>
+                    <p class="text-gray-600 mt-1">
+                        <% if (tab === 'pending') { %>Review and approve or decline clinic registrations.<% } else { %>Search, ban, and manage clinic approvals.<% } %>
                     </p>
-                </div>
+                </header>
 
-                <!-- Tab Content -->
                 <% if (tab === 'pending') { %>
                     <%- include('./partials/pendingTab') %>
                 <% } else if (tab === 'manage') { %>
@@ -59,32 +45,27 @@
     </div>
     <script>
         function openAdminSidebar() {
-            const sidebar = document.getElementById('admin-sidebar');
-            const overlay = document.getElementById('admin-sidebar-overlay');
-            if (!sidebar || !overlay) return;
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('fixed', 'inset-y-0', 'left-0');
-            overlay.classList.remove('hidden');
+            var s = document.getElementById('admin-sidebar');
+            var o = document.getElementById('admin-sidebar-overlay');
+            if (s) s.classList.remove('hidden');
+            if (s) s.classList.add('fixed', 'inset-y-0', 'left-0');
+            if (o) o.classList.remove('hidden');
         }
-
         function closeAdminSidebar() {
-            const sidebar = document.getElementById('admin-sidebar');
-            const overlay = document.getElementById('admin-sidebar-overlay');
-            if (!sidebar || !overlay) return;
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('fixed', 'inset-y-0', 'left-0');
-            overlay.classList.add('hidden');
+            var s = document.getElementById('admin-sidebar');
+            var o = document.getElementById('admin-sidebar-overlay');
+            if (s) { s.classList.add('hidden'); s.classList.remove('fixed', 'inset-y-0', 'left-0'); }
+            if (o) o.classList.add('hidden');
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const openBtn = document.getElementById('open-admin-sidebar-btn');
-            const closeBtn = document.getElementById('close-admin-sidebar-btn');
-            const overlay = document.getElementById('admin-sidebar-overlay');
-
+        document.addEventListener('DOMContentLoaded', function() {
+            var openBtn = document.getElementById('open-admin-sidebar-btn');
+            var closeBtn = document.getElementById('close-admin-sidebar-btn');
+            var overlay = document.getElementById('admin-sidebar-overlay');
             if (openBtn) openBtn.addEventListener('click', openAdminSidebar);
             if (closeBtn) closeBtn.addEventListener('click', closeAdminSidebar);
             if (overlay) overlay.addEventListener('click', closeAdminSidebar);
         });
     </script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
