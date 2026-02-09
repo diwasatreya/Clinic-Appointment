@@ -45,7 +45,7 @@ const postLoginPage = async (req, res) => {
         const accessToken = generateJWT({ id: 'admin', username: 'Admin', sid: session._id.toString(), phone: 0, role: "admin" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "admin" }, REFRESH_TOKEN_EXPIRE);
 
-        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+        const baseCookieConfig = { httpOnly: false, secure: false };
 
         res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
@@ -76,7 +76,7 @@ const postLoginPage = async (req, res) => {
         const accessToken = generateJWT({ id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), phone: user.phone, role: "user" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
 
-        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+        const baseCookieConfig = { httpOnly: false, secure: false };
 
         res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
@@ -104,7 +104,7 @@ const postLoginPage = async (req, res) => {
         const accessToken = generateJWT({ id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: clinic.phone, role: "clinic" }, ACCESS_TOKEN_EXPIRE);
         const refreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
 
-        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+        const baseCookieConfig = { httpOnly: false, secure: false };
 
         res.cookie("accessToken", accessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", refreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
@@ -201,7 +201,7 @@ const updateUser = async (req, res) => {
 
         const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
 
-        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+        const baseCookieConfig = { httpOnly: false, secure: false };
 
         res.cookie("accessToken", newAccessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", newRefreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });

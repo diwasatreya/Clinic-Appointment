@@ -4,7 +4,6 @@ import { parseDateTime } from '../utils/util.js';
 const createAppointment = async (form, user) => {
     const { clinicID, checkup_type, selected_doctor, appointment_date, time_slot, reason } = form;
 
-
     try {
         const appoint = new Appointment({
             userId: user.id,
@@ -20,7 +19,9 @@ const createAppointment = async (form, user) => {
 
         return appoint;
     } catch (error) {
-        console.error(error);
+        console.error('createAppointment: Error creating appointment:', error);
+        console.error('createAppointment: Form data:', JSON.stringify(form));
+        console.error('createAppointment: User:', user.id);
         return null;
     }
 }
@@ -103,13 +104,13 @@ const getTodayAppointments = async (clinicId) => {
     try {
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        
-        const appointments = await Appointment.find({ 
+
+        const appointments = await Appointment.find({
             clinicID: clinicId,
             appointmentDate: todayStr,
             status: 'Approved'
         }).sort({ appointmentTime: 1 });
-        
+
         return appointments;
     } catch (error) {
         console.error(error);
@@ -120,7 +121,7 @@ const getTodayAppointments = async (clinicId) => {
 const getClinicAppointmentStats = async (clinicId) => {
     try {
         const appointments = await Appointment.find({ clinicID: clinicId });
-        
+
         const stats = {
             total: appointments.length,
             pending: appointments.filter(a => a.status === "Pending").length,
@@ -128,7 +129,7 @@ const getClinicAppointmentStats = async (clinicId) => {
             approved: appointments.filter(a => a.status === "Approved").length,
             completed: appointments.filter(a => a.completed === true).length
         };
-        
+
         return stats;
     } catch (error) {
         console.error(error);
@@ -140,7 +141,7 @@ const updateAppointmentStatus = async (appointmentId, status, reason = null) => 
     try {
         const appointment = await Appointment.findById(appointmentId);
         if (!appointment) return null;
-        
+
         appointment.status = status;
         if (reason) {
             appointment.cancellationReason = reason;
@@ -148,7 +149,7 @@ const updateAppointmentStatus = async (appointmentId, status, reason = null) => 
         if (status === "Canceled" || status === "Completed") {
             appointment.completed = true;
         }
-        
+
         await appointment.save();
         return appointment;
     } catch (error) {

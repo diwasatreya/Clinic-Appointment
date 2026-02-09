@@ -61,17 +61,34 @@ const createSession = async (info) => {
 
 const generateNewToken = async (token) => {
     try {
+        if (!token) {
+            console.error('generateNewToken: No refresh token provided');
+            return null;
+        }
+
         const decodedRefreshToken = verifyJWT(token);
 
+        if (!decodedRefreshToken) {
+            console.error('generateNewToken: Invalid or expired refresh token');
+            return null;
+        }
+
         const session = await Session.findById(decodedRefreshToken.sid);
-        if (!session) throw new Error("No Session Avaiable!");
+        if (!session) {
+            console.error('generateNewToken: Session not found for sid:', decodedRefreshToken.sid);
+            return null;
+        }
 
         let newUser;
         let newAccessToken;
         let newRefreshToken;
+
         if (decodedRefreshToken.role == "user") {
             const user = await User.findById(session.userId);
-            if (!user) throw new Error("User not found!");
+            if (!user) {
+                console.error('generateNewToken: User not found for userId:', session.userId);
+                return null;
+            }
             newUser = { id: user._id.toString(), username: user.firstName + ' ' + user.lastName, sid: session._id.toString(), phone: user.phone, role: "user" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "user" }, REFRESH_TOKEN_EXPIRE);
@@ -81,7 +98,10 @@ const generateNewToken = async (token) => {
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "admin" }, REFRESH_TOKEN_EXPIRE);
         } else {
             const clinic = await Clinic.findById(session.userId);
-            if (!clinic) throw new Error("Clinic not found!");
+            if (!clinic) {
+                console.error('generateNewToken: Clinic not found for userId:', session.userId);
+                return null;
+            }
             newUser = { id: clinic._id.toString(), username: clinic.clinicName, sid: session._id.toString(), phone: clinic.phone, role: "clinic" };
             newAccessToken = generateJWT(newUser, ACCESS_TOKEN_EXPIRE);
             newRefreshToken = generateJWT({ sid: session._id.toString(), role: "clinic" }, REFRESH_TOKEN_EXPIRE);
@@ -93,7 +113,7 @@ const generateNewToken = async (token) => {
             newUser
         }
     } catch (error) {
-        console.error(error);
+        console.error('generateNewToken: Error generating new tokens:', error);
         return null;
     }
 };
@@ -139,31 +159,23 @@ const createNewClinic = async ({ clinicName, email, phone, address, password }) 
 
 const updateUserData = async (userObj, form) => {
     try {
-        const phoneNumber = parseInt(form['phone-number']);
-        if (!phoneNumber || isNaN(phoneNumber)) {
+        const user = await User.findById(userObj._id);
+        if (!user) {
+            console.error('updateUserData: User not found');
             return null;
         }
 
-        const existingUser = await User.findOne({
-            phone: phoneNumber,
-            _id: { $ne: userObj._id },
-        });
-
-        if (existingUser) return null;
-
-        const user = await User.findById(userObj._id);
-        if (!user) return null;
-
+        // Update only allowed fields (phone number cannot be changed)
         user.firstName = form['first-name'];
         user.lastName = form['last-name'];
-        user.phone = phoneNumber;
         user.address = form.address;
+        // Note: phone number is intentionally NOT updated to prevent changes
 
         await user.save();
 
         return user;
     } catch (error) {
-        console.error(error);
+        console.error('updateUserData: Error updating user data:', error);
         return null;
     }
 }

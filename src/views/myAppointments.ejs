@@ -1,119 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments | FindaCare</title>
     <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="./js/tailwind.js"></script>
     <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body class="min-h-screen flex flex-col bg-page font-sans antialiased">
     <%- include('./particles/header') %>
 
-    <main class="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-8 flex items-center gap-3">
-            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
-                <i class="fa-solid fa-calendar-check text-xl"></i>
-            </span>
-            My appointments
-        </h1>
+        <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <!-- Page Header -->
+            <div class="mb-10">
+                <h1 class="text-4xl font-extrabold text-gray-900 mb-3 flex items-center gap-4">
+                    <span
+                        class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-green to-emerald-600 text-white shadow-lg">
+                        <i class="fa-solid fa-calendar-check text-2xl"></i>
+                    </span>
+                    My Appointments
+                </h1>
+                <p class="text-lg text-gray-600">View and manage all your upcoming and past medical appointments</p>
+            </div>
 
-        <!-- Upcoming -->
-        <section class="mb-12">
-            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-clock text-accent-green"></i>
-                Upcoming (<%= upComingAppoints.length %>)
-            </h2>
-            <div class="space-y-4">
-                <% upComingAppoints.forEach((appoint)=> { %>
-                <div class="card card-hover p-6 border-l-4 <%- appoint.status == 'Pending' ? 'border-warning' : 'border-accent-green' %>">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="text-center <%- appoint.status == 'Pending' ? 'bg-amber-50 text-warning' : 'bg-accent-green-light text-accent-green' %> px-4 py-3 rounded-xl min-w-[4rem]">
-                                <p class="text-xl font-bold leading-none"><%= appoint.ui.formattedDate.split(' ')[0] %></p>
-                                <p class="text-xs text-gray-500 uppercase mt-1"><%= appoint.ui.formattedDate.split(' ')[1] %></p>
+            <!-- Upcoming Appointments Section -->
+            <section class="mb-14">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <span
+                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-green/10 text-accent-green">
+                            <i class="fa-solid fa-clock text-lg"></i>
+                        </span>
+                        Upcoming Appointments
+                        <span class="text-lg font-semibold text-gray-500">(<%= upComingAppoints.length %>)</span>
+                    </h2>
+                </div>
+
+                <% if (upComingAppoints.length> 0) { %>
+                    <div class="grid gap-6">
+                        <% upComingAppoints.forEach((appoint)=> { %>
+                            <div
+                                class="card card-hover overflow-hidden border-l-4 <%= appoint.status == 'Pending' ? 'border-amber-500' : 'border-accent-green' %>">
+                                <div class="p-6">
+                                    <!-- Status Badge at Top -->
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span
+                                            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold <%= appoint.status == 'Pending' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200' %>">
+                                            <i
+                                                class="fa-solid <%= appoint.status == 'Pending' ? 'fa-hourglass-half' : 'fa-circle-check' %>"></i>
+                                            <%= appoint.status %>
+                                        </span>
+                                        <span class="text-sm text-gray-500 font-medium">
+                                            <i class="fa-regular fa-calendar mr-1"></i>
+                                            <%= appoint.appointmentDate %>
+                                        </span>
+                                    </div>
+
+                                    <!-- Main Content -->
+                                    <div class="grid md:grid-cols-3 gap-6">
+                                        <!-- Date & Time (Large Display) -->
+                                        <div class="md:col-span-1">
+                                            <div class="flex items-center gap-4">
+                                                <div
+                                                    class="flex-shrink-0 text-center <%= appoint.status == 'Pending' ? 'bg-amber-50' : 'bg-emerald-50' %> px-6 py-4 rounded-2xl border <%= appoint.status == 'Pending' ? 'border-amber-200' : 'border-emerald-200' %> min-w-[6REM]">
+                                                    <p
+                                                        class="text-3xl font-bold <%= appoint.status == 'Pending' ? 'text-amber-600' : 'text-accent-green' %> leading-none">
+                                                        <%= appoint.ui.formattedDate.split(' ')[0] %></p>
+                                                <p class="text-sm text-gray-600 uppercase font-semibold mt-1"><%= appoint.ui.formattedDate.split(' ')[1] %></p>
+                                                <div class="mt-2 pt-2 border-t <%= appoint.status == ' Pending'
+                                                            ? 'border-amber-200' : 'border-emerald-200' %>">
+                                                            <p
+                                                                class="text-sm font-semibold <%= appoint.status == 'Pending' ? 'text-amber-700' : 'text-emerald-700' %>">
+                                                                <i class="fa-regular fa-clock mr-1"></i>
+                                                                <%= appoint.appointmentTime %>
+                                                            </p>
+                                                </div>
+                                            </div>
+                                            <div class="md:hidden">
+                                                <p class="text-sm font-semibold text-gray-700 mb-1">
+                                                    <%= appoint.ui.dayName %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Appointment Details -->
+                                    <div class="md:col-span-2 grid sm:grid-cols-2 gap-4">
+                                        <!-- Clinic Info -->
+                                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                                                Clinic</p>
+                                            <p class="text-lg font-bold text-gray-900 mb-1">
+                                                <%= appoint.clinic.clinicName %>
+                                            </p>
+                                            <p class="text-sm text-gray-600 flex items-start gap-2">
+                                                <i class="fa-solid fa-location-dot mt-0.5 text-accent-green"></i>
+                                                <span>
+                                                    <%= appoint.clinic.address %>
+                                                </span>
+                                            </p>
+                                        </div>
+
+                                        <!-- Checkup Details -->
+                                        <div class="space-y-3">
+                                            <div>
+                                                <p
+                                                    class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                                    Checkup Type</p>
+                                                <p class="text-base font-semibold text-gray-900">
+                                                    <i class="fa-solid fa-stethoscope text-accent-green mr-2"></i>
+                                                    <%= appoint.checkupType %>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p
+                                                    class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                                    Doctor</p>
+                                                <p class="text-base font-semibold text-gray-900">
+                                                    <i class="fa-solid fa-user-doctor text-accent-green mr-2"></i>
+                                                    Dr. <%= appoint.doctor %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reason (if provided) -->
+                                <% if (appoint.reason && appoint.reason !=='No Reason' ) { %>
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                                            Reason for Visit</p>
+                                        <p
+                                            class="text-sm text-gray-700 bg-blue-50 border border-blue-100 rounded-lg p-3">
+                                            <i class="fa-solid fa-message text-blue-600 mr-2"></i>
+                                            <%= appoint.reason %>
+                                        </p>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Action Buttons -->
+                                        <div
+                                            class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+                                            <p class="text-sm text-gray-600 hidden md:block">
+                                                <i class="fa-regular fa-calendar-days mr-1"></i>
+                                                Scheduled for <%= appoint.ui.dayName %>
+                                            </p>
+                                            <form action="/appoint/delete" method="post" class="ml-auto"
+                                                onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                                <input type="hidden" name="appointId" value="<%= appoint._id %>">
+                                                <button type="submit"
+                                                    class="px-5 py-2.5 text-sm font-semibold text-white bg-red-500 rounded-xl hover:bg-red-600 transition duration-200 shadow-md hover:shadow-lg flex items-center gap-2">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    Cancel Appointment
+                                                </button>
+                                            </form>
+                                        </div>
                             </div>
-                            <div>
-                                <p class="font-semibold text-gray-900"><%= appoint.ui.dayName %>, <%= appoint.appointmentTime %></p>
-                                <p class="text-sm text-gray-600"><%= appoint.checkupType %></p>
+                    </div>
+                    <% }); %>
+                        </div>
+                        <% } else { %>
+                            <div class="card p-12 text-center">
+                                <div class="flex flex-col items-center gap-4">
+                                    <div class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <i class="fa-regular fa-calendar-xmark text-4xl text-gray-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-900 mb-1">No Upcoming Appointments</p>
+                                        <p class="text-gray-600">Book an appointment with a clinic to get started</p>
+                                    </div>
+                                    <a href="/"
+                                        class="mt-4 px-6 py-3 rounded-xl font-semibold text-white bg-accent-green hover:bg-emerald-600 transition shadow-md inline-flex items-center gap-2">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Book New Appointment
+                                    </a>
+                                </div>
+                            </div>
+                            <% } %>
+            </section>
+
+            <!-- Past Appointments Section -->
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-600">
+                            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+                        </span>
+                        Past Appointments
+                        <span class="text-lg font-semibold text-gray-500">(<%= completedAppoints.length %>)</span>
+                    </h2>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative mb-6">
+                    <input id="past-visit-search" type="text" placeholder="Search by clinic, doctor, or reason..."
+                        class="w-full py-4 pl-12 pr-4 rounded-xl border-2 border-gray-200 bg-white focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green shadow-sm transition">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </span>
+                </div>
+
+                <% if (completedAppoints.length> 0) { %>
+                    <div class="space-y-4">
+                        <% completedAppoints.forEach((appoint)=> { %>
+                            <div class="visit-card card p-5 border-l-4 <%= appoint.status == 'Completed' ? 'border-blue-500' : 'border-gray-300' %>"
+                                data-doctor="Dr. <%= appoint.doctor %>" data-clinic="<%= appoint.clinic.clinicName %>"
+                                data-reason="<%= appoint.reason %>">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div class="flex items-center gap-4 flex-grow">
+                                        <!-- Date Badge -->
+                                        <div
+                                            class="flex-shrink-0 text-center bg-gray-100 px-4 py-3 rounded-xl border border-gray-200 min-w-[5rem]">
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">
+                                                <%= appoint.ui.formattedDate.split(' ')[1] %></p>
+                                        <p class="text-2xl font-bold text-gray-700 leading-none mt-1"><%= appoint.ui.formattedDate.split(' ')[0] %></p>
+                                    </div>
+
+                                    <!-- Appointment Info -->
+                                    <div class="flex-grow">
+                                        <p class="font-bold text-gray-900 text-lg mb-1"><%= appoint.clinic.clinicName %></p>
+                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+                                            <span><i class="fa-solid fa-user-doctor text-accent-green mr-1"></i> Dr. <%= appoint.doctor %></span>
+                                            <span><i class="fa-solid fa-stethoscope text-accent-green mr-1"></i> <%= appoint.checkupType %></span>
+                                        </div>
+                                        <% if (appoint.reason && appoint.reason !== ' No Reason') { %>
+                                                    <p class="text-sm text-gray-500 mt-1 italic">
+                                                        <i class="fa-regular fa-comment mr-1"></i>
+                                                        <%= appoint.reason %>
+                                                    </p>
+                                                    <% } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Status Badge -->
+                                    <div class="flex-shrink-0">
+                                        <span
+                                            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold <%= appoint.status == 'Completed' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-red-100 text-red-700 border border-red-200' %>">
+                                            <i
+                                                class="fa-solid <%= appoint.status == 'Completed' ? 'fa-circle-check' : 'fa-circle-xmark' %>"></i>
+                                            <%= appoint.status %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <div class="card p-10 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <i class="fa-regular fa-folder-open text-3xl text-gray-400"></i>
+                                </div>
+                                <p class="text-base font-semibold text-gray-700">No past appointments yet</p>
                             </div>
                         </div>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%- appoint.status == 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-accent-green-light text-accent-green' %>">
-                            <%= appoint.status %>
-                        </span>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 grid sm:grid-cols-2 gap-3 text-sm text-gray-700">
-                        <div><span class="font-medium text-gray-800">Doctor:</span> Dr. <%= appoint.doctor %></div>
-                        <div><span class="font-medium text-gray-800">Reason:</span> <%= appoint.reason || '—' %></div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <form action="/appoint/delete" method="post" class="inline">
-                            <input type="hidden" name="appointId" value="<%= appoint._id %>">
-                            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-xl hover:bg-red-600 transition shadow-soft">
-                                Cancel appointment
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <% }) %>
-            </div>
-        </section>
+                        <% } %>
+            </section>
+        </main>
 
-        <!-- Past -->
-        <section>
-            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-gray-500"></i>
-                Past visits (<%= completedAppoints.length %>)
-            </h2>
-            <div class="relative mb-6">
-                <input id="past-visit-search" type="text" placeholder="Search by doctor or reason…"
-                    class="w-full py-3 pl-11 pr-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-accent-green/40 focus:border-accent-green shadow-soft">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-            </div>
-            <div class="space-y-4">
-                <% completedAppoints.forEach((appoint)=> { %>
-                <div class="visit-card card p-5" data-doctor="Dr. <%= appoint.doctor %>" data-reason="<%= appoint.reason %>">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="text-center bg-gray-100 px-4 py-2 rounded-xl">
-                                <p class="text-xs text-gray-500 uppercase"><%= appoint.ui.formattedDate.split(' ')[1] %> <%= appoint.ui.formattedDate.split(' ')[0] %></p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-900"><%= appoint.checkupType %></p>
-                                <p class="text-sm text-gray-600">Dr. <%= appoint.doctor %></p>
-                            </div>
-                        </div>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <%- appoint.status == 'Completed' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-700' %>">
-                            <%= appoint.status %>
-                        </span>
-                    </div>
-                </div>
-                <% }) %>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('past-visit-search');
-            if (searchInput) {
-                searchInput.addEventListener('input', e => {
-                    const term = e.target.value.toLowerCase();
-                    document.querySelectorAll('.visit-card').forEach(card => {
-                        const doctor = (card.dataset.doctor || '').toLowerCase();
-                        const reason = (card.dataset.reason || '').toLowerCase();
-                        card.style.display = (doctor.includes(term) || reason.includes(term)) ? 'block' : 'none';
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('past-visit-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', e => {
+                        const term = e.target.value.toLowerCase();
+                        document.querySelectorAll('.visit-card').forEach(card => {
+                            const doctor = (card.dataset.doctor || '').toLowerCase();
+                            const clinic = (card.dataset.clinic || '').toLowerCase();
+                            const reason = (card.dataset.reason || '').toLowerCase();
+                            const matches = doctor.includes(term) || clinic.includes(term) || reason.includes(term);
+                            card.style.display = matches ? 'block' : 'none';
+                        });
                     });
-                });
-            }
-        });
-    </script>
-    <script src="./js/script.js"></script>
-    <%- include('./particles/footer') %>
+                }
+            });
+        </script>
+        <script src="./js/script.js"></script>
+        <%- include('./particles/footer') %>
 </body>
+
 </html>

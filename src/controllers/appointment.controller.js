@@ -4,24 +4,24 @@ import { getClinicById, getClinicDoctors } from "../services/clinics.services.js
 const checkTimeSlotAvailability = async (req, res) => {
     try {
         const { clinicId, doctorId, date } = req.query;
-        
+
         if (!clinicId || !doctorId || !date) {
             return res.json({ error: 'Missing required parameters' });
         }
 
         const doctors = await getClinicDoctors(clinicId);
         const doctor = doctors.find(d => d._id.toString() === doctorId);
-        
+
         if (!doctor || !doctor.time) {
             return res.json({ availability: {} });
         }
 
         const availability = {};
-        
+
         for (const timeSlot of doctor.time) {
             const time = typeof timeSlot === 'string' ? timeSlot : timeSlot.time;
             const limit = typeof timeSlot === 'string' ? 10 : (timeSlot.limit || 10);
-            
+
             const count = await getTimeSlotCount(clinicId, doctorId, date, time);
             availability[time] = {
                 available: count < limit,
@@ -63,17 +63,41 @@ const showAppointment = async (req, res) => {
 }
 
 const postAppointment = async (req, res) => {
-    const form = req.body;
-    // const { clinicID, checkup_type, selected_doctor, appointment_date, time_slot, reason, file_upload } = form;
+    try {
+        const form = req.body;
 
-    const appointment = await createAppointment(form, req.user);
+        // Validate required fields
+        if (!form.clinicID || !form.checkup_type || !form.selected_doctor ||
+            !form.appointment_date || !form.time_slot) {
+            return res.redirect('/appoint?id=' + form.clinicID + '&error=' +
+                encodeURIComponent('All fields are required. Please fill in all information.'));
+        }
 
-    return res.redirect('/appointments?success=' + encodeURIComponent('Appointment booked successfully.'));
+        // Validate user is authenticated
+        if (!req.user || !req.user.id) {
+            return res.redirect('/auth/login?error=' +
+                encodeURIComponent('You must be logged in to book an appointment.'));
+        }
+
+        const appointment = await createAppointment(form, req.user);
+
+        if (!appointment) {
+            return res.redirect('/appoint?id=' + form.clinicID + '&error=' +
+                encodeURIComponent('Failed to book appointment. Please try again.'));
+        }
+
+        return res.redirect('/appointments?success=' +
+            encodeURIComponent('Appointment booked successfully.'));
+    } catch (error) {
+        console.error('Error creating appointment:', error);
+        return res.redirect('/?error=' +
+            encodeURIComponent('An error occurred. Please try again.'));
+    }
 }
 
 const showMyAppointments = async (req, res) => {
+    // Require authentication
     if (!req.user) return res.redirect('/auth/login');
-    if (req.user.role == "clinic") return res.redirect('/');
 
     const appoints = await getAllAppointments(req.user.id);
     if (!appoints) {

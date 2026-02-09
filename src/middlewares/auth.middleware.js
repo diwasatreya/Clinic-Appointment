@@ -13,10 +13,19 @@ const useAuth = async (req, res, next) => {
     }
 
     if (!accessToken) {
+        const tokenResult = await generateNewToken(refreshToken);
 
-        const { newAccessToken, newRefreshToken, newUser } = await generateNewToken(refreshToken);
+        // Handle token generation failure
+        if (!tokenResult || !tokenResult.newAccessToken || !tokenResult.newRefreshToken) {
+            res.clearCookie("accessToken");
+            res.clearCookie("refreshToken");
+            req.user = null;
+            return res.redirect('/auth/login?error=' + encodeURIComponent('Session expired. Please login again.'));
+        }
 
-        const baseCookieConfig = { httpOnly: false, sameSite: 'strict', secure: false };
+        const { newAccessToken, newRefreshToken, newUser } = tokenResult;
+
+        const baseCookieConfig = { httpOnly: false, secure: false };
 
         res.cookie("accessToken", newAccessToken, { maxAge: convertTime(ACCESS_TOKEN_EXPIRE), ...baseCookieConfig });
         res.cookie("refreshToken", newRefreshToken, { maxAge: convertTime(REFRESH_TOKEN_EXPIRE), ...baseCookieConfig });
@@ -28,10 +37,10 @@ const useAuth = async (req, res, next) => {
     const decodeAccessToken = verifyJWT(accessToken);
 
     const OldUser = await getClinicByNumber(decodeAccessToken.phone);
-    if(OldUser && decodeAccessToken.role == "clinic" && OldUser.banned) {
+    if (OldUser && decodeAccessToken.role == "clinic" && OldUser.banned) {
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
-       return res.redirect('/auth/login?error=' + encodeURIComponent('This clinic is banned. Please contact the admin.'));
+        return res.redirect('/auth/login?error=' + encodeURIComponent('This clinic is banned. Please contact the admin.'));
     }
 
     req.user = decodeAccessToken;

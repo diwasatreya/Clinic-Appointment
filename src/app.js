@@ -18,11 +18,17 @@ app.use(express.static(path.join(import.meta.dirname, "public")));
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 
+// Apply auth middleware first to populate req.user
 app.use(useAuth);
+
+// Apply profile middleware to handle role-based redirects
+// app.use(userProfile);
+
+// Define routes
 app.use("/", userRoute);
 app.use("/auth", authRoute);
 app.use("/", appointmentRoute);
 app.use("/clinic", clinicRoute);
 app.use("/admin", adminRoute);
-app.use(userProfile);
+
 export default app;

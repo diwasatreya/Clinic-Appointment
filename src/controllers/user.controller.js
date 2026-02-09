@@ -1,4 +1,5 @@
 import { getAllClinics, filterClinics, getClinicDoctors } from "../services/clinics.services.js";
+import { getUserByNumber } from "../services/auth.services.js";
 
 const showHomePage = async (req, res) => {
     // Redirect clinics to dashboard
@@ -28,6 +29,8 @@ const showHomePage = async (req, res) => {
     }
     return res.render('index.ejs', { user: req.user, clinics });
 }
+
+
 
 
 export {

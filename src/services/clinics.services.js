@@ -117,11 +117,12 @@ const createDoctorTime = async (form) => {
         const formattedTime = formatTime(form.time);
         const limit = parseInt(form.limit) || 10;
 
-        // Handle migration: if time is array of strings, convert to objects
-        if (doctor.time && doctor.time.length > 0 && typeof doctor.time[0] === 'string') {
-            doctor.time = doctor.time.map(t => ({ time: t, limit: 10 }));
+        // Initialize time array if it doesn't exist
+        if (!doctor.time) {
+            doctor.time = [];
         }
 
+        // Add new time slot in object format
         doctor.time.push({ time: formattedTime, limit: limit });
 
         await doctor.save();
@@ -137,16 +138,12 @@ const removeDoctorTime = async (form) => {
         const doctor = await Doctors.findById(form.doctorId);
         if (!doctor) return;
 
-        // Handle both old (string) and new (object) formats
-        const index = doctor.time.findIndex(t => {
-            if (typeof t === 'string') {
-                return t === form.time;
-            } else {
-                return t.time === form.time;
-            }
-        });
+        // Only handle object format with time property
+        const index = doctor.time.findIndex(t => t.time === form.time);
 
-        if (index !== -1) doctor.time.splice(index, 1);
+        if (index !== -1) {
+            doctor.time.splice(index, 1);
+        }
 
         await doctor.save();
 
@@ -161,10 +158,10 @@ const updateClinicStatus = async (clinicId, status) => {
     try {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
-        
+
         clinic.status = status;
         await clinic.save();
-        
+
         return clinic;
     } catch (error) {
         console.error(error);
@@ -176,12 +173,12 @@ const requestClinicApproval = async (clinicId) => {
     try {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
-        
+
         // Request approval - set flag to indicate clinic has requested approval
         clinic.pendingApproval = true;
         clinic.approved = false;
         await clinic.save();
-        
+
         return clinic;
     } catch (error) {
         console.error(error);
