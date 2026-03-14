@@ -177,6 +177,7 @@ const requestClinicApproval = async (clinicId) => {
         // Request approval - set flag to indicate clinic has requested approval
         clinic.pendingApproval = true;
         clinic.approved = false;
+        clinic.declineReason = null;
         await clinic.save();
 
         return clinic;

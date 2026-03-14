@@ -69,8 +69,13 @@ const declineClinicAction = async (req, res) => {
             return res.redirect('/');
         }
 
-        const { clinicId } = req.body;
-        await declineClinic(clinicId);
+        const { clinicId, declineReason } = req.body;
+
+        if (!declineReason || declineReason.trim() === '') {
+            return res.redirect('/admin/dashboard?tab=pending&error=' + encodeURIComponent('Decline reason is required.'));
+        }
+
+        await declineClinic(clinicId, declineReason.trim());
 
         return res.redirect('/admin/dashboard?tab=pending&success=' + encodeURIComponent('Clinic declined.'));
     } catch (error) {

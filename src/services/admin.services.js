@@ -48,7 +48,8 @@ const approveClinic = async (clinicId) => {
         if (!clinic) return null;
         
         clinic.approved = true;
-        clinic.pendingApproval = false; // Clear the pending approval flag
+        clinic.pendingApproval = false;
+        clinic.declineReason = null;
         await clinic.save();
         
         return clinic;
@@ -59,13 +60,13 @@ const approveClinic = async (clinicId) => {
 };
 
 // Decline clinic (clear the pending approval flag, but keep the clinic)
-const declineClinic = async (clinicId) => {
+const declineClinic = async (clinicId, reason) => {
     try {
         const clinic = await Clinics.findById(clinicId);
         if (!clinic) return null;
         
-        // Clear the pending approval flag when declined
         clinic.pendingApproval = false;
+        clinic.declineReason = reason || null;
         await clinic.save();
         
         return clinic;

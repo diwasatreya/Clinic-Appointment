@@ -1,6 +1,6 @@
 <% if (clinicDetails && clinicDetails.length > 0) { %>
 <div class="space-y-6">
-    <% clinicDetails.forEach((item) => { %>
+    <% clinicDetails.forEach((item, index) => { %>
         <% const clinic = item.clinic || item; %>
         <% const doctors = item.doctors || []; %>
         <div class="card p-6">
@@ -16,13 +16,10 @@
                             <i class="fa-solid fa-check"></i> Approve
                         </button>
                     </form>
-                    <form method="post" action="/admin/clinic/decline" class="inline">
-                        <input type="hidden" name="clinicId" value="<%= clinic._id %>">
-                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-soft"
-                            onclick="return confirm('Decline this clinic? This cannot be undone.');">
-                            <i class="fa-solid fa-times"></i> Decline
-                        </button>
-                    </form>
+                    <button type="button" onclick="openDeclineModal('<%= clinic._id %>', decodeURIComponent('<%= encodeURIComponent(clinic.clinicName) %>'))"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-soft">
+                        <i class="fa-solid fa-times"></i> Decline
+                    </button>
                 </div>
             </div>
             <%- include('clinicCard', { clinic, doctors }) %>
@@ -37,3 +34,53 @@
     <p class="text-xl text-gray-600">No pending approvals</p>
 </div>
 <% } %>
+
+<!-- Decline Reason Modal -->
+<div id="decline-modal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeclineModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Decline Clinic</h3>
+                        <p class="text-sm text-gray-500" id="decline-modal-clinic-name"></p>
+                    </div>
+                </div>
+                <form method="post" action="/admin/clinic/decline" id="decline-form">
+                    <input type="hidden" name="clinicId" id="decline-modal-clinic-id">
+                    <label for="decline-reason-input" class="block text-sm font-medium text-gray-700 mb-2">Reason for declining <span class="text-red-500">*</span></label>
+                    <textarea id="decline-reason-input" name="declineReason" rows="4" required
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-400 focus:ring-2 focus:ring-red-100 outline-none transition resize-none"
+                        placeholder="Explain why this clinic is being declined..."></textarea>
+                    <div class="flex gap-3 mt-5">
+                        <button type="button" onclick="closeDeclineModal()"
+                            class="flex-1 px-4 py-2.5 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="flex-1 px-4 py-2.5 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition">
+                            <i class="fa-solid fa-times mr-1"></i> Decline
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDeclineModal(clinicId, clinicName) {
+    document.getElementById('decline-modal-clinic-id').value = clinicId;
+    document.getElementById('decline-modal-clinic-name').textContent = clinicName;
+    document.getElementById('decline-reason-input').value = '';
+    document.getElementById('decline-modal').classList.remove('hidden');
+}
+function closeDeclineModal() {
+    document.getElementById('decline-modal').classList.add('hidden');
+}
+</script>
+
